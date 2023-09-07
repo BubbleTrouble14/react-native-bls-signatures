@@ -23,6 +23,10 @@ export default function App() {
       <Button
         title="Run"
         onPress={() => {
+          // @ts-expect-error performance actually exists.
+          // eslint-disable-next-line no-undef
+          const start = performance.now();
+
           const seed = new Uint8Array([
             0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220,
             18, 102, 58, 209, 82, 12, 62, 89, 110, 182, 9, 44, 20, 254, 22,
@@ -44,9 +48,14 @@ export default function App() {
               .getG1()
               .toHex()}`
           );
-          console.log('Wallet addresses');
+          // console.log('Wallet addresses');
           const childPrivateKeyHardened = masterSkToWalletSk(privateKey, 0);
           const childPublicKeyHardened = childPrivateKeyHardened.getG1();
+
+          // @ts-expect-error performance actually exists.
+          // eslint-disable-next-line no-undef
+          const newEnd = performance.now();
+          console.log(`Time -> ${newEnd - start}ms!`);
 
           // const seed = new Uint8Array([
           //   0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220,
