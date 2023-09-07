@@ -32,5 +32,5 @@ BLST is used with the
 [Apache 2.0 license](https://github.com/supranational/blst/blob/master/LICENSE)
 
 ## Resources
-* [Chia-Network/bls-signatures] (https://github.com/Chia-Network/bls-signatures)
+* [Chia-Network/bls-signatures](https://github.com/Chia-Network/bls-signatures) code for bls
 * [Marc Rousavy](https://github.com/mrousavy) thanks for all the examples
