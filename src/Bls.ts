@@ -1,6 +1,8 @@
 export interface IAugSchemeMPL {
   keyGen(msg: Uint8Array): IPrivateKey;
   deriveChildSk(privateKey: IPrivateKey, index: number): IPrivateKey;
+  deriveChildSkUnhardened(privateKey: IPrivateKey, index: number): IPrivateKey;
+  deriveChildPkUnhardened(privateKey: IG1Element, index: number): IG1Element;
 }
 
 export interface IPrivateKey {
@@ -17,7 +19,10 @@ export interface IG1Element {
 
 export type NativeAugSchemeMPL = Pick<
   IAugSchemeMPL,
-  'keyGen' | 'deriveChildSk'
+  | 'keyGen'
+  | 'deriveChildSk'
+  | 'deriveChildSkUnhardened'
+  | 'deriveChildPkUnhardened'
 >;
 
 export type NativePrivateKey = Pick<IPrivateKey, 'getG1' | 'toBytes' | 'toHex'>;

@@ -14,7 +14,7 @@
 
 #include <string.h>
 
-#include "bls.hpp"
+#include "./bls.hpp"
 
 namespace bls {
 

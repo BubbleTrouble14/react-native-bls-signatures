@@ -1,7 +1,8 @@
 #pragma once
 
 #include <jsi/jsi.h>
-#include "bls.hpp"
+#include "include/bls/bls.hpp"
+using namespace bls;
 
 using namespace bls;
 using namespace facebook;
@@ -18,6 +19,8 @@ public:
 
   // Destructor
   ~G1ElementHostObject();
+
+  const G1Element& getG1Element() const;
 
   jsi::Value get(jsi::Runtime&, const jsi::PropNameID& name) override;
   std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime& rt) override;

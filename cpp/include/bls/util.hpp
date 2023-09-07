@@ -23,11 +23,6 @@
 #include <vector>
 #include <array>
 
-extern "C" {
-// #include "bindings/blst.h"
-#include "include/blst.h"
-}
-
 namespace bls {
 
 class BLS;

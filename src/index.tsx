@@ -5,6 +5,28 @@ import type {
   NativePrivateKey,
 } from './Bls';
 
+import {
+  derivePath,
+  derivePathUnhardend,
+  masterSkToBackupSk,
+  masterSkToFarmerSk,
+  masterSkToLocalSk,
+  masterSkToPoolSk,
+  masterSkToPoolingAuthenticationSk,
+  masterSkToSingletonOwnerSk,
+  masterSkToWalletSk,
+  masterSkToWalletSkUnhardened,
+  blsSpecNumber,
+  chiaBlockchainNumber,
+  farmerPathNumber,
+  poolPathNumber,
+  walletPathNumber,
+  localPathNumber,
+  backupKeyPathNumber,
+  singletonPathNumber,
+  poolingAuthenticationPathNumber,
+} from './KeyDerivation';
+
 const LINKING_ERROR =
   `The package 'react-native-bls-signatures' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -56,4 +78,26 @@ export const G1Element = (): NativeG1Element => {
   // @ts-expect-error
   const buffer = global.G1Element() as NativeG1Element;
   return buffer;
+};
+
+export {
+  derivePath,
+  derivePathUnhardend,
+  masterSkToBackupSk,
+  masterSkToFarmerSk,
+  masterSkToLocalSk,
+  masterSkToPoolSk,
+  masterSkToPoolingAuthenticationSk,
+  masterSkToSingletonOwnerSk,
+  masterSkToWalletSk,
+  masterSkToWalletSkUnhardened,
+  blsSpecNumber,
+  chiaBlockchainNumber,
+  farmerPathNumber,
+  poolPathNumber,
+  walletPathNumber,
+  localPathNumber,
+  backupKeyPathNumber,
+  singletonPathNumber,
+  poolingAuthenticationPathNumber,
 };

@@ -1,15 +1,14 @@
 #include <jni.h>
 #include <jsi/jsi.h>
 #include <string>
-#include "../cpp/JSI Utils/TypedArray.h"
 #include <android/log.h>
 #include <vector>
 #include "PrivateKeyHostObject.h"
 #include "AugSchemeMPLHostObject.h"
 #include "G1ElementHostObject.h"
 
-#include "bls.hpp"
-using namespace bls;
+// #include "bls.hpp"
+// using namespace bls;
 
 using namespace facebook;
 using namespace std;

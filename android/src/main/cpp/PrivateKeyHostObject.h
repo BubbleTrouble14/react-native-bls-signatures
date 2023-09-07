@@ -1,8 +1,7 @@
 #pragma once
 
 #include <jsi/jsi.h>
-
-#include "../cpp/bls.hpp"
+#include "include/bls/bls.hpp"
 using namespace bls;
 
 using namespace facebook;

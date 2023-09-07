@@ -3,10 +3,7 @@
 #include <android/log.h>
 #include <string>
 #include <vector>
-#include "../cpp/JSI Utils/TypedArray.h"
-
-#include "../cpp/bls.hpp"
-using namespace bls;
+#include "TypedArray.h"
 
 const size_t G1ElementHostObject::G1_SIZE = 48;
 
@@ -31,6 +28,10 @@ G1ElementHostObject::~G1ElementHostObject() {
   delete g1Element;
 }
 
+const G1Element& G1ElementHostObject::getG1Element() const {
+    return *g1Element;
+}
+
 std::vector<jsi::PropNameID> G1ElementHostObject::getPropertyNames(jsi::Runtime& rt) {
   std::vector<jsi::PropNameID> result;
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getFingerprint")));
@@ -43,72 +44,57 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID
   auto propName = propNameId.utf8(runtime);
   auto funcName = "G1Element." + propName;
 
-  // if (propName == "getFingerprint") {
-  // return jsi::Function::createFromHostFunction(
-  //     runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-  //     [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //             size_t count) -> jsi::Value {
+  if (propName == "getFingerprint") {
+  return jsi::Function::createFromHostFunction(
+      runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+      [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
 
-  //       if (this->g1Element != nullptr) {
-  //         unsigned char g1Bytes[G1_SIZE];
-  //         g1Element->compress(g1Bytes);
+        if (this->g1Element != nullptr) {
 
-  //         uint8_t hash[32];
-  //         blst::blst_sha256(hash, g1Bytes, G1_SIZE);
-  //         uint32_t fingerprint = bls::Util::FourBytesToInt(hash);
+          return jsi::Value(static_cast<double>(g1Element->GetFingerprint()));
 
-  //         return jsi::Value(static_cast<double>(fingerprint));
+        }
 
-  //         // return jsi::Value(runtime, fingerprint);
-  //       }
+        return jsi::Value::undefined();
 
-  //       return jsi::Value::undefined();
+      });
+  }
 
-  //     });
-  // }
+  if (propName == "toBytes") {
+  return jsi::Function::createFromHostFunction(
+      runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+      [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
 
-  // if (propName == "toBytes") {
-  // return jsi::Function::createFromHostFunction(
-  //     runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-  //     [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //             size_t count) -> jsi::Value {
+        if (this->g1Element != nullptr) {
+            auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G1Element::SIZE);
+            auto newBuffer = newTypedArray.getBuffer(runtime);
 
-  //       if (this->g1Element != nullptr) {
-  //         unsigned char g1Bytes[G1_SIZE];  // or 48 if you want to compress it
-  //         g1Element->compress(g1Bytes);  // or g1Point.compress(g1Bytes) to compress
+            std::memcpy(newBuffer.data(runtime), g1Element->Serialize().data(), G1Element::SIZE);
 
-  //         // Create a new TypedArray to store the G1 point bytes
-  //         auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G1_SIZE);  // or 48 if compressed
-  //         auto newBuffer = newTypedArray.getBuffer(runtime);
+            return newTypedArray;
+        }
 
-  //         std::memcpy(newBuffer.data(runtime), g1Bytes, G1_SIZE);  // or 48 if compressed
+        return jsi::Value::undefined();
 
-  //         return newTypedArray;
-  //       }
+      });
+  }
 
-  //       return jsi::Value::undefined();
+  if (propName == "toHex") {
+  return jsi::Function::createFromHostFunction(
+      runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+      [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
 
-  //     });
-  // }
+        if (this->g1Element != nullptr) {
+          return jsi::String::createFromUtf8(runtime, Util::HexStr(g1Element->Serialize()));
+        }
 
-  // if (propName == "toHex") {
-  // return jsi::Function::createFromHostFunction(
-  //     runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-  //     [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //             size_t count) -> jsi::Value {
+        return jsi::Value::undefined();
 
-  //       if (this->g1Element != nullptr) {
-  //         unsigned char g1Bytes[G1_SIZE];  // or 48 if you want to compress it
-  //         g1Element->compress(g1Bytes);  // or g1Point.compress(g1Bytes) to compress
-
-  //         std::string hexString = bls::Util::HexStr(g1Bytes, G1_SIZE);
-  //         return jsi::String::createFromUtf8(runtime, hexString);
-  //       }
-
-  //       return jsi::Value::undefined();
-
-  //     });
-  // }
+      });
+  }
 
   return jsi::Value::undefined();
 }

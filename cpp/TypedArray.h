@@ -16,8 +16,6 @@
 #include <utility>
 #include <vector>
 
-#include <include/bbs.h>
-
 namespace jsi = facebook::jsi;
 
 enum class TypedArrayKind {

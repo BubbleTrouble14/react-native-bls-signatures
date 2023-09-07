@@ -2,6 +2,10 @@
 
 #include <jsi/jsi.h>
 
+#include "include/bls/bls.hpp"
+using namespace bls;
+
+
 using namespace facebook;
 
 class JSI_EXPORT AugSchemeMPLHostObject : public jsi::HostObject {

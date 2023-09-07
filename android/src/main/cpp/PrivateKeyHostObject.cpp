@@ -3,11 +3,7 @@
 #include <android/log.h>
 #include <string>
 #include <vector>
-#include "../cpp/JSI Utils/TypedArray.h"
-
-#include "../cpp/bls.hpp"
-using namespace bls;
-
+#include "TypedArray.h"
 // Default Constructor
 PrivateKeyHostObject::PrivateKeyHostObject() {
   // privateKey = new PrivateKey();
@@ -37,6 +33,7 @@ std::vector<jsi::PropNameID> PrivateKeyHostObject::getPropertyNames(jsi::Runtime
   std::vector<jsi::PropNameID> result;
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getG1")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
   return result;
 }
 
@@ -66,26 +63,38 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
         });
   }
 
-  // if (propName == "getG1") {
-  //   return jsi::Function::createFromHostFunction(
-  //       runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-  //       [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //              size_t count) -> jsi::Value {
+  if (propName == "getG1") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
 
-  //         if (this->privateKey != nullptr) {
+          if (this->privateKey != nullptr) {
 
-  //             static const size_t G1_SIZE = 48;
-  //               // Generate G1 point corresponding to the secret key
-  //             blst::P1 g1ElementRaw(*privateKey);
+            auto g1ElementObj = std::make_shared<G1ElementHostObject>(privateKey->GetG1Element());
+            return jsi::Object::createFromHostObject(runtime, g1ElementObj);
+          }
 
-  //             auto g1ElementObj = std::make_shared<G1ElementHostObject>(g1ElementRaw);
-  //             return jsi::Object::createFromHostObject(runtime, g1ElementObj);
-  //         }
+          return jsi::Value::undefined();
 
-  //         return jsi::Value::undefined();
+        });
+  }
 
-  //       });
-  // }
+
+  if (propName == "toHex") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+
+          if (this->privateKey != nullptr) {
+            return jsi::String::createFromUtf8(runtime, Util::HexStr(privateKey->Serialize()));
+          }
+
+          return jsi::Value::undefined();
+
+        });
+    }
 
 
   return jsi::Value::undefined();
