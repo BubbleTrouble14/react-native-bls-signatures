@@ -30,3 +30,7 @@ the following copyright notice.
 
 BLST is used with the
 [Apache 2.0 license](https://github.com/supranational/blst/blob/master/LICENSE)
+
+## Resources
+* [Chia-Network/bls-signatures] (https://github.com/Chia-Network/bls-signatures)
+* [Marc Rousavy](https://github.com/mrousavy) thanks for all the examples
