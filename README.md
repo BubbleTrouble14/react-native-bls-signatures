@@ -34,3 +34,4 @@ BLST is used with the
 ## Resources
 * [Chia-Network/bls-signatures](https://github.com/Chia-Network/bls-signatures) code for bls
 * [Marc Rousavy](https://github.com/mrousavy) thanks for all the examples
+* [animo/react-native-bbs-signatures](https://github.com/animo/react-native-bbs-signatures) also great example
