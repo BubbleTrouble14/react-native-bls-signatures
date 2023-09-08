@@ -5,8 +5,6 @@
 #include <vector>
 #include "TypedArray.h"
 
-const size_t G1ElementHostObject::G1_SIZE = 48;
-
 // Default Constructor
 G1ElementHostObject::G1ElementHostObject() {
   g1Element = new G1Element();

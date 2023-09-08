@@ -2,28 +2,28 @@
 
 #include <jsi/jsi.h>
 #include "include/bls/bls.hpp"
-using namespace bls;
 
+using namespace bls;
 using namespace facebook;
 
-class JSI_EXPORT G1ElementHostObject : public jsi::HostObject {
+class JSI_EXPORT G2ElementHostObject : public jsi::HostObject {
 public:
   // Constructor
-  G1ElementHostObject();
+  G2ElementHostObject();
 
   // Overloaded Constructor to initialize with existing blst::SecretKey
-  G1ElementHostObject(const G1Element& g1Element);
+  G2ElementHostObject(const G2Element& g2Element);
 
   // Destructor
-  ~G1ElementHostObject();
+  ~G2ElementHostObject();
 
-  const G1Element& getG1Element() const;
+  const G2Element& getG2Element() const;
 
   jsi::Value get(jsi::Runtime&, const jsi::PropNameID& name) override;
   std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime& rt) override;
 
 private:
-  G1Element* g1Element;
+  G2Element* g2Element;
 };
 
 

@@ -15,23 +15,23 @@ using namespace std;
 
 void install(jsi::Runtime& jsiRuntime) {
 
-  //  auto PrivateKey = jsi::Function::createFromHostFunction(
-  //     jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "PrivateKey"), 0,
-  //     [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //        size_t count) -> jsi::Value {
-  //       if (count != 0) {
-  //         throw jsi::JSError(runtime, "PrivateKeyHostObject.createNewInstance(..) expects 0 arguments!");
-  //       }
+   auto createPrivateKeyInstance = jsi::Function::createFromHostFunction(
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createPrivateKeyInstance"), 0,
+      [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+         size_t count) -> jsi::Value {
+        if (count != 0) {
+          throw jsi::JSError(runtime, "PrivateKeyHostObject.createNewInstance(..) expects 0 arguments!");
+        }
 
-  //       auto instance = std::make_shared<PrivateKeyHostObject>();
-  //       return jsi::Object::createFromHostObject(runtime, instance);
-  //     });
+        auto instance = std::make_shared<PrivateKeyHostObject>();
+        return jsi::Object::createFromHostObject(runtime, instance);
+      });
 
-  //     jsiRuntime.global().setProperty(jsiRuntime, "PrivateKey",std::move(PrivateKey));
+      jsiRuntime.global().setProperty(jsiRuntime, "createPrivateKeyInstance",std::move(createPrivateKeyInstance));
 
 
-   auto AugSchemeMPL = jsi::Function::createFromHostFunction(
-      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "AugSchemeMPL"), 0,
+   auto createAugSchemeMPLInstance = jsi::Function::createFromHostFunction(
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createAugSchemeMPLInstance"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -42,22 +42,37 @@ void install(jsi::Runtime& jsiRuntime) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-    jsiRuntime.global().setProperty(jsiRuntime, "AugSchemeMPL",std::move(AugSchemeMPL));
+    jsiRuntime.global().setProperty(jsiRuntime, "createAugSchemeMPLInstance",std::move(createAugSchemeMPLInstance));
 
 
-  //  auto G1Element = jsi::Function::createFromHostFunction(
-  //     jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "G1Element"), 0,
-  //     [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //        size_t count) -> jsi::Value {
-  //       if (count != 0) {
-  //         throw jsi::JSError(runtime, "G1ElementHostObject.createNewInstance(..) expects 0 arguments!");
-  //       }
+   auto createG1Element = jsi::Function::createFromHostFunction(
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createG1Element"), 0,
+      [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+         size_t count) -> jsi::Value {
+        if (count != 0) {
+          throw jsi::JSError(runtime, "G1ElementHostObject.createNewInstance(..) expects 0 arguments!");
+        }
 
-  //       auto instance = std::make_shared<G1ElementHostObject>();
-  //       return jsi::Object::createFromHostObject(runtime, instance);
-  //     });
+        auto instance = std::make_shared<G1ElementHostObject>();
+        return jsi::Object::createFromHostObject(runtime, instance);
+      });
 
-  //   jsiRuntime.global().setProperty(jsiRuntime, "G1Element",std::move(G1Element));
+    jsiRuntime.global().setProperty(jsiRuntime, "createG1Element",std::move(createG1Element));
+
+
+   auto createG2Element = jsi::Function::createFromHostFunction(
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createG2Element"), 0,
+      [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+         size_t count) -> jsi::Value {
+        if (count != 0) {
+          throw jsi::JSError(runtime, "G2ElementHostObject.createNewInstance(..) expects 0 arguments!");
+        }
+
+        auto instance = std::make_shared<G1ElementHostObject>();
+        return jsi::Object::createFromHostObject(runtime, instance);
+      });
+
+    jsiRuntime.global().setProperty(jsiRuntime, "createG2Element",std::move(createG2Element));
 }
 
 extern "C"
