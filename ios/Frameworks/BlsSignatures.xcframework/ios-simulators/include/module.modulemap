@@ -2,3 +2,9 @@ module Clibsodium {
     header "sodium.h"
     export *
 }
+
+module Clistblst {
+    header "blst.h"
+    header "blst_aux.h"
+    export *
+}
