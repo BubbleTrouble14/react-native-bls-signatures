@@ -4,7 +4,7 @@
 #import <jsi/jsi.h>
 
 #import "../cpp/TypedArray.h"
-// #import "AugSchemeMPLHostObject.h"
+#import "AugSchemeMPLHostObject.h"
 #import "BlsSignatures.h"
 #import "sodium.h"
 #import "../cpp/include/bls/bls.hpp"
@@ -40,25 +40,19 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
   }
   auto& runtime = *jsiRuntime;
 
-  vector<uint8_t> seed = {0,  50, 6,  244, 24,  199, 1,  25,  52,  88,  192,
-                          19, 18, 12, 89,  6,   220, 18, 102, 58,  209, 82,
-                          12, 62, 89, 110, 182, 9,   44, 20,  254, 22};
+  auto AugSchemeMPL = jsi::Function::createFromHostFunction(
+                                                            runtime, jsi::PropNameID::forAscii(runtime, "AugSchemeMPL"), 0,
+  [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+      size_t count) -> jsi::Value {
+    if (count != 0) {
+      throw jsi::JSError(runtime, "AugSchemeMPLHostObject.createNewInstance(..) expects 0 arguments!");
+    }
 
-  PrivateKey sk = AugSchemeMPL().KeyGen(seed);
-  //AugSchemeMPL
-  // auto AugSchemeMPL = jsi::Function::createFromHostFunction(
-  //                                                           runtime, jsi::PropNameID::forAscii(runtime, "AugSchemeMPL"), 0,
-  // [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //     size_t count) -> jsi::Value {
-  //   if (count != 0) {
-  //     throw jsi::JSError(runtime, "AugSchemeMPLHostObject.createNewInstance(..) expects 0 arguments!");
-  //   }
+    auto instance = std::make_shared<AugSchemeMPLHostObject>();
+    return jsi::Object::createFromHostObject(runtime, instance);
+  });
 
-  //   auto instance = std::make_shared<AugSchemeMPLHostObject>();
-  //   return jsi::Object::createFromHostObject(runtime, instance);
-  // });
-
-  //   runtime.global().setProperty(runtime, "AugSchemeMPL",std::move(AugSchemeMPL));
+    runtime.global().setProperty(runtime, "AugSchemeMPL",std::move(AugSchemeMPL));
 
   NSLog(@"Installed global.AugSchemeMPL!");
   return @true;
