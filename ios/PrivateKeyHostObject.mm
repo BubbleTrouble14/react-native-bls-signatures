@@ -64,38 +64,38 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
         });
   }
 
-  // if (propName == "getG1") {
-  //   return jsi::Function::createFromHostFunction(
-  //       runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-  //       [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //              size_t count) -> jsi::Value {
+  if (propName == "getG1") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
 
-  //         if (this->privateKey != nullptr) {
+          if (this->privateKey != nullptr) {
 
-  //           auto g1ElementObj = std::make_shared<G1ElementHostObject>(privateKey->GetG1Element());
-  //           return jsi::Object::createFromHostObject(runtime, g1ElementObj);
-  //         }
+            auto g1ElementObj = std::make_shared<G1ElementHostObject>(privateKey->GetG1Element());
+            return jsi::Object::createFromHostObject(runtime, g1ElementObj);
+          }
 
-  //         return jsi::Value::undefined();
+          return jsi::Value::undefined();
 
-  //       });
-  // }
+        });
+  }
 
 
-  // if (propName == "toHex") {
-  //   return jsi::Function::createFromHostFunction(
-  //       runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-  //       [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-  //               size_t count) -> jsi::Value {
+  if (propName == "toHex") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
 
-  //         if (this->privateKey != nullptr) {
-  //           return jsi::String::createFromUtf8(runtime, Util::HexStr(privateKey->Serialize()));
-  //         }
+          if (this->privateKey != nullptr) {
+            return jsi::String::createFromUtf8(runtime, Util::HexStr(privateKey->Serialize()));
+          }
 
-  //         return jsi::Value::undefined();
+          return jsi::Value::undefined();
 
-  //       });
-  //   }
+        });
+    }
 
 
   return jsi::Value::undefined();

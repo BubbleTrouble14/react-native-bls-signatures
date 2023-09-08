@@ -23,70 +23,35 @@ export default function App() {
       <Button
         title="Run"
         onPress={() => {
-          // @ts-expect-error performance actually exists.
-          // eslint-disable-next-line no-undef
-          const start = performance.now();
-
           const seed = new Uint8Array([
             0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220,
             18, 102, 58, 209, 82, 12, 62, 89, 110, 182, 9, 44, 20, 254, 22,
           ]);
+
           const privateKey = AugSchemeMPL().keyGen(seed);
           console.log(privateKey.toBytes());
-          // const masterPublicKey = privateKey.getG1();
-          // const fingerprint = masterPublicKey.getFingerprint();
-          // const farmerPublicKey = masterSkToFarmerSk(privateKey);
-          // const poolPublicKey = masterSkToPoolSk(privateKey);
-          // console.log(`\nFingerprint: ${fingerprint}`);
-          // console.log(`Master public key (m): ${masterPublicKey.toHex()}`);
-          // console.log(
-          //   `Farmer public key (m/${blsSpecNumber}/${chiaBlockchainNumber}/${farmerPathNumber}/0): ${farmerPublicKey
-          //     .getG1()
-          //     .toHex()}`
-          // );
-          // console.log(
-          //   `Pool public key (m/${blsSpecNumber}/${chiaBlockchainNumber}/${poolPathNumber}/0: ${poolPublicKey
-          //     .getG1()
-          //     .toHex()}`
-          // );
-          // // console.log('Wallet addresses');
-          // const childPrivateKeyHardened = masterSkToWalletSk(privateKey, 0);
-          // const childPublicKeyHardened = childPrivateKeyHardened.getG1();
+          console.log(privateKey.toHex());
 
-          // // @ts-expect-error performance actually exists.
-          // // eslint-disable-next-line no-undef
-          // const newEnd = performance.now();
-          // console.log(`Time -> ${newEnd - start}ms!`);
+          const masterPublicKey = privateKey.getG1();
+          console.log(masterPublicKey.toBytes());
+          console.log(masterPublicKey.toHex());
+          console.log(masterPublicKey.getFingerprint());
 
-          // const seed = new Uint8Array([
-          //   0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220,
-          //   18, 102, 58, 209, 82, 12, 62, 89, 110, 182, 9, 44, 20, 254, 22,
-          // ]);
+          const deriveChildSk = AugSchemeMPL().deriveChildSk(privateKey, 0);
+          console.log(deriveChildSk.toBytes());
+          console.log(deriveChildSk.toHex());
 
-          // const privateKey = AugSchemeMPL().keyGen(seed);
-          // console.log(privateKey.toBytes());
-          // console.log(privateKey.toHex());
+          const deriveChildSkUnhardened = AugSchemeMPL().deriveChildSk(
+            privateKey,
+            0
+          );
+          console.log(deriveChildSkUnhardened.toBytes());
+          console.log(deriveChildSkUnhardened.toHex());
 
-          // const masterPublicKey = privateKey.getG1();
-          // console.log(masterPublicKey.toBytes());
-          // console.log(masterPublicKey.toHex());
-          // console.log(masterPublicKey.getFingerprint());
-
-          // const deriveChildSk = AugSchemeMPL().deriveChildSk(privateKey, 0);
-          // console.log(deriveChildSk.toBytes());
-          // console.log(deriveChildSk.toHex());
-
-          // const deriveChildSkUnhardened = AugSchemeMPL().deriveChildSk(
-          //   privateKey,
-          //   0
-          // );
-          // console.log(deriveChildSkUnhardened.toBytes());
-          // console.log(deriveChildSkUnhardened.toHex());
-
-          // const deriveChildPkUnhardened =
-          //   AugSchemeMPL().deriveChildPkUnhardened(privateKey.getG1(), 0);
-          // console.log(deriveChildPkUnhardened.toBytes());
-          // console.log(deriveChildPkUnhardened.toHex());
+          const deriveChildPkUnhardened =
+            AugSchemeMPL().deriveChildPkUnhardened(privateKey.getG1(), 0);
+          console.log(deriveChildPkUnhardened.toBytes());
+          console.log(deriveChildPkUnhardened.toHex());
         }}
       />
     </View>
