@@ -10,7 +10,7 @@ using namespace facebook;
 
 @implementation BlsSignatures
 
-RCT_EXPORT_MODULE(MMKV)
+RCT_EXPORT_MODULE(BlsSignatures)
 
 + (NSString*)getPropertyAsStringOrNilFromObject:(jsi::Object&)object
                                    propertyName:(std::string)propertyName
@@ -20,8 +20,8 @@ RCT_EXPORT_MODULE(MMKV)
   return string.length() > 0 ? [NSString stringWithUTF8String:string.c_str()] : nil;
 }
 
-RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install : (nullable NSString*)storageDirectory) {
-  NSLog(@"Installing global.mmkvCreateNewInstance...");
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
+  NSLog(@"Installing global.BLSInstance...");
   RCTBridge* bridge = [RCTBridge currentBridge];
   RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
   if (cxxBridge == nil) {
