@@ -7,9 +7,9 @@
       <!-- libblst.a for ios-simulators -->
     <dict>
         <key>HeadersPath</key>
-        <string>include</string>
+			  <string>Headers</string>
         <key>LibraryIdentifier</key>
-        <string>ios-simulators-libblst</string>
+        <string>ios-simulators</string>
         <key>LibraryPath</key>
         <string>libblst.a</string>
         <key>SupportedArchitectures</key>
@@ -25,10 +25,12 @@
 
     <!-- libsodium.a for ios-simulators -->
     <dict>
+        <key>BinaryPath</key>
+			  <string>libsodium.a</string>
         <key>HeadersPath</key>
-        <string>include</string>
+        <string>Headers</string>
         <key>LibraryIdentifier</key>
-        <string>ios-simulators-libsodium</string>
+        <string>ios-simulators</string>
         <key>LibraryPath</key>
         <string>libsodium.a</string>
         <key>SupportedArchitectures</key>
@@ -45,9 +47,9 @@
       <!-- libblst.a for ios -->
     <dict>
         <key>HeadersPath</key>
-        <string>include</string>
+        <string>Headers</string>
         <key>LibraryIdentifier</key>
-        <string>ios-libblst</string>
+        <string>ios</string>
         <key>LibraryPath</key>
         <string>libblst.a</string>
         <key>SupportedArchitectures</key>
@@ -61,10 +63,12 @@
     </dict>
     <!-- libsodium.a for ios -->
     <dict>
+        <key>BinaryPath</key>
+			  <string>libsodium.a</string>
         <key>HeadersPath</key>
-        <string>include</string>
+        <string>Headers</string>
         <key>LibraryIdentifier</key>
-        <string>ios-libsodium</string>
+        <string>ios</string>
         <key>LibraryPath</key>
         <string>libsodium.a</string>
         <key>SupportedArchitectures</key>
