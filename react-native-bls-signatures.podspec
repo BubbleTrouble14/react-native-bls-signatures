@@ -19,8 +19,8 @@ Pod::Spec.new do |s|
     :USE_HEADERMAP => "No"
   }
 
-  s.ios.vendored_frameworks = "ios/Frameworks/Blst.xcframework", "ios/Frameworks/Sodium.xcframework"
-  
+  s.ios.vendored_frameworks = "ios/Frameworks/Clibblst.xcframework", "ios/Frameworks/Clibsodium.xcframework"
+
   s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{h,cpp}"
 
   s.dependency "React-Core"
