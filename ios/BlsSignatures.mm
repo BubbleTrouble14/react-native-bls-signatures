@@ -6,7 +6,7 @@
 #import "../cpp/TypedArray.h"
 // #import "AugSchemeMPLHostObject.h"
 #import "BlsSignatures.h"
-#import "./bls/bls.hpp"
+#import "bls.h"
 
 using namespace bls;
 using namespace facebook;
