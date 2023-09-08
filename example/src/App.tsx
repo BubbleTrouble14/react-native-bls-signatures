@@ -32,30 +32,31 @@ export default function App() {
             18, 102, 58, 209, 82, 12, 62, 89, 110, 182, 9, 44, 20, 254, 22,
           ]);
           const privateKey = AugSchemeMPL().keyGen(seed);
-          const masterPublicKey = privateKey.getG1();
-          const fingerprint = masterPublicKey.getFingerprint();
-          const farmerPublicKey = masterSkToFarmerSk(privateKey);
-          const poolPublicKey = masterSkToPoolSk(privateKey);
-          console.log(`\nFingerprint: ${fingerprint}`);
-          console.log(`Master public key (m): ${masterPublicKey.toHex()}`);
-          console.log(
-            `Farmer public key (m/${blsSpecNumber}/${chiaBlockchainNumber}/${farmerPathNumber}/0): ${farmerPublicKey
-              .getG1()
-              .toHex()}`
-          );
-          console.log(
-            `Pool public key (m/${blsSpecNumber}/${chiaBlockchainNumber}/${poolPathNumber}/0: ${poolPublicKey
-              .getG1()
-              .toHex()}`
-          );
-          // console.log('Wallet addresses');
-          const childPrivateKeyHardened = masterSkToWalletSk(privateKey, 0);
-          const childPublicKeyHardened = childPrivateKeyHardened.getG1();
+          console.log(privateKey.toBytes());
+          // const masterPublicKey = privateKey.getG1();
+          // const fingerprint = masterPublicKey.getFingerprint();
+          // const farmerPublicKey = masterSkToFarmerSk(privateKey);
+          // const poolPublicKey = masterSkToPoolSk(privateKey);
+          // console.log(`\nFingerprint: ${fingerprint}`);
+          // console.log(`Master public key (m): ${masterPublicKey.toHex()}`);
+          // console.log(
+          //   `Farmer public key (m/${blsSpecNumber}/${chiaBlockchainNumber}/${farmerPathNumber}/0): ${farmerPublicKey
+          //     .getG1()
+          //     .toHex()}`
+          // );
+          // console.log(
+          //   `Pool public key (m/${blsSpecNumber}/${chiaBlockchainNumber}/${poolPathNumber}/0: ${poolPublicKey
+          //     .getG1()
+          //     .toHex()}`
+          // );
+          // // console.log('Wallet addresses');
+          // const childPrivateKeyHardened = masterSkToWalletSk(privateKey, 0);
+          // const childPublicKeyHardened = childPrivateKeyHardened.getG1();
 
-          // @ts-expect-error performance actually exists.
-          // eslint-disable-next-line no-undef
-          const newEnd = performance.now();
-          console.log(`Time -> ${newEnd - start}ms!`);
+          // // @ts-expect-error performance actually exists.
+          // // eslint-disable-next-line no-undef
+          // const newEnd = performance.now();
+          // console.log(`Time -> ${newEnd - start}ms!`);
 
           // const seed = new Uint8Array([
           //   0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220,
