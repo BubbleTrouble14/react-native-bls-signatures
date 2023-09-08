@@ -13,6 +13,14 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "10.0" }
   s.source       = { :git => "https://github.com/BubbleTrouble14/react-native-bls-signatures.git", :tag => "#{s.version}" }
 
+  s.header_mappings_dir = "cpp"
+
+  s.pod_target_xcconfig = {
+    :USE_HEADERMAP => "No"
+  }
+
+  s.ios.vendored_frameworks = "ios/Frameworks/BlsSignatures.xcframework"
+  
   s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{h,cpp}"
 
   s.dependency "React-Core"
