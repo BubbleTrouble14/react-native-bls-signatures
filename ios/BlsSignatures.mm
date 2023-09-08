@@ -4,8 +4,9 @@
 #import <jsi/jsi.h>
 
 #import "../cpp/TypedArray.h"
-#import "AugSchemeMPLHostObject.h"
+// #import "AugSchemeMPLHostObject.h"
 #import "BlsSignatures.h"
+#import "./bls/bls.hpp"
 
 using namespace facebook;
 
@@ -38,19 +39,19 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
   auto& runtime = *jsiRuntime;
 
   //AugSchemeMPL
-  auto AugSchemeMPL = jsi::Function::createFromHostFunction(
-                                                            runtime, jsi::PropNameID::forAscii(runtime, "AugSchemeMPL"), 0,
-  [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-      size_t count) -> jsi::Value {
-    if (count != 0) {
-      throw jsi::JSError(runtime, "AugSchemeMPLHostObject.createNewInstance(..) expects 0 arguments!");
-    }
+  // auto AugSchemeMPL = jsi::Function::createFromHostFunction(
+  //                                                           runtime, jsi::PropNameID::forAscii(runtime, "AugSchemeMPL"), 0,
+  // [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+  //     size_t count) -> jsi::Value {
+  //   if (count != 0) {
+  //     throw jsi::JSError(runtime, "AugSchemeMPLHostObject.createNewInstance(..) expects 0 arguments!");
+  //   }
 
-    auto instance = std::make_shared<AugSchemeMPLHostObject>();
-    return jsi::Object::createFromHostObject(runtime, instance);
-  });
+  //   auto instance = std::make_shared<AugSchemeMPLHostObject>();
+  //   return jsi::Object::createFromHostObject(runtime, instance);
+  // });
 
-    runtime.global().setProperty(runtime, "AugSchemeMPL",std::move(AugSchemeMPL));
+  //   runtime.global().setProperty(runtime, "AugSchemeMPL",std::move(AugSchemeMPL));
 
   NSLog(@"Installed global.AugSchemeMPL!");
   return @true;
