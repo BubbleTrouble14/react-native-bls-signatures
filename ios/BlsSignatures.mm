@@ -6,7 +6,6 @@
 #import "../cpp/TypedArray.h"
 // #import "AugSchemeMPLHostObject.h"
 #import "BlsSignatures.h"
-#import "blst.h"
 #import "sodium.h"
 #import "../cpp/include/bls/bls.hpp"
 
