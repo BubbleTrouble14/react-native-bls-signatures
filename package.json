@@ -16,7 +16,9 @@
     "android/CMakeLists.txt",
     "ios/BlsSignatures.xcodeproj/project.pbxproj",
     "ios/**/*.h",
+    "ios/**/*.m",
     "ios/**/*.mm",
+    "ios/**/*.cpp",
     "cpp",
     "react-native-bls-signatures.podspec",
     "!lib/typescript/example",
@@ -30,7 +32,8 @@
     "release": "release-it",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "bootstrap": "yarn example && yarn && yarn pods",
+    "test": "jest"
   },
   "keywords": [
     "react-native",
@@ -62,11 +65,19 @@
     "react-native": "^0.71.0",
     "react-native-builder-bob": "^0.20.3",
     "release-it": "^15.6.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "@types/jest": "^26.0.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": ">=0.71.0"
+  },
+  "jest": {
+    "preset": "react-native",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ]
   },
   "release-it": {
     "git": {

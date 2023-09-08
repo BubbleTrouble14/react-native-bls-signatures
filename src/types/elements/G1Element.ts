@@ -6,9 +6,13 @@ export interface IG1Element {
   toBytes(): Uint8Array;
   toHex(): string;
   fromBytes(bytes: Uint8Array): IG1Element;
+  getFingerprint(): number;
 }
 
-type CppG1Element = Pick<IG1Element, 'toBytes' | 'toHex' | 'fromBytes'>;
+type CppG1Element = Pick<
+  IG1Element,
+  'toBytes' | 'toHex' | 'fromBytes' | 'getFingerprint'
+>;
 
 const createG1Element = (): CppG1Element => {
   if (global.createG1Element == null)
@@ -37,6 +41,10 @@ export class G1Element {
 
   toHex(): string {
     return this.instance.toHex();
+  }
+
+  getFingerPrint(): number {
+    return this.instance.getFingerprint();
   }
 
   getCppG1Element(): CppG1Element {

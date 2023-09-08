@@ -22,3 +22,5 @@ if (!result) {
 
 export { PrivateKey } from './types/PrivateKey';
 export { AugSchemeMPL } from './types/schemes/AugSchemeMPL';
+export { G1Element } from './types/elements/G1Element';
+export { G2Element } from './types/elements/G2Element';
