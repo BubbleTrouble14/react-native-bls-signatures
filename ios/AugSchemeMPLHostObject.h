@@ -1,7 +1,7 @@
 #pragma once
 
 #import <jsi/jsi.h>
-#import "include/bls/bls.hpp"
+#import "../cpp/include/bls/bls.hpp"
 #import <Foundation/Foundation.h>
 
 using namespace bls;

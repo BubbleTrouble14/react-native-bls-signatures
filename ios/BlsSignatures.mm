@@ -5,6 +5,7 @@
 
 #import "../cpp/TypedArray.h"
 #import "AugSchemeMPLHostObject.h"
+#import "BlsSignatures.h"
 
 using namespace facebook;
 
@@ -38,7 +39,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
 
   //AugSchemeMPL
   auto AugSchemeMPL = jsi::Function::createFromHostFunction(
-  jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "AugSchemeMPL"), 0,
+                                                            runtime, jsi::PropNameID::forAscii(runtime, "AugSchemeMPL"), 0,
   [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
       size_t count) -> jsi::Value {
     if (count != 0) {
@@ -49,7 +50,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
     return jsi::Object::createFromHostObject(runtime, instance);
   });
 
-  jsiRuntime.global().setProperty(jsiRuntime, "AugSchemeMPL",std::move(AugSchemeMPL));
+    runtime.global().setProperty(runtime, "AugSchemeMPL",std::move(AugSchemeMPL));
 
   NSLog(@"Installed global.AugSchemeMPL!");
   return @true;
