@@ -6,6 +6,8 @@
 	<array>
       <!-- libblst.a for ios-simulators -->
     <dict>
+        <key>BinaryPath</key>
+			  <string>libblst.a</string>
         <key>HeadersPath</key>
 			  <string>Headers</string>
         <key>LibraryIdentifier</key>
@@ -24,6 +26,8 @@
     </dict>
       <!-- libblst.a for ios -->
     <dict>
+        <key>BinaryPath</key>
+			  <string>libblst.a</string>
         <key>HeadersPath</key>
         <string>Headers</string>
         <key>LibraryIdentifier</key>
