@@ -14,7 +14,7 @@
     "android/libs",
     "android/build.gradle",
     "android/CMakeLists.txt",
-    "ios/BlobJsiHelper.xcodeproj/project.pbxproj",
+    "ios/BlsSignatures.xcodeproj/project.pbxproj",
     "ios/**/*.h",
     "ios/**/*.mm",
     "cpp",

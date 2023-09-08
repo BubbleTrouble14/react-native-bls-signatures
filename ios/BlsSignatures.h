@@ -1,5 +1,5 @@
 #import <React/RCTBridgeModule.h>
 
-@interface BlobJsiHelper : NSObject <RCTBridgeModule>
+@interface BlsSignatures : NSObject <RCTBridgeModule>
 
 @end

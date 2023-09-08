@@ -6,7 +6,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.moduleName = @"BlobJsiHelperExample";
+  self.moduleName = @"BlsSignaturesExample";
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 

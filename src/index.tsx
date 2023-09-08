@@ -33,7 +33,7 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo managed workflow\n';
 
-const ChiaBlsSignatures = NativeModules.BlobJsiHelper;
+const ChiaBlsSignatures = NativeModules.BlsSignatures;
 
 if (ChiaBlsSignatures == null) {
   throw new Error(LINKING_ERROR);

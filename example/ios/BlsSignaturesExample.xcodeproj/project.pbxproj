@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* BlobJsiHelperExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BlobJsiHelperExampleTests.m */; };
+		00E356F31AD99517003FC87E /* BlsSignaturesExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BlsSignaturesExampleTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2DCD954D1E0B4F2C00145EB5 /* BlobJsiHelperExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BlobJsiHelperExampleTests.m */; };
-		4C39C56BAD484C67AA576FFA /* libPods-BlobJsiHelperExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA3E69C5B9553B26FBA2DF04 /* libPods-BlobJsiHelperExample.a */; };
+		2DCD954D1E0B4F2C00145EB5 /* BlsSignaturesExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BlsSignaturesExampleTests.m */; };
+		4C39C56BAD484C67AA576FFA /* libPods-BlsSignaturesExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA3E69C5B9553B26FBA2DF04 /* libPods-BlsSignaturesExample.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -25,34 +25,34 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = BlobJsiHelperExample;
+			remoteInfo = BlsSignaturesExample;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "BlobJsiHelperExample-tvOS";
+			remoteInfo = "BlsSignaturesExample-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* BlobJsiHelperExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlobJsiHelperExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* BlsSignaturesExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlsSignaturesExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* BlobJsiHelperExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlobJsiHelperExampleTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* BlobJsiHelperExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlobJsiHelperExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = BlobJsiHelperExample/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = BlobJsiHelperExample/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BlobJsiHelperExample/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BlobJsiHelperExample/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BlobJsiHelperExample/main.m; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BlobJsiHelperExample-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* BlobJsiHelperExample-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BlobJsiHelperExample-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		47F7ED3B7971BE374F7B8635 /* Pods-BlobJsiHelperExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlobJsiHelperExample.debug.xcconfig"; path = "Target Support Files/Pods-BlobJsiHelperExample/Pods-BlobJsiHelperExample.debug.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BlobJsiHelperExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		CA3E69C5B9553B26FBA2DF04 /* libPods-BlobJsiHelperExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlobJsiHelperExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E00ACF0FDA8BF921659E2F9A /* Pods-BlobJsiHelperExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlobJsiHelperExample.release.xcconfig"; path = "Target Support Files/Pods-BlobJsiHelperExample/Pods-BlobJsiHelperExample.release.xcconfig"; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* BlsSignaturesExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BlsSignaturesExampleTests.m; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* BlsSignaturesExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlsSignaturesExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = BlsSignaturesExample/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = BlsSignaturesExample/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BlsSignaturesExample/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BlsSignaturesExample/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BlsSignaturesExample/main.m; sourceTree = "<group>"; };
+		2D02E47B1E0B4A5D006451C7 /* BlsSignaturesExample-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BlsSignaturesExample-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* BlsSignaturesExample-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BlsSignaturesExample-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		47F7ED3B7971BE374F7B8635 /* Pods-BlsSignaturesExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlsSignaturesExample.debug.xcconfig"; path = "Target Support Files/Pods-BlsSignaturesExample/Pods-BlsSignaturesExample.debug.xcconfig"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BlsSignaturesExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CA3E69C5B9553B26FBA2DF04 /* libPods-BlsSignaturesExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlsSignaturesExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E00ACF0FDA8BF921659E2F9A /* Pods-BlsSignaturesExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlsSignaturesExample.release.xcconfig"; path = "Target Support Files/Pods-BlsSignaturesExample/Pods-BlsSignaturesExample.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C39C56BAD484C67AA576FFA /* libPods-BlobJsiHelperExample.a in Frameworks */,
+				4C39C56BAD484C67AA576FFA /* libPods-BlsSignaturesExample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,13 +90,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* BlobJsiHelperExampleTests */ = {
+		00E356EF1AD99517003FC87E /* BlsSignaturesExampleTests */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* BlobJsiHelperExampleTests.m */,
+				00E356F21AD99517003FC87E /* BlsSignaturesExampleTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = BlobJsiHelperExampleTests;
+			path = BlsSignaturesExampleTests;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -107,7 +107,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* BlobJsiHelperExample */ = {
+		13B07FAE1A68108700A75B9A /* BlsSignaturesExample */ = {
 			isa = PBXGroup;
 			children = (
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -118,7 +118,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = BlobJsiHelperExample;
+			name = BlsSignaturesExample;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -126,7 +126,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				CA3E69C5B9553B26FBA2DF04 /* libPods-BlobJsiHelperExample.a */,
+				CA3E69C5B9553B26FBA2DF04 /* libPods-BlsSignaturesExample.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -134,8 +134,8 @@
 		6B9684456A2045ADE5A6E47E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				47F7ED3B7971BE374F7B8635 /* Pods-BlobJsiHelperExample.debug.xcconfig */,
-				E00ACF0FDA8BF921659E2F9A /* Pods-BlobJsiHelperExample.release.xcconfig */,
+				47F7ED3B7971BE374F7B8635 /* Pods-BlsSignaturesExample.debug.xcconfig */,
+				E00ACF0FDA8BF921659E2F9A /* Pods-BlsSignaturesExample.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -150,9 +150,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* BlobJsiHelperExample */,
+				13B07FAE1A68108700A75B9A /* BlsSignaturesExample */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* BlobJsiHelperExampleTests */,
+				00E356EF1AD99517003FC87E /* BlsSignaturesExampleTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				6B9684456A2045ADE5A6E47E /* Pods */,
@@ -165,10 +165,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* BlobJsiHelperExample.app */,
-				00E356EE1AD99517003FC87E /* BlobJsiHelperExampleTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* BlobJsiHelperExample-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* BlsSignaturesExample.app */,
+				00E356EE1AD99517003FC87E /* BlsSignaturesExampleTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* BlsSignaturesExample-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* BlsSignaturesExample-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,9 +176,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* BlobJsiHelperExampleTests */ = {
+		00E356ED1AD99517003FC87E /* BlsSignaturesExampleTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BlobJsiHelperExampleTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BlsSignaturesExampleTests" */;
 			buildPhases = (
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
@@ -189,14 +189,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = BlobJsiHelperExampleTests;
-			productName = BlobJsiHelperExampleTests;
-			productReference = 00E356EE1AD99517003FC87E /* BlobJsiHelperExampleTests.xctest */;
+			name = BlsSignaturesExampleTests;
+			productName = BlsSignaturesExampleTests;
+			productReference = 00E356EE1AD99517003FC87E /* BlsSignaturesExampleTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* BlobJsiHelperExample */ = {
+		13B07F861A680F5B00A75B9A /* BlsSignaturesExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BlobJsiHelperExample" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BlsSignaturesExample" */;
 			buildPhases = (
 				4F0A6FC082772762E3E4C96C /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -211,14 +211,14 @@
 			);
 			dependencies = (
 			);
-			name = BlobJsiHelperExample;
-			productName = BlobJsiHelperExample;
-			productReference = 13B07F961A680F5B00A75B9A /* BlobJsiHelperExample.app */;
+			name = BlsSignaturesExample;
+			productName = BlsSignaturesExample;
+			productReference = 13B07F961A680F5B00A75B9A /* BlsSignaturesExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* BlsSignaturesExample-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlobJsiHelperExample-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlsSignaturesExample-tvOS" */;
 			buildPhases = (
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
@@ -230,14 +230,14 @@
 			);
 			dependencies = (
 			);
-			name = "BlobJsiHelperExample-tvOS";
-			productName = "BlobJsiHelperExample-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOS.app */;
+			name = "BlsSignaturesExample-tvOS";
+			productName = "BlsSignaturesExample-tvOS";
+			productReference = 2D02E47B1E0B4A5D006451C7 /* BlsSignaturesExample-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* BlsSignaturesExample-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlobJsiHelperExample-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlsSignaturesExample-tvOSTests" */;
 			buildPhases = (
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
@@ -248,9 +248,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "BlobJsiHelperExample-tvOSTests";
-			productName = "BlobJsiHelperExample-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* BlobJsiHelperExample-tvOSTests.xctest */;
+			name = "BlsSignaturesExample-tvOSTests";
+			productName = "BlsSignaturesExample-tvOSTests";
+			productReference = 2D02E4901E0B4A5D006451C7 /* BlsSignaturesExample-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -266,7 +266,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = CJW62Q77E7;
+						DevelopmentTeam = 5PSQ3NC8JP;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -280,7 +280,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BlobJsiHelperExample" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BlsSignaturesExample" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -293,10 +293,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* BlobJsiHelperExample */,
-				00E356ED1AD99517003FC87E /* BlobJsiHelperExampleTests */,
-				2D02E47A1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* BlsSignaturesExample */,
+				00E356ED1AD99517003FC87E /* BlsSignaturesExampleTests */,
+				2D02E47A1E0B4A5D006451C7 /* BlsSignaturesExample-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* BlsSignaturesExample-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -379,7 +379,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BlobJsiHelperExample-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BlsSignaturesExample-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -392,7 +392,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BlobJsiHelperExample/Pods-BlobJsiHelperExample-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-BlsSignaturesExample/Pods-BlsSignaturesExample-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -401,7 +401,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BlobJsiHelperExample/Pods-BlobJsiHelperExample-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BlsSignaturesExample/Pods-BlsSignaturesExample-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C1D60D28B925C94BD88E79D7 /* [CP] Copy Pods Resources */ = {
@@ -410,7 +410,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BlobJsiHelperExample/Pods-BlobJsiHelperExample-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-BlsSignaturesExample/Pods-BlsSignaturesExample-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -419,7 +419,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BlobJsiHelperExample/Pods-BlobJsiHelperExample-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BlsSignaturesExample/Pods-BlsSignaturesExample-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -467,7 +467,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* BlobJsiHelperExampleTests.m in Sources */,
+				00E356F31AD99517003FC87E /* BlsSignaturesExampleTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,7 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DCD954D1E0B4F2C00145EB5 /* BlobJsiHelperExampleTests.m in Sources */,
+				2DCD954D1E0B4F2C00145EB5 /* BlsSignaturesExampleTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,12 +502,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* BlobJsiHelperExample */;
+			target = 13B07F861A680F5B00A75B9A /* BlsSignaturesExample */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* BlobJsiHelperExample-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* BlsSignaturesExample-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -521,7 +521,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = BlobJsiHelperExampleTests/Info.plist;
+				INFOPLIST_FILE = BlsSignaturesExampleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -531,7 +531,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativebls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlobJsiHelperExample.app/BlobJsiHelperExample";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlsSignaturesExample.app/BlsSignaturesExample";
 			};
 			name = Debug;
 		};
@@ -540,7 +540,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = BlobJsiHelperExampleTests/Info.plist;
+				INFOPLIST_FILE = BlsSignaturesExampleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -550,20 +550,20 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativebls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlobJsiHelperExample.app/BlobJsiHelperExample";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlsSignaturesExample.app/BlsSignaturesExample";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47F7ED3B7971BE374F7B8635 /* Pods-BlobJsiHelperExample.debug.xcconfig */;
+			baseConfigurationReference = 47F7ED3B7971BE374F7B8635 /* Pods-BlsSignaturesExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CJW62Q77E7;
+				DEVELOPMENT_TEAM = 5PSQ3NC8JP;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = BlobJsiHelperExample/Info.plist;
+				INFOPLIST_FILE = BlsSignaturesExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -571,7 +571,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativebls;
-				PRODUCT_NAME = BlobJsiHelperExample;
+				PRODUCT_NAME = BlsSignaturesExample;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -580,13 +580,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E00ACF0FDA8BF921659E2F9A /* Pods-BlobJsiHelperExample.release.xcconfig */;
+			baseConfigurationReference = E00ACF0FDA8BF921659E2F9A /* Pods-BlsSignaturesExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CJW62Q77E7;
-				INFOPLIST_FILE = BlobJsiHelperExample/Info.plist;
+				DEVELOPMENT_TEAM = 5PSQ3NC8JP;
+				INFOPLIST_FILE = BlsSignaturesExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -594,7 +594,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativebls;
-				PRODUCT_NAME = BlobJsiHelperExample;
+				PRODUCT_NAME = BlsSignaturesExample;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -612,14 +612,14 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "BlobJsiHelperExample-tvOS/Info.plist";
+				INFOPLIST_FILE = "BlsSignaturesExample-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlobJsiHelperExample-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlsSignaturesExample-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -639,14 +639,14 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "BlobJsiHelperExample-tvOS/Info.plist";
+				INFOPLIST_FILE = "BlsSignaturesExample-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlobJsiHelperExample-tvOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlsSignaturesExample-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -665,17 +665,17 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "BlobJsiHelperExample-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "BlsSignaturesExample-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlobJsiHelperExample-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlsSignaturesExample-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlobJsiHelperExample-tvOS.app/BlobJsiHelperExample-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlsSignaturesExample-tvOS.app/BlsSignaturesExample-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
@@ -691,17 +691,17 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "BlobJsiHelperExample-tvOSTests/Info.plist";
+				INFOPLIST_FILE = "BlsSignaturesExample-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlobJsiHelperExample-tvOSTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BlsSignaturesExample-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlobJsiHelperExample-tvOS.app/BlobJsiHelperExample-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlsSignaturesExample-tvOS.app/BlsSignaturesExample-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;
@@ -826,7 +826,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BlobJsiHelperExampleTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BlsSignaturesExampleTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -835,7 +835,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BlobJsiHelperExample" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BlsSignaturesExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -844,7 +844,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlobJsiHelperExample-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlsSignaturesExample-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -853,7 +853,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlobJsiHelperExample-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "BlsSignaturesExample-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -862,7 +862,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BlobJsiHelperExample" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BlsSignaturesExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

@@ -14,7 +14,7 @@ import com.facebook.react.modules.blob.BlobModule;
 
 @ReactModule(name = BlsSignaturesModule.NAME)
 public class BlsSignaturesModule extends ReactContextBaseJavaModule {
-    public static final String NAME = "BlobJsiHelper";
+    public static final String NAME = "BlsSignatures";
 
     public BlsSignaturesModule(ReactApplicationContext reactContext) {
         super(reactContext);

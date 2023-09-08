@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  BlobJsiHelperExample
+//  BlsSignaturesExample
 //
 
 import Foundation
