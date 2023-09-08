@@ -22,28 +22,6 @@
         <key>SupportedPlatformVariant</key>
         <string>simulator</string>
     </dict>
-
-    <!-- libsodium.a for ios-simulators -->
-    <dict>
-        <key>BinaryPath</key>
-			  <string>libsodium.a</string>
-        <key>HeadersPath</key>
-        <string>Headers</string>
-        <key>LibraryIdentifier</key>
-        <string>ios-simulators</string>
-        <key>LibraryPath</key>
-        <string>libsodium.a</string>
-        <key>SupportedArchitectures</key>
-        <array>
-            <string>arm64</string>
-            <string>x86_64</string>
-        </array>
-        <key>SupportedPlatform</key>
-        <string>ios</string>
-        <key>SupportedPlatformVariant</key>
-        <string>simulator</string>
-    </dict>
-
       <!-- libblst.a for ios -->
     <dict>
         <key>HeadersPath</key>
@@ -55,25 +33,6 @@
         <key>SupportedArchitectures</key>
         <array>
 				    <string>arm64</string>
-        </array>
-        <key>SupportedPlatform</key>
-        <string>ios</string>
-        <key>SupportedPlatformVariant</key>
-        <string>ios</string>
-    </dict>
-    <!-- libsodium.a for ios -->
-    <dict>
-        <key>BinaryPath</key>
-			  <string>libsodium.a</string>
-        <key>HeadersPath</key>
-        <string>Headers</string>
-        <key>LibraryIdentifier</key>
-        <string>ios</string>
-        <key>LibraryPath</key>
-        <string>libsodium.a</string>
-        <key>SupportedArchitectures</key>
-        <array>
-            <string>arm64</string>
         </array>
         <key>SupportedPlatform</key>
         <string>ios</string>
