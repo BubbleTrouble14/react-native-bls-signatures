@@ -31,7 +31,7 @@ export default function App() {
             [msg3, msg4, msg5],
             privateKey.getG2()
           );
-          console.log(test1);
+          console.log(privateKey.equalTo(privateKey));
         }}
       />
     </View>

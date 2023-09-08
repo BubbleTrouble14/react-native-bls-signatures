@@ -30,10 +30,14 @@ const PrivateKey& PrivateKeyHostObject::getPrivateKey() const {
 std::vector<jsi::PropNameID> PrivateKeyHostObject::getPropertyNames(jsi::Runtime& rt) {
   std::vector<jsi::PropNameID> result;
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toString")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getG1")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getG2")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregate")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
   return result;
 }
 
@@ -62,6 +66,39 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
 
         });
   }
+
+
+  if (propName == "toHex") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+
+          if (this->privateKey != nullptr) {
+            return jsi::String::createFromUtf8(runtime, Util::HexStr(privateKey->Serialize()));
+          }
+
+          return jsi::Value::undefined();
+
+        });
+    }
+
+  if (propName == "toString") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+
+          if (this->privateKey != nullptr) {
+              std::string hexRepresentation = Util::HexStr(privateKey->Serialize());
+              std::string finalString = "PrivateKey(0x" + hexRepresentation + ")";
+              return jsi::String::createFromUtf8(runtime, finalString);
+          }
+
+          return jsi::Value::undefined();
+
+        });
+    }
 
   if (propName == "getG1") {
     return jsi::Function::createFromHostFunction(
@@ -97,23 +134,6 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
         });
   }
 
-
-  if (propName == "toHex") {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-                size_t count) -> jsi::Value {
-
-          if (this->privateKey != nullptr) {
-            return jsi::String::createFromUtf8(runtime, Util::HexStr(privateKey->Serialize()));
-          }
-
-          return jsi::Value::undefined();
-
-        });
-    }
-
-
   if (propName == "fromBytes") {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
@@ -143,6 +163,86 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
         });
   }
 
+  if (propName == "fromHex") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "fromHex(..) expects one argument (object)!");
+          }
+
+
+          if (!arguments[0].isString()) {
+              throw jsi::JSError(runtime, "Expected the argument to be a hex string");
+          }
+
+          auto hex = arguments[0].asString(runtime);
+
+          PrivateKey sk = PrivateKey::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
+
+          auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
+          return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
+        });
+  }
+
+
+  if (propName == "aggregate") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "aggregate(..) expects one argument (object)!");
+          }
+
+          //sk
+          auto privateKeyObject = arguments[0].asObject(runtime);
+          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "aggregate first argument is an object, but not of type PrivateKey!");
+          }
+          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+          PrivateKey privateKey1 = privateKeyHostObject->getPrivateKey();
+
+          if (this->privateKey != nullptr) {
+              std::vector<PrivateKey> keys = {*this->privateKey, privateKey1};
+              PrivateKey sk = PrivateKey::Aggregate(keys);
+              auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
+              return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
+          }
+
+          return jsi::Value::undefined();
+        });
+  }
+
+  if (propName == "equalTo") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "equalTo(..) expects one argument (object)!");
+          }
+
+          //sk
+          auto privateKeyObject = arguments[0].asObject(runtime);
+          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+          }
+          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+          PrivateKey privateKey1 = privateKeyHostObject->getPrivateKey();
+
+          if (this->privateKey != nullptr) {
+              bool areEqual = (*privateKey == privateKey1);
+              return jsi::Value(areEqual);
+          }
+
+          return jsi::Value(false);
+        });
+  }
 
   return jsi::Value::undefined();
 }

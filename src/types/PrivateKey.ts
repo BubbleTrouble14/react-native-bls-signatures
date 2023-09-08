@@ -6,16 +6,28 @@ declare global {
 }
 
 export interface IPrivateKey {
+  fromBytes(bytes: Uint8Array): IPrivateKey;
+  fromHex(hex: string): IPrivateKey;
+  aggregate(pks: IPrivateKey[]): IPrivateKey;
   toBytes(): Uint8Array;
   toHex(): string;
-  fromBytes(bytes: Uint8Array): IPrivateKey;
+  toString(): string;
+  equalTo(key: IPrivateKey): boolean;
   getG1(): IG1Element;
   getG2(): IG2Element;
 }
 
 type CppPrivateKey = Pick<
   IPrivateKey,
-  'toBytes' | 'toHex' | 'getG1' | 'getG2' | 'fromBytes'
+  | 'toBytes'
+  | 'toHex'
+  | 'getG1'
+  | 'getG2'
+  | 'fromBytes'
+  | 'fromHex'
+  | 'aggregate'
+  | 'toString'
+  | 'equalTo'
 >;
 
 const createPrivateKey = (): CppPrivateKey => {
@@ -28,34 +40,52 @@ const createPrivateKey = (): CppPrivateKey => {
 };
 
 export class PrivateKey {
-  private nativeInstance: CppPrivateKey;
+  private instance: CppPrivateKey;
   private static cppInstance: CppPrivateKey = createPrivateKey();
 
-  constructor(nativeKey: CppPrivateKey) {
-    this.nativeInstance = nativeKey;
+  constructor(instance: CppPrivateKey) {
+    this.instance = instance;
   }
 
   static fromBytes(bytes: Uint8Array): PrivateKey {
     return new PrivateKey(this.cppInstance.fromBytes(bytes));
   }
 
+  static fromHex(hex: string): PrivateKey {
+    return new PrivateKey(this.cppInstance.fromHex(hex));
+  }
+
+  static aggregate(privateKeys: PrivateKey[]): PrivateKey {
+    return new PrivateKey(
+      this.cppInstance.aggregate(privateKeys.map((pk) => pk.getCppPrivateKey()))
+    );
+  }
+
   toBytes(): Uint8Array {
-    return this.nativeInstance.toBytes();
+    return this.instance.toBytes();
   }
 
   toHex(): string {
-    return this.nativeInstance.toHex();
+    return this.instance.toHex();
+  }
+
+  toString(): string {
+    return this.instance.toString();
+  }
+
+  equalTo(value: PrivateKey): boolean {
+    return this.instance.equalTo(value.getCppPrivateKey());
   }
 
   getG1(): G1Element {
-    return new G1Element(this.nativeInstance.getG1());
+    return new G1Element(this.instance.getG1());
   }
 
   getG2(): G2Element {
-    return new G2Element(this.nativeInstance.getG2());
+    return new G2Element(this.instance.getG2());
   }
 
   getCppPrivateKey(): CppPrivateKey {
-    return this.nativeInstance;
+    return this.instance;
   }
 }
