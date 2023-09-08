@@ -6,14 +6,42 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5E555C0D2413F4C50049A1A2 /* BlsSignatures.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BlsSignatures.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		58B511D91A9E6C8500147676 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		134814201AA4EA6300B7C361 /* libBlsSignatures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBlsSignatures.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5891CC2AC0600A0062D /* BlsSignatures.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlsSignatures.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		58B511D81A9E6C8500147676 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				134814201AA4EA6300B7C361 /* libBlsSignatures.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -28,12 +56,37 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXNativeTarget section */
+		58B511DA1A9E6C8500147676 /* BlsSignatures */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "BlsSignatures" */;
+			buildPhases = (
+				58B511D71A9E6C8500147676 /* Sources */,
+				58B511D81A9E6C8500147676 /* Frameworks */,
+				58B511D91A9E6C8500147676 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BlsSignatures;
+			productName = RCTDataManager;
+			productReference = 134814201AA4EA6300B7C361 /* libBlsSignatures.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
 /* Begin PBXProject section */
 		58B511D31A9E6C8500147676 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					58B511DA1A9E6C8500147676 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
 			};
 			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "BlsSignatures" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -48,9 +101,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				58B511DA1A9E6C8500147676 /* BlsSignatures */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		58B511D71A9E6C8500147676 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E555C0D2413F4C50049A1A2 /* BlsSignatures.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		58B511ED1A9E6C8500147676 /* Debug */ = {
@@ -96,9 +161,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -139,10 +206,46 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		58B511F01A9E6C8500147676 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = BlsSignatures;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		58B511F11A9E6C8500147676 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = BlsSignatures;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -154,6 +257,15 @@
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
 				58B511EE1A9E6C8500147676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "BlsSignatures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58B511F01A9E6C8500147676 /* Debug */,
+				58B511F11A9E6C8500147676 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
