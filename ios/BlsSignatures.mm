@@ -2,7 +2,8 @@
 #import <React/RCTBridge+Private.h>
 #import <ReactCommon/RCTTurboModule.h>
 #import <jsi/jsi.h>
-#import "../cpp/JSI Utils/TypedArray.h"
+#import "../cpp/TypedArray.h"
+#import "BlsSignatures.h"
 
 @implementation BlsSignatures
 
