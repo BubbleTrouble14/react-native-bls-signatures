@@ -3,12 +3,12 @@
 #include <string>
 #include <android/log.h>
 #include <vector>
-#include "PrivateKeyHostObject.h"
-#include "AugSchemeMPLHostObject.h"
-#include "BasicSchemeMPLHostObject.h"
-#include "PopSchemeMPLHostObject.h"
-#include "G1ElementHostObject.h"
-#include "G2ElementHostObject.h"
+#include "../cpp/PrivateKeyHostObject.h"
+#include "../cpp/AugSchemeMPLHostObject.h"
+#include "../cpp/BasicSchemeMPLHostObject.h"
+#include "../cpp/PopSchemeMPLHostObject.h"
+#include "../cpp/G1ElementHostObject.h"
+#include "../cpp/G2ElementHostObject.h"
 
 // #include "bls.hpp"
 // using namespace bls;

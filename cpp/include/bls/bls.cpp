@@ -15,7 +15,7 @@
 #include "bls.hpp"
 
 #if BLSALLOC_SODIUM
-#include "include/sodium.h"
+#include "sodium.h"
 #endif
 
 namespace bls {
