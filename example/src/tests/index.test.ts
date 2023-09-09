@@ -119,8 +119,8 @@ function testVectorsInvalid() {
   invalid_inputs_1.map((s) => {
     try {
       const g1 = G1Element.fromHex(s);
-    } catch (e) {
       console.log(`Failed to disallow creation of G1 element for string ${s}`);
+    } catch (e) {
       g1_exn_count++;
     }
   });
@@ -128,9 +128,8 @@ function testVectorsInvalid() {
   invalid_inputs_2.map((s) => {
     try {
       const g2 = G2Element.fromHex(s);
-      console.log(g2.toHex() + '.........................');
-    } catch (e) {
       console.log(`Failed to disallow creation of G2 element for string ${s}`);
+    } catch (e) {
       g2_exn_count++;
     }
   });
@@ -150,6 +149,12 @@ function testVectorsInvalid() {
       }`
     );
   }
+
+  if (
+    g1_exn_count == invalid_inputs_1.length &&
+    g2_exn_count == invalid_inputs_2.length
+  )
+    console.log('finished testVectorsInvalid with successfully');
 }
 
 function createRepeatedUint8Array(length: number, value: number) {

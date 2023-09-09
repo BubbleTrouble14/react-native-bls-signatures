@@ -15,9 +15,9 @@ export default function App() {
         title="Run"
         onPress={() => {
           testVectorsInvalid();
-          // testVectorsValid();
-          // testSchemes();
-          // testReadme();
+          testVectorsValid();
+          testSchemes();
+          testReadme();
         }}
       />
     </View>
