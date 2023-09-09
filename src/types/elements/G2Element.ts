@@ -6,9 +6,14 @@ export interface IG2Element {
   toBytes(): Uint8Array;
   toHex(): string;
   fromBytes(bytes: Uint8Array): IG2Element;
+  fromHex(hex: string): IG2Element;
+  equalTo(key: IG2Element): boolean;
 }
 
-type CppG2Element = Pick<IG2Element, 'toBytes' | 'toHex' | 'fromBytes'>;
+type CppG2Element = Pick<
+  IG2Element,
+  'toBytes' | 'toHex' | 'fromBytes' | 'equalTo' | 'fromHex'
+>;
 
 const createG2Element = (): CppG2Element => {
   if (global.createG2Element == null)
@@ -31,12 +36,20 @@ export class G2Element {
     return new G2Element(this.cppInstance.fromBytes(bytes));
   }
 
+  static fromHex(hex: string): G2Element {
+    return new G2Element(this.cppInstance.fromHex(hex));
+  }
+
   toBytes(): Uint8Array {
     return this.instance.toBytes();
   }
 
   toHex(): string {
     return this.instance.toHex();
+  }
+
+  equalTo(value: G2Element): boolean {
+    return this.instance.equalTo(value.getCppG2Element());
   }
 
   getCppG2Element(): CppG2Element {

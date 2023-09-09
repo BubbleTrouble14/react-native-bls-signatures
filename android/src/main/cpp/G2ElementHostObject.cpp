@@ -34,6 +34,9 @@ std::vector<jsi::PropNameID> G2ElementHostObject::getPropertyNames(jsi::Runtime&
   std::vector<jsi::PropNameID> result;
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
   return result;
 }
 
@@ -74,6 +77,86 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID
         return jsi::Value::undefined();
 
       });
+  }
+
+  if (propName == "fromBytes") {
+  return jsi::Function::createFromHostFunction(
+      runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+      [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
+
+        if (count != 1) {
+            throw jsi::JSError(runtime, "fromBytes(..) expects one argument (object)!");
+        }
+
+        auto object = arguments[0].asObject(runtime);
+        if (!isTypedArray(runtime, object)) {
+            throw jsi::JSError(runtime, "fromBytes argument is an object, but not of type Uint8Array!");
+        }
+
+        auto typedArray = getTypedArray(runtime, object);
+
+        if (typedArray.size(runtime) != G2Element::SIZE) {
+            throw std::invalid_argument("G2Element::FromBytes: Invalid size");
+        }
+
+        G2Element g2 = G2Element::FromByteVector(typedArray.toVector(runtime));
+
+        auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
+        return jsi::Object::createFromHostObject(runtime, g2Obj);
+      });
+  }
+
+
+  if (propName == "fromHex") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "fromHex(..) expects one argument (object)!");
+          }
+
+
+          if (!arguments[0].isString()) {
+              throw jsi::JSError(runtime, "Expected the argument to be a hex string");
+          }
+
+          auto hex = arguments[0].asString(runtime);
+
+          G2Element g2 = G2Element::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
+
+          auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
+          return jsi::Object::createFromHostObject(runtime, g2Obj);
+        });
+  }
+
+  if (propName == "equalTo") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "equalTo(..) expects one argument (object)!");
+          }
+
+          //sk
+          auto g2KeyObject = arguments[0].asObject(runtime);
+          if (!g2KeyObject.isHostObject<G2ElementHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "equalTo first argument is an object, but not of type PrivateKey!");
+          }
+          auto g2HostObject = g2KeyObject.getHostObject<G2ElementHostObject>(runtime);
+          G2Element g2 = g2HostObject->getG2Element();
+
+          if (this->g2Element != nullptr) {
+              bool areEqual = (*g2Element == g2);
+              return jsi::Value(areEqual);
+          }
+
+          return jsi::Value(false);
+        });
   }
 
   return jsi::Value::undefined();

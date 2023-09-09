@@ -5,18 +5,13 @@ import { G1Element } from '../elements/G1Element';
 import { IG2Element, G2Element } from '../elements/G2Element';
 
 declare global {
-  function createAugSchemeMPLInstance(): CppAugSchemeMPL;
+  function createPopSchemeMPLInstance(): CppPopSchemeMPL;
 }
 
-export interface IAugSchemeMPL {
+export interface IPopSchemeMPL {
   skToG1(sk: IPrivateKey): IG1Element;
   keyGen(seed: Uint8Array): IPrivateKey;
   sign(sk: IPrivateKey, msg: Uint8Array): IG2Element;
-  signPrepend(
-    sk: IPrivateKey,
-    msg: Uint8Array,
-    prependPk: IG1Element
-  ): IG2Element;
   verify(pk: IG1Element, msg: Uint8Array, signature: IG2Element): boolean;
   aggregate(g2Elements: IG2Element[]): IG2Element;
   aggregateVerify(
@@ -29,12 +24,11 @@ export interface IAugSchemeMPL {
   deriveChildPkUnhardened(pk: IG1Element, index: number): IG1Element;
 }
 
-type CppAugSchemeMPL = Pick<
-  IAugSchemeMPL,
+type CppPopSchemeMPL = Pick<
+  IPopSchemeMPL,
   | 'skToG1'
   | 'keyGen'
   | 'sign'
-  | 'signPrepend'
   | 'verify'
   | 'aggregate'
   | 'aggregateVerify'
@@ -43,16 +37,16 @@ type CppAugSchemeMPL = Pick<
   | 'deriveChildPkUnhardened'
 >;
 
-const createAugSchemeMPL = (): CppAugSchemeMPL => {
-  if (global.createAugSchemeMPLInstance == null)
+const createPopSchemeMPL = (): CppPopSchemeMPL => {
+  if (global.createPopSchemeMPLInstance == null)
     throw new Error(
-      'Failed to create a new AugSchemeMPL instance, the native initializer function does not exist. Are you trying to use AugSchemeMPL from different JS Runtimes?'
+      'Failed to create a new PopSchemeMPL instance, the native initializer function does not exist. Are you trying to use PopSchemeMPL from different JS Runtimes?'
     );
-  return global.createAugSchemeMPLInstance();
+  return global.createPopSchemeMPLInstance();
 };
 
-export class AugSchemeMPL {
-  private static nativeInstance: CppAugSchemeMPL = createAugSchemeMPL();
+export class PopSchemeMPL {
+  private static nativeInstance: CppPopSchemeMPL = createPopSchemeMPL();
 
   static skToG1(sk: PrivateKey): G1Element {
     return new G1Element(this.nativeInstance.skToG1(sk.getCppPrivateKey()));
@@ -64,20 +58,6 @@ export class AugSchemeMPL {
 
   static sign(sk: PrivateKey, msg: Uint8Array): G2Element {
     return new G2Element(this.nativeInstance.sign(sk.getCppPrivateKey(), msg));
-  }
-
-  static signPrepend(
-    sk: PrivateKey,
-    msg: Uint8Array,
-    prependPk: G1Element
-  ): G2Element {
-    return new G2Element(
-      this.nativeInstance.signPrepend(
-        sk.getCppPrivateKey(),
-        msg,
-        prependPk.getCppG1Element()
-      )
-    );
   }
 
   static verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean {

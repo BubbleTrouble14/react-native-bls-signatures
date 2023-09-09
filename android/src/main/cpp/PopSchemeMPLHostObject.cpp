@@ -1,4 +1,4 @@
-#include "AugSchemeMPLHostObject.h"
+#include "PopSchemeMPLHostObject.h"
 #include "PrivateKeyHostObject.h"
 #include "G1ElementHostObject.h"
 #include "G2ElementHostObject.h"
@@ -8,19 +8,18 @@
 #include "TypedArray.h"
 
 // Constructor
-AugSchemeMPLHostObject::AugSchemeMPLHostObject() {
+PopSchemeMPLHostObject::PopSchemeMPLHostObject() {
 }
 
 // Destructor
-AugSchemeMPLHostObject::~AugSchemeMPLHostObject() {
+PopSchemeMPLHostObject::~PopSchemeMPLHostObject() {
 }
 
-std::vector<jsi::PropNameID> AugSchemeMPLHostObject::getPropertyNames(jsi::Runtime& rt) {
+std::vector<jsi::PropNameID> PopSchemeMPLHostObject::getPropertyNames(jsi::Runtime& rt) {
   std::vector<jsi::PropNameID> result;
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("skToG1")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("keyGen")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("sign")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("signPrepend")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("verify")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregate")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregateVerify")));
@@ -30,9 +29,9 @@ std::vector<jsi::PropNameID> AugSchemeMPLHostObject::getPropertyNames(jsi::Runti
   return result;
 }
 
-jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId) {
+jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId) {
   auto propName = propNameId.utf8(runtime);
-  auto funcName = "AugSchemeMPL." + propName;
+  auto funcName = "PopSchemeMPL." + propName;
 
   if (propName == "skToG1") {
     return jsi::Function::createFromHostFunction(
@@ -53,7 +52,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
 
           //g1
-          G1Element g1Element = AugSchemeMPL().SkToG1(privateKey);
+          G1Element g1Element = PopSchemeMPL().SkToG1(privateKey);
           auto g1ElementObj = std::make_shared<G1ElementHostObject>(g1Element);
           return jsi::Object::createFromHostObject(runtime, g1ElementObj);
         });
@@ -80,7 +79,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
               throw std::invalid_argument("PrivateKey::FromBytes: Invalid size");
           }
 
-          PrivateKey sk = AugSchemeMPL().KeyGen(typedArray.toVector(runtime));
+          PrivateKey sk = PopSchemeMPL().KeyGen(typedArray.toVector(runtime));
 
           auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
           return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
@@ -112,53 +111,9 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
           }
           auto messageArray = getTypedArray(runtime, typeArrayObject);
           vector<uint8_t> message = messageArray.toVector(runtime);
-          // vector<uint8_t> message = {1, 2, 3, 4, 5, 6, 7};  // Message is passed in as a byte vector
-
-
 
           //g2
-          G2Element g2Element = AugSchemeMPL().Sign(privateKey, message);
-          auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
-          return jsi::Object::createFromHostObject(runtime, g2ElementObj);
-        });
-  }
-
-    if (propName == "signPrepend") {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3,
-        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-               size_t count) -> jsi::Value {
-
-          if (count != 3) {
-              throw jsi::JSError(runtime, "signPrepend(..) expects three arguments (pk, message, prependPk)!");
-          }
-
-          //sk
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
-              throw jsi::JSError(runtime, "signPrepend first argument is an object, but not of type PrivateKey!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
-
-          //msg
-          auto typeArrayObject = arguments[1].asObject(runtime);
-          if (!isTypedArray(runtime, typeArrayObject)) {
-              throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
-          }
-          auto messageArray = getTypedArray(runtime, typeArrayObject);
-          vector<uint8_t> message = messageArray.toVector(runtime);
-
-          //prependPk
-          auto g1ElementObject = arguments[2].asObject(runtime);
-          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
-              throw jsi::JSError(runtime, "argument is an object, but not of type G1Element!");
-          }
-          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element prependPk = g1ElementHostObject->getG1Element();
-
-          //g2
-          G2Element g2Element = AugSchemeMPL().Sign(privateKey, message, prependPk);
+          G2Element g2Element = PopSchemeMPL().Sign(privateKey, message);
           auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
           return jsi::Object::createFromHostObject(runtime, g2ElementObj);
         });
@@ -198,7 +153,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
           auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
           G2Element prependPk = g2ElementHostObject->getG2Element();
 
-          auto value = AugSchemeMPL().Verify(pk, message, prependPk);
+          auto value = PopSchemeMPL().Verify(pk, message, prependPk);
 
           return jsi::Value(value);
         });
@@ -234,8 +189,8 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
                 g2Elements.push_back(g2Element);
             }
 
-            // Assuming AugSchemeMPL().Aggregate() returns a G2Element, but this is just an example.
-            G2Element g2Element = AugSchemeMPL().Aggregate(g2Elements);
+            // Assuming PopSchemeMPL().Aggregate() returns a G2Element, but this is just an example.
+            G2Element g2Element = PopSchemeMPL().Aggregate(g2Elements);
 
             auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
             return jsi::Object::createFromHostObject(runtime, g2ElementObj);
@@ -275,7 +230,6 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
             }
             jsi::Array messagesArr = arguments[1].asObject(runtime).asArray(runtime);
             size_t messagesLength = messagesArr.length(runtime);
-                  // vector<uint8_t> message = messageArray.toVector(runtime);
             std::vector<vector<uint8_t>> messages;
             for (size_t i = 0; i < messagesLength; i++) {
                 auto typeArrayObject = messagesArr.getValueAtIndex(runtime, i).asObject(runtime);
@@ -295,7 +249,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
             auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
             G2Element sig = g2ElementHostObject->getG2Element();
 
-            auto value = AugSchemeMPL().AggregateVerify(g1Elements, messages, sig);
+            auto value = PopSchemeMPL().AggregateVerify(g1Elements, messages, sig);
 
             return jsi::Value(value);
           });
@@ -326,7 +280,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
           }
           uint32_t index = arguments[1].asNumber();
 
-          PrivateKey childSecretKey = AugSchemeMPL().DeriveChildSk(privateKey, index);
+          PrivateKey childSecretKey = PopSchemeMPL().DeriveChildSk(privateKey, index);
 
           auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(childSecretKey);
           return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
@@ -358,7 +312,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
           uint32_t index = arguments[1].asNumber();
 
 
-          PrivateKey childSecretKey = AugSchemeMPL().DeriveChildSkUnhardened(privateKey, index);
+          PrivateKey childSecretKey = PopSchemeMPL().DeriveChildSkUnhardened(privateKey, index);
 
           auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(childSecretKey);
           return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
@@ -390,7 +344,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
         uint32_t index = arguments[1].asNumber();
 
 
-        G1Element dG1Element = AugSchemeMPL().DeriveChildPkUnhardened(g1Element, index);
+        G1Element dG1Element = PopSchemeMPL().DeriveChildPkUnhardened(g1Element, index);
 
         auto dG1ElementObject = std::make_shared<G1ElementHostObject>(dG1Element);
         return jsi::Object::createFromHostObject(runtime, dG1ElementObject);

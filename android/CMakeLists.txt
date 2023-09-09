@@ -15,6 +15,8 @@ add_library(reactnativebls  # <-- Library name
         src/main/cpp/cpp-adapter.cpp
         src/main/cpp/PrivateKeyHostObject.cpp
         src/main/cpp/AugSchemeMPLHostObject.cpp
+        src/main/cpp/BasicSchemeMPLHostObject.cpp
+        src/main/cpp/PopSchemeMPLHostObject.cpp
         src/main/cpp/G1ElementHostObject.cpp
         src/main/cpp/G2ElementHostObject.cpp
         ../cpp/TypedArray.cpp

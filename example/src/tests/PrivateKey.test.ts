@@ -33,7 +33,7 @@ function getPkUint8Array() {
   return new Uint8Array(getPkBuffer());
 }
 
-export const pkTest = () => {
+export const skTest = () => {
   testPrivateKey();
   testFromSeed();
   testFromBytes();
