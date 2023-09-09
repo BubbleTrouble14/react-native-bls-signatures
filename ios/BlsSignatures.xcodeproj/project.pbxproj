@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		5E555C0D2413F4C50049A1A2 /* BlsSignatures.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BlsSignatures.mm */; };
+		D336A8E12AACCD9D00983E25 /* Clibsodium.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = D336A8E02AACCD9D00983E25 /* Clibsodium.xcframework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libBlsSignatures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBlsSignatures.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5891CC2AC0600A0062D /* BlsSignatures.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlsSignatures.mm; sourceTree = "<group>"; };
+		D336A8E02AACCD9D00983E25 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = Frameworks/Clibsodium.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D336A8E12AACCD9D00983E25 /* Clibsodium.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +61,7 @@
 		D336A8DB2AAB480000983E25 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D336A8E02AACCD9D00983E25 /* Clibsodium.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
