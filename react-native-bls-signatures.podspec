@@ -25,6 +25,6 @@ Pod::Spec.new do |s|
   s.dependency "React"
 
   s.vendored_frameworks = "Clibsodium.xcframework"
-  s.ios.vendored_frameworks = "Clibblst.xcframework"
+  s.ios.vendored_frameworks = "ios/Clibblst.xcframework"
 
 end
