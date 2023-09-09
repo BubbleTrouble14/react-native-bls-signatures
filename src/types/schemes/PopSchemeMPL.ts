@@ -22,6 +22,13 @@ export interface IPopSchemeMPL {
   deriveChildSk(sk: IPrivateKey, index: number): IPrivateKey;
   deriveChildSkUnhardened(sk: IPrivateKey, index: number): IPrivateKey;
   deriveChildPkUnhardened(pk: IG1Element, index: number): IG1Element;
+  popVerify(pk: IG1Element, signatureProof: IG2Element): boolean;
+  popProve(sk: IPrivateKey): IG2Element;
+  fastAggregateVerify(
+    pks: IG1Element[],
+    msg: Uint8Array,
+    sig: IG2Element
+  ): boolean;
 }
 
 type CppPopSchemeMPL = Pick<
@@ -35,6 +42,9 @@ type CppPopSchemeMPL = Pick<
   | 'deriveChildSk'
   | 'deriveChildSkUnhardened'
   | 'deriveChildPkUnhardened'
+  | 'popVerify'
+  | 'popProve'
+  | 'fastAggregateVerify'
 >;
 
 const createPopSchemeMPL = (): CppPopSchemeMPL => {
@@ -101,6 +111,29 @@ export class PopSchemeMPL {
   static deriveChildPkUnhardened(pk: G1Element, index: number): G1Element {
     return new G1Element(
       this.nativeInstance.deriveChildPkUnhardened(pk.getCppG1Element(), index)
+    );
+  }
+
+  static popVerify(pk: G1Element, signatureProof: G2Element): boolean {
+    return this.nativeInstance.popVerify(
+      pk.getCppG1Element(),
+      signatureProof.getCppG2Element()
+    );
+  }
+
+  static popProve(sk: PrivateKey): G2Element {
+    return new G2Element(this.nativeInstance.popProve(sk.getCppPrivateKey()));
+  }
+
+  static fastAggregateVerify(
+    pks: G1Element[],
+    msg: Uint8Array,
+    sig: G2Element
+  ): boolean {
+    return this.nativeInstance.fastAggregateVerify(
+      pks.map((pk) => pk.getCppG1Element()),
+      msg,
+      sig.getCppG2Element()
     );
   }
 }

@@ -6,7 +6,7 @@ declare global {
 }
 
 export interface IPrivateKey {
-  fromBytes(bytes: Uint8Array): IPrivateKey;
+  fromBytes(bytes: Uint8Array, modOrder: boolean): IPrivateKey;
   fromHex(hex: string): IPrivateKey;
   aggregate(pks: IPrivateKey[]): IPrivateKey;
   toBytes(): Uint8Array;
@@ -47,8 +47,8 @@ export class PrivateKey {
     this.instance = instance;
   }
 
-  static fromBytes(bytes: Uint8Array): PrivateKey {
-    return new PrivateKey(this.cppInstance.fromBytes(bytes));
+  static fromBytes(bytes: Uint8Array, modOrder?: boolean): PrivateKey {
+    return new PrivateKey(this.cppInstance.fromBytes(bytes, modOrder ?? false));
   }
 
   static fromHex(hex: string): PrivateKey {

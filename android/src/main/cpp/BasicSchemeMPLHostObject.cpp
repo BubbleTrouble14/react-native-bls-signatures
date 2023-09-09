@@ -179,6 +179,7 @@ jsi::Value BasicSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropN
             size_t length = arr.length(runtime);
 
             std::vector<G2Element> g2Elements;
+            g2Elements.reserve(length);
             for (size_t i = 0; i < length; i++) {
                 auto g2ElementObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
                 if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {

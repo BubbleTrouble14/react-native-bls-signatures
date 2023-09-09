@@ -26,6 +26,10 @@ std::vector<jsi::PropNameID> PopSchemeMPLHostObject::getPropertyNames(jsi::Runti
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildSk")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildSkUnhardened")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildPkUnhardened")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("popProve")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("popVerify")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fastAggregateVerify")));
+
   return result;
 }
 
@@ -179,6 +183,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
             size_t length = arr.length(runtime);
 
             std::vector<G2Element> g2Elements;
+            g2Elements.reserve(length);
             for (size_t i = 0; i < length; i++) {
                 auto g2ElementObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
                 if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
@@ -351,6 +356,114 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNam
       });
   }
 
+  if (propName == "popProve") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "popProve(..) expects one argument (object)!");
+          }
+
+          //sk
+          auto privateKeyObject = arguments[0].asObject(runtime);
+          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "popProve first argument is an object, but not of type PrivateKey!");
+          }
+          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+
+          //g1
+          G2Element g2Element = PopSchemeMPL().PopProve(privateKey);
+          auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
+          return jsi::Object::createFromHostObject(runtime, g2ElementObj);
+        });
+  }
+
+
+  if (propName == "popVerify") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 2) {
+              throw jsi::JSError(runtime, "popVerify(..) expects three arguments (pk, message, prependPk)!");
+          }
+
+          //pk
+          auto g1ElementObject = arguments[0].asObject(runtime);
+          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+          }
+          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+          G1Element pk = g1ElementHostObject->getG1Element();;
+
+          //signatureProof
+          auto g2ElementObject = arguments[1].asObject(runtime);
+          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "Second argument is an object, but not of type G2Element!");
+          }
+          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+          G2Element signatureProof = g2ElementHostObject->getG2Element();
+
+          auto value = PopSchemeMPL().PopVerify(pk, signatureProof);
+          return jsi::Value(value);
+        });
+  }
+
+
+  if (propName == "fastAggregateVerify") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // expecting 1 argument
+          [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+
+            if (count != 3) {
+              throw jsi::JSError(runtime, "aggregateVerify(..) expects three arguments!");
+            }
+
+            //pks
+            if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime)) {
+                throw jsi::JSError(runtime, "Expected first argument to be an array");
+            }
+            jsi::Array pksArr = arguments[0].asObject(runtime).asArray(runtime);
+            size_t pksLength = pksArr.length(runtime);
+            std::vector<G1Element> g1Elements;
+            for (size_t i = 0; i < pksLength; i++) {
+                auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
+                if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "Element in the array is not of type G1Element!");
+                }
+                auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                G1Element g1Element = g1ElementHostObject->getG1Element();
+                g1Elements.push_back(g1Element);
+            }
+
+            //msg
+            auto typeArrayObject = arguments[1].asObject(runtime);
+            if (!isTypedArray(runtime, typeArrayObject)) {
+                throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+            }
+
+            auto messageArray = getTypedArray(runtime, typeArrayObject);
+            vector<uint8_t> message = messageArray.toVector(runtime);
+
+
+            //sig
+            auto g2ElementObject = arguments[2].asObject(runtime);
+            if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                throw jsi::JSError(runtime, "Third argument is an object, but not of type G2Element!");
+            }
+            auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+            G2Element sig = g2ElementHostObject->getG2Element();
+
+            auto value = PopSchemeMPL().FastAggregateVerify(g1Elements, message, sig);
+
+            return jsi::Value(value);
+          });
+  }
 
   return jsi::Value::undefined();
 }

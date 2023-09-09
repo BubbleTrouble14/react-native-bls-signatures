@@ -137,17 +137,17 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
 
   if (propName == "fromBytes") {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2,
         [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
                size_t count) -> jsi::Value {
 
-          if (count != 1) {
-              throw jsi::JSError(runtime, "keyGen(..) expects one argument (object)!");
+          if (count != 2) {
+              throw jsi::JSError(runtime, "fromBytes(..) expects two argument (object)!");
           }
 
           auto object = arguments[0].asObject(runtime);
           if (!isTypedArray(runtime, object)) {
-              throw jsi::JSError(runtime, "keyGen argument is an object, but not of type Uint8Array!");
+              throw jsi::JSError(runtime, "fromBytes argument is an object, but not of type Uint8Array!");
           }
 
           auto typedArray = getTypedArray(runtime, object);
@@ -156,8 +156,13 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
               throw std::invalid_argument("PrivateKey::FromBytes: Invalid size");
           }
 
+          if (!arguments[1].isBool()) {
+              throw jsi::JSError(runtime, "Expected second argument to be of type boolean!");
+          }
+          auto modOrder = arguments[1].asBool();
 
-          PrivateKey sk = PrivateKey::FromByteVector(typedArray.toVector(runtime));
+
+          PrivateKey sk = PrivateKey::FromByteVector(typedArray.toVector(runtime), modOrder);
 
           auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
           return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
@@ -196,25 +201,32 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime& runtime, const jsi::PropNameI
                size_t count) -> jsi::Value {
 
           if (count != 1) {
-              throw jsi::JSError(runtime, "aggregate(..) expects one argument (object)!");
+              throw jsi::JSError(runtime, "aggregate(..) expects one argument!");
           }
 
-          //sk
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
-              throw jsi::JSError(runtime, "aggregate first argument is an object, but not of type PrivateKey!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey1 = privateKeyHostObject->getPrivateKey();
-
-          if (this->privateKey != nullptr) {
-              std::vector<PrivateKey> keys = {*this->privateKey, privateKey1};
-              PrivateKey sk = PrivateKey::Aggregate(keys);
-              auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
-              return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
+          // Ensure the argument is an array
+          if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime)) {
+              throw jsi::JSError(runtime, "Expected first argument to be an array");
           }
 
-          return jsi::Value::undefined();
+          jsi::Array arr = arguments[0].asObject(runtime).asArray(runtime);
+          size_t length = arr.length(runtime);
+
+          std::vector<PrivateKey> privateKeys;
+          privateKeys.reserve(length);  // Reserve space for `length` number of elements
+          for (size_t i = 0; i < length; i++) {
+              auto privateKeyObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
+              if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+                  throw jsi::JSError(runtime, "Element in the array is not of type PrivateKey!");
+              }
+              auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+              PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+              privateKeys.push_back(privateKey);
+          }
+
+          PrivateKey sk = PrivateKey::Aggregate(privateKeys);
+          auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
+          return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
         });
   }
 
