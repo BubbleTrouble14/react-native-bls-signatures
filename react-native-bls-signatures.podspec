@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
     :USE_HEADERMAP => "No"
   }
 
-  s.ios.vendored_frameworks = "ios/Frameworks/Clibblst.xcframework", "ios/Frameworks/Clibsodium.xcframework"
+  s.ios.vendored_frameworks = "ios/Frameworks/Clibsodium.xcframework", "ios/Frameworks/Clibblst.xcframework"
 
   s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{h,cpp}"
 
