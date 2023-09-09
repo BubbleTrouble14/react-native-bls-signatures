@@ -1,7 +1,6 @@
 #include "PrivateKeyHostObject.h"
 #include "G1ElementHostObject.h"
 #include "G2ElementHostObject.h"
-#include <android/log.h>
 #include <string>
 #include <vector>
 #include "TypedArray.h"
