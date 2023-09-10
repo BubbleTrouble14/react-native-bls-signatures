@@ -6,19 +6,6 @@ set(BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 17)
 
-set(ARCH_DIR ${ANDROID_ARCH_NAME})
-
-if( ANDROID_ABI STREQUAL "armeabi-v7a")
-  set( ARCH_DIR "armv7-a" )
-elseif ( ANDROID_ABI STREQUAL "arm64-v8a")
-  set( ARCH_DIR "armv8-a" )
-elseif ( ANDROID_ABI STREQUAL "x86")
-  set ( ARCH_DIR "i686" )
-elseif ( ANDROID_ABI STREQUAL "x86_64")
-  set ( ARCH_DIR "westmere" )
-endif()
-
-
 include_directories(
         ../cpp
 )
