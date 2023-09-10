@@ -12,7 +12,7 @@ export interface IPrivateKey {
   toBytes(): Uint8Array;
   toHex(): string;
   toString(): string;
-  equalTo(key: IPrivateKey): boolean;
+  equalTo(sk: IPrivateKey): boolean;
   getG1(): IG1Element;
   getG2(): IG2Element;
 }
@@ -73,8 +73,8 @@ export class PrivateKey {
     return this.instance.toString();
   }
 
-  equalTo(value: PrivateKey): boolean {
-    return this.instance.equalTo(value.getCppPrivateKey());
+  equalTo(sk: PrivateKey): boolean {
+    return this.instance.equalTo(sk.getCppPrivateKey());
   }
 
   getG1(): G1Element {

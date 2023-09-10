@@ -9,20 +9,26 @@ using namespace facebook;
 class JSI_EXPORT G1ElementHostObject : public jsi::HostObject
 {
 public:
-  // Constructor
+  // Default Constructor
   G1ElementHostObject();
 
-  // Overloaded Constructor to initialize with existing blst::SecretKey
-  G1ElementHostObject(const G1Element &g1Element);
+  // Parameterized Constructor
+  G1ElementHostObject(const G1Element &otherG1Element);
+
+  // Copy Constructor
+  G1ElementHostObject(const G1ElementHostObject &other);
+
+  // Assignment Operator
+  G1ElementHostObject &operator=(const G1ElementHostObject &other);
 
   // Destructor
   ~G1ElementHostObject();
 
-  const G1Element &getG1Element() const;
-
   jsi::Value get(jsi::Runtime &, const jsi::PropNameID &name) override;
   std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime &rt) override;
 
+  const G1Element &getG1Element() const;
+
 private:
-  G1Element *g1Element;
+  G1Element *g1Element = nullptr;
 };

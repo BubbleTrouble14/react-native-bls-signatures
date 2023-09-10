@@ -4,24 +4,40 @@
 #include <vector>
 #include "TypedArray.h"
 
-// Default Constructor
 G1ElementHostObject::G1ElementHostObject()
 {
   g1Element = new G1Element();
   if (g1Element == nullptr)
   {
-    throw std::runtime_error("Memory allocation failed");
+    throw std::runtime_error("G1Element Memory allocation failed");
   }
 }
 
-// Overloaded Constructor
+// Parameterized Constructor
 G1ElementHostObject::G1ElementHostObject(const G1Element &otherG1Element)
 {
   g1Element = new G1Element(otherG1Element);
   if (g1Element == nullptr)
   {
-    throw std::runtime_error("Memory allocation failed");
+    throw std::runtime_error("G1Element Memory allocation failed");
   }
+}
+
+// Copy Constructor
+G1ElementHostObject::G1ElementHostObject(const G1ElementHostObject &other)
+{
+  g1Element = new G1Element(*other.g1Element);
+}
+
+// Assignment Operator
+G1ElementHostObject &G1ElementHostObject::operator=(const G1ElementHostObject &other)
+{
+  if (this != &other) // Check for self-assignment
+  {
+    delete g1Element;
+    g1Element = new G1Element(*other.g1Element);
+  }
+  return *this;
 }
 
 // Destructor

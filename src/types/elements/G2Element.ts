@@ -7,9 +7,9 @@ export interface IG2Element {
   toHex(): string;
   fromBytes(bytes: Uint8Array): IG2Element;
   fromHex(hex: string): IG2Element;
-  add(e2: IG2Element): IG2Element;
+  add(g2e: IG2Element): IG2Element;
   negate(): IG2Element;
-  equalTo(key: IG2Element): boolean;
+  equalTo(g2e: IG2Element): boolean;
 }
 
 type CppG2Element = Pick<
@@ -50,16 +50,16 @@ export class G2Element {
     return this.instance.toHex();
   }
 
-  add(e2: G2Element): G2Element {
-    return new G2Element(this.instance.add(e2.getCppG2Element()));
+  add(g2e: G2Element): G2Element {
+    return new G2Element(this.instance.add(g2e.getCppG2Element()));
   }
 
   negate(): G2Element {
     return new G2Element(this.instance.negate());
   }
 
-  equalTo(value: G2Element): boolean {
-    return this.instance.equalTo(value.getCppG2Element());
+  equalTo(g2e: G2Element): boolean {
+    return this.instance.equalTo(g2e.getCppG2Element());
   }
 
   getCppG2Element(): CppG2Element {

@@ -1,12 +1,7 @@
 import * as React from 'react';
 
 import { Button, StyleSheet, View } from 'react-native';
-import {
-  testReadme,
-  testSchemes,
-  testVectorsInvalid,
-  testVectorsValid,
-} from './tests/index.test';
+import { testBridgeFunctions } from './tests/Bridge.test';
 
 export default function App() {
   return (
@@ -14,10 +9,7 @@ export default function App() {
       <Button
         title="Run"
         onPress={() => {
-          testVectorsInvalid();
-          testVectorsValid();
-          testSchemes();
-          testReadme();
+          testBridgeFunctions();
         }}
       />
     </View>

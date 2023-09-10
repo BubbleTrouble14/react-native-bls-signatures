@@ -10,18 +10,35 @@ G2ElementHostObject::G2ElementHostObject()
   g2Element = new G2Element();
   if (g2Element == nullptr)
   {
-    throw std::runtime_error("Memory allocation failed");
+    throw std::runtime_error("G2Element Memory allocation failed");
   }
 }
 
-// Overloaded Constructor
-G2ElementHostObject::G2ElementHostObject(const G2Element &otherG1Element)
+// Parameterized Constructor
+G2ElementHostObject::G2ElementHostObject(const G2Element &otherG2Element)
 {
-  g2Element = new G2Element(otherG1Element);
+  g2Element = new G2Element(otherG2Element);
   if (g2Element == nullptr)
   {
-    throw std::runtime_error("Memory allocation failed");
+    throw std::runtime_error("G2Element Memory allocation failed");
   }
+}
+
+// Copy Constructor
+G2ElementHostObject::G2ElementHostObject(const G2ElementHostObject &other)
+{
+  g2Element = new G2Element(*other.g2Element);
+}
+
+// Assignment Operator
+G2ElementHostObject &G2ElementHostObject::operator=(const G2ElementHostObject &other)
+{
+  if (this != &other) // Check for self-assignment
+  {
+    delete g2Element;
+    g2Element = new G2Element(*other.g2Element);
+  }
+  return *this;
 }
 
 // Destructor
@@ -95,7 +112,7 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
         [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
+           size_t count) -> jsi::Value
         {
           if (count != 1)
           {
@@ -127,7 +144,7 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
         [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
+           size_t count) -> jsi::Value
         {
           if (count != 1)
           {

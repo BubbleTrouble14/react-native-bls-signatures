@@ -6,24 +6,45 @@
 #include "TypedArray.h"
 
 // Default Constructor
-PrivateKeyHostObject::PrivateKeyHostObject()
+PrivateKeyHostObject::PrivateKeyHostObject() : privateKey(nullptr)
 {
 }
 
-// Overloaded Constructor
+// Parameterized Constructor
 PrivateKeyHostObject::PrivateKeyHostObject(const PrivateKey &otherPrivateKey)
 {
   privateKey = new PrivateKey(otherPrivateKey);
   if (privateKey == nullptr)
   {
-    throw std::runtime_error("Memory allocation failed");
+    throw std::runtime_error("PrivateKey Memory allocation failed");
   }
+}
+
+// Copy Constructor
+PrivateKeyHostObject::PrivateKeyHostObject(const PrivateKeyHostObject &other)
+{
+  privateKey = new PrivateKey(*other.privateKey);
+}
+
+// Assignment Operator
+PrivateKeyHostObject &PrivateKeyHostObject::operator=(const PrivateKeyHostObject &other)
+{
+  if (this != &other) // Check for self-assignment
+  {
+    delete privateKey;
+    privateKey = new PrivateKey(*other.privateKey);
+  }
+  return *this;
 }
 
 // Destructor
 PrivateKeyHostObject::~PrivateKeyHostObject()
 {
-  delete privateKey;
+  if (privateKey)
+  {
+    delete privateKey;
+    privateKey = nullptr;
+  }
 }
 
 const PrivateKey &PrivateKeyHostObject::getPrivateKey() const

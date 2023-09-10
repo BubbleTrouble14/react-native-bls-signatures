@@ -9,10 +9,17 @@ using namespace facebook;
 class JSI_EXPORT PrivateKeyHostObject : public jsi::HostObject
 {
 public:
-  // Constructor
+  // Default Constructor
   PrivateKeyHostObject();
 
+  // Parameterized Constructor
   PrivateKeyHostObject(const PrivateKey &privateKey);
+
+  // Copy Constructor
+  PrivateKeyHostObject(const PrivateKeyHostObject &other);
+
+  // Assignment Operator
+  PrivateKeyHostObject &operator=(const PrivateKeyHostObject &other);
 
   // Destructor
   ~PrivateKeyHostObject();
@@ -23,5 +30,5 @@ public:
   const PrivateKey &getPrivateKey() const;
 
 private:
-  PrivateKey *privateKey;
+  PrivateKey *privateKey = nullptr;
 };
