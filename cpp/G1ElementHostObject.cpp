@@ -31,12 +31,13 @@ const G1Element& G1ElementHostObject::getG1Element() const {
 
 std::vector<jsi::PropNameID> G1ElementHostObject::getPropertyNames(jsi::Runtime& rt) {
   std::vector<jsi::PropNameID> result;
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getFingerprint")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getFingerprint")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("negate")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
   return result;
 }
@@ -44,23 +45,6 @@ std::vector<jsi::PropNameID> G1ElementHostObject::getPropertyNames(jsi::Runtime&
 jsi::Value G1ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId) {
   auto propName = propNameId.utf8(runtime);
   auto funcName = "G1Element." + propName;
-
-  if (propName == "getFingerprint") {
-  return jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-      [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-              size_t count) -> jsi::Value {
-
-        if (this->g1Element != nullptr) {
-
-          return jsi::Value(static_cast<double>(g1Element->GetFingerprint()));
-
-        }
-
-        return jsi::Value::undefined();
-
-      });
-  }
 
   if (propName == "toBytes") {
   return jsi::Function::createFromHostFunction(
@@ -95,34 +79,6 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID
         return jsi::Value::undefined();
 
       });
-  }
-
-  if (propName == "add") {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
-               size_t count) -> jsi::Value {
-
-          if (count != 1) {
-              throw jsi::JSError(runtime, "add(..) expects one argument (object)!");
-          }
-
-          //pk
-          auto g1ElementObject = arguments[0].asObject(runtime);
-          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
-              throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
-          }
-          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element pk1 = g1ElementHostObject->getG1Element();
-
-          if (this->g1Element != nullptr) {
-              G1Element pk = *this->g1Element + pk1;
-              auto pkObj = std::make_shared<G1ElementHostObject>(pk);
-              return jsi::Object::createFromHostObject(runtime, pkObj);
-          }
-
-          return jsi::Value::undefined();
-        });
   }
 
   if (propName == "fromBytes") {
@@ -175,6 +131,67 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID
 
           auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
           return jsi::Object::createFromHostObject(runtime, g1Obj);
+        });
+  }
+
+  if (propName == "getFingerprint") {
+  return jsi::Function::createFromHostFunction(
+      runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+      [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
+
+        if (this->g1Element != nullptr) {
+
+          return jsi::Value(static_cast<double>(g1Element->GetFingerprint()));
+
+        }
+
+        return jsi::Value::undefined();
+
+      });
+  }
+
+  if (propName == "add") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "add(..) expects one argument (object)!");
+          }
+
+          //pk
+          auto g1ElementObject = arguments[0].asObject(runtime);
+          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+          }
+          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+          G1Element pk1 = g1ElementHostObject->getG1Element();
+
+          if (this->g1Element != nullptr) {
+              G1Element pk = *this->g1Element + pk1;
+              auto pkObj = std::make_shared<G1ElementHostObject>(pk);
+              return jsi::Object::createFromHostObject(runtime, pkObj);
+          }
+
+          return jsi::Value::undefined();
+        });
+  }
+
+  if (propName == "negate") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+
+          if (this->g1Element != nullptr) {
+                auto g1Obj = std::make_shared<G1ElementHostObject>(g1Element->Negate());
+                return jsi::Object::createFromHostObject(runtime, g1Obj);
+          }
+
+          return jsi::Value::undefined();
+
         });
   }
 

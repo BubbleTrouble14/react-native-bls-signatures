@@ -5,10 +5,11 @@ declare global {
 export interface IG1Element {
   toBytes(): Uint8Array;
   toHex(): string;
-  getFingerprint(): number;
-  add(e1: IG1Element): IG1Element;
   fromBytes(bytes: Uint8Array): IG1Element;
   fromHex(hex: string): IG1Element;
+  getFingerprint(): number;
+  add(e1: IG1Element): IG1Element;
+  negate(): IG1Element;
   equalTo(key: IG1Element): boolean;
 }
 
@@ -17,10 +18,11 @@ type CppG1Element = Pick<
   | 'toBytes'
   | 'toHex'
   | 'fromBytes'
+  | 'fromHex'
   | 'getFingerprint'
   | 'add'
+  | 'negate'
   | 'equalTo'
-  | 'fromHex'
 >;
 
 const createG1Element = (): CppG1Element => {
@@ -62,6 +64,10 @@ export class G1Element {
 
   add(e1: G1Element): G1Element {
     return new G1Element(this.instance.add(e1.getCppG1Element()));
+  }
+
+  negate(): G1Element {
+    return new G1Element(this.instance.negate());
   }
 
   equalTo(value: G1Element): boolean {

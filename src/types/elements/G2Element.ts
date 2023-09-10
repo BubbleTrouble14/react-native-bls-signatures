@@ -7,12 +7,14 @@ export interface IG2Element {
   toHex(): string;
   fromBytes(bytes: Uint8Array): IG2Element;
   fromHex(hex: string): IG2Element;
+  add(e1: IG2Element): IG2Element;
+  negate(): IG2Element;
   equalTo(key: IG2Element): boolean;
 }
 
 type CppG2Element = Pick<
   IG2Element,
-  'toBytes' | 'toHex' | 'fromBytes' | 'equalTo' | 'fromHex'
+  'toBytes' | 'toHex' | 'fromBytes' | 'fromHex' | 'add' | 'negate' | 'equalTo'
 >;
 
 const createG2Element = (): CppG2Element => {
@@ -46,6 +48,14 @@ export class G2Element {
 
   toHex(): string {
     return this.instance.toHex();
+  }
+
+  add(e1: G2Element): G2Element {
+    return new G2Element(this.instance.add(e1.getCppG2Element()));
+  }
+
+  negate(): G2Element {
+    return new G2Element(this.instance.negate());
   }
 
   equalTo(value: G2Element): boolean {

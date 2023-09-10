@@ -35,6 +35,8 @@ std::vector<jsi::PropNameID> G2ElementHostObject::getPropertyNames(jsi::Runtime&
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
+  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("negate")));
   result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
   return result;
 }
@@ -106,7 +108,6 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID
       });
   }
 
-
   if (propName == "fromHex") {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
@@ -128,6 +129,49 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID
 
           auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
           return jsi::Object::createFromHostObject(runtime, g2Obj);
+        });
+  }
+
+  if (propName == "add") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+               size_t count) -> jsi::Value {
+
+          if (count != 1) {
+              throw jsi::JSError(runtime, "add(..) expects one argument (object)!");
+          }
+
+          //pk
+          auto g2ElementObject = arguments[0].asObject(runtime);
+          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+              throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+          }
+          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+          G2Element g2 = g2ElementHostObject->getG2Element();
+
+          if (this->g2Element != nullptr) {
+              G2Element pk = *this->g2Element + g2;
+              auto pkObj = std::make_shared<G2ElementHostObject>(pk);
+              return jsi::Object::createFromHostObject(runtime, pkObj);
+          }
+
+          return jsi::Value::undefined();
+        });
+  }
+
+  if (propName == "negate") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+        [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+
+          if (this->g2Element != nullptr) {
+                auto g2Obj = std::make_shared<G2ElementHostObject>(g2Element->Negate());
+                return jsi::Object::createFromHostObject(runtime, g2Obj);
+          }
+
+          return jsi::Value::undefined();
         });
   }
 
