@@ -7,7 +7,7 @@ export interface IG2Element {
   toHex(): string;
   fromBytes(bytes: Uint8Array): IG2Element;
   fromHex(hex: string): IG2Element;
-  add(e1: IG2Element): IG2Element;
+  add(e2: IG2Element): IG2Element;
   negate(): IG2Element;
   equalTo(key: IG2Element): boolean;
 }
@@ -50,8 +50,8 @@ export class G2Element {
     return this.instance.toHex();
   }
 
-  add(e1: G2Element): G2Element {
-    return new G2Element(this.instance.add(e1.getCppG2Element()));
+  add(e2: G2Element): G2Element {
+    return new G2Element(this.instance.add(e2.getCppG2Element()));
   }
 
   negate(): G2Element {

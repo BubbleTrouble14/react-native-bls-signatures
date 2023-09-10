@@ -297,26 +297,26 @@ A G2Element which is used for public keys and signatures, respectively.
 
 ### static fromBytes(bytes)
 
-- `bytes` is a `Uint8Array` representing the G1 element.
+- `bytes` is a `Uint8Array` representing the G2 element.
 - Returns a `G2Element` instance.
 
 ### static fromHex(hex)
 
-- `hex` is a `string` representing the G1 element in hexadecimal format.
+- `hex` is a `string` representing the G2 element in hexadecimal format.
 - Returns a `G2Element` instance.
 
 ### toBytes()
 
-- Returns a `Uint8Array` representing this G1 element.
+- Returns a `Uint8Array` representing this G2 element.
 
 ### toHex()
 
-- Returns a `string` representing the hexadecimal format of this G1 element.
+- Returns a `string` representing the hexadecimal format of this G2 element.
 
-### add(e1)
+### add(e2)
 
-- `e1` is another `G2Element`.
-- Returns a new `G2Element` which is the result of adding this element to `e1`.
+- `e2` is another `G2Element`.
+- Returns a new `G2Element` which is the result of adding this element to `e2`.
 
 ### negate()
 
@@ -331,37 +331,24 @@ A G2Element which is used for public keys and signatures, respectively.
 
 This is a collection of utils that can be directly imported and called, and are not part of a class.
 
-## hash256
-
-Computes the SHA-256 hash of the given message.
+### hash256
 
 - `msg`: `Uint8Array` - Message to be hashed.
 - Returns: `Uint8Array` - SHA-256 hash of the message.
 
----
-
-## toHex
-
-Converts a byte array to its hexadecimal representation.
+### toHex
 
 - `bytes`: `Uint8Array` - Byte array to convert.
 - Returns: `string` - Hexadecimal format of the byte array.
 
----
-
-## fromHex
-
-Converts a hexadecimal string to a byte array.
+### fromHex
 
 - `hex`: `string` - Hexadecimal input.
 - Returns: `Uint8Array` - Byte array of the hexadecimal string.
 
----
+### getRandomSeed
 
-## getRandomSeed
-
-Generates a random seed.
-
+- `msg`: `Uint8Array` - Message to be hashed.
 - Returns: `Uint8Array` - Generated random seed.
 
 ## Libsodium license
