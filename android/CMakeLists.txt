@@ -32,6 +32,7 @@ add_library(reactnativebls  # <-- Library name
         ../cpp/PopSchemeMPLHostObject.cpp
         ../cpp/G1ElementHostObject.cpp
         ../cpp/G2ElementHostObject.cpp
+        ../cpp/Util.cpp
         ../cpp/TypedArray.cpp
         ../cpp/include/bls/bls.cpp
         ../cpp/include/bls/elements.cpp

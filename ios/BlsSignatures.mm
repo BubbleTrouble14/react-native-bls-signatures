@@ -10,6 +10,7 @@
 #include "../cpp/PopSchemeMPLHostObject.h"
 #include "../cpp/G1ElementHostObject.h"
 #include "../cpp/G2ElementHostObject.h"
+#include "../cpp/Util.h"
 
 using namespace bls;
 using namespace facebook;
@@ -26,24 +27,51 @@ RCT_EXPORT_MODULE(BlsSignatures)
   return string.length() > 0 ? [NSString stringWithUTF8String:string.c_str()] : nil;
 }
 
-RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
-  NSLog(@"Installing global.BLSInstance...");
-  RCTBridge* bridge = [RCTBridge currentBridge];
-  RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
-  if (cxxBridge == nil) {
-    return @false;
-  }
+// Installing JSI Bindings as done by
+// https://github.com/mrousavy/react-native-mmkv
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
+{
+    RCTBridge* bridge = [RCTBridge currentBridge];
+    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
+    if (cxxBridge == nil) {
+        return @false;
+    }
 
-  using namespace facebook;
+    auto jsiRuntime = (jsi::Runtime*) cxxBridge.runtime;
+    if (jsiRuntime == nil) {
+        return @false;
+    }
 
-  auto jsiRuntime = (jsi::Runtime*)cxxBridge.runtime;
-  if (jsiRuntime == nil) {
-    return @false;
-  }
-  auto& runtime = *jsiRuntime;
+    utils::install(*(facebook::jsi::Runtime *)jsiRuntime);
+    install(*(facebook::jsi::Runtime *)jsiRuntime, self);
 
+
+    return @true;
+}
+
+
+- (NSString *) getModel {
+    struct utsname systemInfo;
+    uname(&systemInfo);
+
+    return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+}
+
+- (void) setItem:(NSString * )key :(NSString *)value {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    [standardUserDefaults setObject:value forKey:key];
+    [standardUserDefaults synchronize];
+}
+
+- (NSString *)getItem:(NSString *)key {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    return [standardUserDefaults stringForKey:key];
+}
+
+
+static void install(jsi::Runtime &jsiRuntime, SimpleJsi *simpleJsi) {
    auto createPrivateKeyInstance = jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, "createPrivateKeyInstance"), 0,
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createPrivateKeyInstance"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -54,11 +82,11 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-      runtime.global().setProperty(runtime, "createPrivateKeyInstance",std::move(createPrivateKeyInstance));
+      jsiRuntime.global().setProperty(jsiRuntime, "createPrivateKeyInstance",std::move(createPrivateKeyInstance));
 
 
    auto createAugSchemeMPLInstance = jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, "createAugSchemeMPLInstance"), 0,
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createAugSchemeMPLInstance"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -69,11 +97,11 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-    runtime.global().setProperty(runtime, "createAugSchemeMPLInstance",std::move(createAugSchemeMPLInstance));
+    jsiRuntime.global().setProperty(jsiRuntime, "createAugSchemeMPLInstance",std::move(createAugSchemeMPLInstance));
 
 
    auto createBasicSchemeMPLInstance = jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, "createBasicSchemeMPLInstance"), 0,
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createBasicSchemeMPLInstance"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -84,11 +112,11 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-    runtime.global().setProperty(runtime, "createBasicSchemeMPLInstance",std::move(createBasicSchemeMPLInstance));
+    jsiRuntime.global().setProperty(jsiRuntime, "createBasicSchemeMPLInstance",std::move(createBasicSchemeMPLInstance));
 
 
    auto createPopSchemeMPLInstance = jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, "createPopSchemeMPLInstance"), 0,
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createPopSchemeMPLInstance"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -99,10 +127,10 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-    runtime.global().setProperty(runtime, "createPopSchemeMPLInstance",std::move(createPopSchemeMPLInstance));
+    jsiRuntime.global().setProperty(jsiRuntime, "createPopSchemeMPLInstance",std::move(createPopSchemeMPLInstance));
 
    auto createG1Element = jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, "createG1Element"), 0,
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createG1Element"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -113,11 +141,11 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-    runtime.global().setProperty(runtime, "createG1Element",std::move(createG1Element));
+    jsiRuntime.global().setProperty(jsiRuntime, "createG1Element",std::move(createG1Element));
 
 
    auto createG2Element = jsi::Function::createFromHostFunction(
-      runtime, jsi::PropNameID::forAscii(runtime, "createG2Element"), 0,
+      jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createG2Element"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
          size_t count) -> jsi::Value {
         if (count != 0) {
@@ -128,10 +156,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
         return jsi::Object::createFromHostObject(runtime, instance);
       });
 
-    runtime.global().setProperty(runtime, "createG2Element",std::move(createG2Element));;
+    jsiRuntime.global().setProperty(jsiRuntime, "createG2Element",std::move(createG2Element));
 
-  NSLog(@"Installed bls Signatures!");
-  return @true;
 }
 
 @end

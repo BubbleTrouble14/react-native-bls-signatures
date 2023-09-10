@@ -9,9 +9,8 @@
 #include "../cpp/PopSchemeMPLHostObject.h"
 #include "../cpp/G1ElementHostObject.h"
 #include "../cpp/G2ElementHostObject.h"
-
-// #include "bls.hpp"
-// using namespace bls;
+#include "../cpp/Util.h"
+#include "TypedArray.h"
 
 using namespace facebook;
 using namespace std;
@@ -114,6 +113,7 @@ Java_com_reactnativebls_BlsSignaturesModule_nativeInstall(JNIEnv *env, jclass _,
     auto runtime = reinterpret_cast<jsi::Runtime*>(jsiPtr);
 
     if (runtime) {
+        utils::install(*runtime);
         install(*runtime);
     }
     // if runtime was nullptr, the helper will not be installed. This should only happen while Remote Debugging (Chrome), but will be weird either way.
