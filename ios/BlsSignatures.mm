@@ -43,33 +43,13 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     }
 
     utils::install(*(facebook::jsi::Runtime *)jsiRuntime);
-    install(*(facebook::jsi::Runtime *)jsiRuntime, self);
+    install(*(facebook::jsi::Runtime *)jsiRuntime);
 
 
     return @true;
 }
 
-
-- (NSString *) getModel {
-    struct utsname systemInfo;
-    uname(&systemInfo);
-
-    return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-}
-
-- (void) setItem:(NSString * )key :(NSString *)value {
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    [standardUserDefaults setObject:value forKey:key];
-    [standardUserDefaults synchronize];
-}
-
-- (NSString *)getItem:(NSString *)key {
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    return [standardUserDefaults stringForKey:key];
-}
-
-
-static void install(jsi::Runtime &jsiRuntime, SimpleJsi *simpleJsi) {
+static void install(jsi::Runtime &jsiRuntime) {
    auto createPrivateKeyInstance = jsi::Function::createFromHostFunction(
       jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "createPrivateKeyInstance"), 0,
       [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
