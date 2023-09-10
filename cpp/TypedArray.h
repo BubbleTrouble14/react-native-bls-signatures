@@ -1,13 +1,12 @@
 //
-//  JSITypedArray.h
+//  JSITypedArray.cpp
 //  VisionCamera
 //
-//  Created by Ronald Goedeke on 21.02.23.
-//  Copyright © 2023 BubbleTrouble14. All rights reserved.
+//  Created by Marc Rousavy on 21.02.23.
+//  Copyright © 2023 mrousavy. All rights reserved.
 //
 
-
-// Copied & Adapted from https://github.com/expo/expo/blob/main/packages/expo-gl/common/EXTypedArrayApi.h
+// Copied & Adapted from https://github.com/expo/expo/blob/main/packages/expo-gl/common/EXTypedArrayApi.cpp
 // Credits to Expo
 
 #pragma once
@@ -18,7 +17,8 @@
 
 namespace jsi = facebook::jsi;
 
-enum class TypedArrayKind {
+enum class TypedArrayKind
+{
   Int8Array,
   Int16Array,
   Int32Array,
@@ -36,63 +36,76 @@ class TypedArray;
 template <TypedArrayKind T>
 struct typedArrayTypeMap;
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Int8Array> {
+struct typedArrayTypeMap<TypedArrayKind::Int8Array>
+{
   typedef int8_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Int16Array> {
+struct typedArrayTypeMap<TypedArrayKind::Int16Array>
+{
   typedef int16_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Int32Array> {
+struct typedArrayTypeMap<TypedArrayKind::Int32Array>
+{
   typedef int32_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Uint8Array> {
+struct typedArrayTypeMap<TypedArrayKind::Uint8Array>
+{
   typedef uint8_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Uint8ClampedArray> {
+struct typedArrayTypeMap<TypedArrayKind::Uint8ClampedArray>
+{
   typedef uint8_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Uint16Array> {
+struct typedArrayTypeMap<TypedArrayKind::Uint16Array>
+{
   typedef uint16_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Uint32Array> {
+struct typedArrayTypeMap<TypedArrayKind::Uint32Array>
+{
   typedef uint32_t type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Float32Array> {
+struct typedArrayTypeMap<TypedArrayKind::Float32Array>
+{
   typedef float type;
 };
 template <>
-struct typedArrayTypeMap<TypedArrayKind::Float64Array> {
+struct typedArrayTypeMap<TypedArrayKind::Float64Array>
+{
   typedef double type;
 };
 
 // Instance of this class will invalidate PropNameIDCache when destructor is called.
 // Attach this object to global in specific jsi::Runtime to make sure lifecycle of
 // the cache object is connected to the lifecycle of the js runtime
-class InvalidateCacheOnDestroy : public jsi::HostObject {
- public:
+class InvalidateCacheOnDestroy : public jsi::HostObject
+{
+public:
   explicit InvalidateCacheOnDestroy(jsi::Runtime &runtime);
   virtual ~InvalidateCacheOnDestroy();
-  virtual jsi::Value get(jsi::Runtime &, const jsi::PropNameID &name) {
+  virtual jsi::Value get(jsi::Runtime &, const jsi::PropNameID &name)
+  {
     return jsi::Value::null();
   }
   virtual void set(jsi::Runtime &, const jsi::PropNameID &name, const jsi::Value &value) {}
-  virtual std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime &rt) {
+  virtual std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime &rt)
+  {
     return {};
   }
 
- private:
+private:
   uintptr_t key;
 };
 
-class TypedArrayBase : public jsi::Object {
- public:
+class TypedArrayBase : public jsi::Object
+{
+public:
   template <TypedArrayKind T>
   using ContentType = typename typedArrayTypeMap<T>::type;
 
@@ -121,7 +134,7 @@ class TypedArrayBase : public jsi::Object {
   std::vector<uint8_t> toVector(jsi::Runtime &runtime);
   jsi::ArrayBuffer getBuffer(jsi::Runtime &runtime) const;
 
- private:
+private:
   template <TypedArrayKind>
   friend class TypedArray;
 };
@@ -137,8 +150,9 @@ void arrayBufferUpdate(
     size_t offset);
 
 template <TypedArrayKind T>
-class TypedArray : public TypedArrayBase {
- public:
+class TypedArray : public TypedArrayBase
+{
+public:
   explicit TypedArray(TypedArrayBase &&base);
   TypedArray(jsi::Runtime &runtime, size_t size);
   TypedArray(jsi::Runtime &runtime, std::vector<ContentType<T>> data);
@@ -147,34 +161,40 @@ class TypedArray : public TypedArrayBase {
 
   std::vector<ContentType<T>> toVector(jsi::Runtime &runtime);
   void update(jsi::Runtime &runtime, const std::vector<ContentType<T>> &data);
-  uint8_t* data(jsi::Runtime &runtime);
+  uint8_t *data(jsi::Runtime &runtime);
 };
 
 template <TypedArrayKind T>
-TypedArray<T> TypedArrayBase::get(jsi::Runtime &runtime) const & {
+TypedArray<T> TypedArrayBase::get(jsi::Runtime &runtime) const &
+{
   assert(getKind(runtime) == T);
   (void)runtime; // when assert is disabled we need to mark this as used
   return TypedArray<T>(jsi::Value(runtime, jsi::Value(runtime, *this).asObject(runtime)));
 }
 
 template <TypedArrayKind T>
-TypedArray<T> TypedArrayBase::get(jsi::Runtime &runtime) && {
+TypedArray<T> TypedArrayBase::get(jsi::Runtime &runtime) &&
+{
   assert(getKind(runtime) == T);
   (void)runtime; // when assert is disabled we need to mark this as used
   return TypedArray<T>(std::move(*this));
 }
 
 template <TypedArrayKind T>
-TypedArray<T> TypedArrayBase::as(jsi::Runtime &runtime) const & {
-  if (getKind(runtime) != T) {
+TypedArray<T> TypedArrayBase::as(jsi::Runtime &runtime) const &
+{
+  if (getKind(runtime) != T)
+  {
     throw jsi::JSError(runtime, "Object is not a TypedArray");
   }
   return get<T>(runtime);
 }
 
 template <TypedArrayKind T>
-TypedArray<T> TypedArrayBase::as(jsi::Runtime &runtime) && {
-  if (getKind(runtime) != T) {
+TypedArray<T> TypedArrayBase::as(jsi::Runtime &runtime) &&
+{
+  if (getKind(runtime) != T)
+  {
     throw jsi::JSError(runtime, "Object is not a TypedArray");
   }
   return std::move(*this).get<T>(runtime);
