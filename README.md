@@ -12,85 +12,106 @@ A React Native library for bls signatures.
 - [G2Element](#g2element)
 - [Utils](#utils)
 
-## AugSchemeMPL
+## `AugSchemeMPL`
 
-- **static skToG1(sk: PrivateKey)**: `G1Element`.
-- **static keyGen(seed: Uint8Array)**: `PrivateKey`.
-- **static sign(sk: PrivateKey, msg: Uint8Array)**: `G2Element`.
-- **static signPrepend(sk: PrivateKey, msg: Uint8Array, prependPk: G1Element)**: `G2Element`.
-- **static verify(pk: G1Element, msg: Uint8Array, sig: G2Element)**: Boolean.
-- **static aggregate(g2s: Array<G2Element>)**: `G2Element`.
-- **static aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)**: Boolean.
-- **static deriveChildSk(sk: PrivateKey, index: number)**: `PrivateKey`.
-- **static deriveChildSkUnhardened(sk: PrivateKey, index: number)**: `PrivateKey`.
-- **static deriveChildPkUnhardened(pk: G1Element, index: number)**: `G1Element`.
+### Static Methods:
 
-## BasicSchemeMPL
+- **`skToG1(sk: PrivateKey)`**: Returns `G1Element`
+- **`keyGen(seed: Uint8Array)`**: Returns `PrivateKey`
+- **`sign(sk: PrivateKey, msg: Uint8Array)`**: Returns `G2Element`
+- **`signPrepend(sk: PrivateKey, msg: Uint8Array, prependPk: G1Element)`**: Returns `G2Element`
+- **`verify(pk: G1Element, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
+- **`aggregate(g2s: Array<G2Element>)`**: Returns `G2Element`
+- **`aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)`**: Returns `boolean`
+- **`deriveChildSk(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
+- **`deriveChildSkUnhardened(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
+- **`deriveChildPkUnhardened(pk: G1Element, index: number)`**: Returns `G1Element`
 
-- **static skToG1(sk: PrivateKey)**: `G1Element`.
-- **static keyGen(seed: Uint8Array)**: `PrivateKey`.
-- **static sign(sk: PrivateKey, msg: Uint8Array)**: `G2Element`.
-- **static verify(pk: G1Element, msg: Uint8Array, sig: G2Element)**: Boolean.
-- **static aggregate(g2s: Array<G2Element>)**: `G2Element`.
-- **static aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)**: Boolean.
-- **static deriveChildSk(sk: PrivateKey, index: number)**: `PrivateKey`.
-- **static deriveChildSkUnhardened(sk: PrivateKey, index: number)**: `PrivateKey`.
-- **static deriveChildPkUnhardened(pk: G1Element, index: number)**: `G1Element`.
+## `BasicSchemeMPL`
 
-## PopSchemeMPL
+### Static Methods:
 
-- **static skToG1(sk: PrivateKey)**: `G1Element`.
-- **static keyGen(seed: Uint8Array)**: `PrivateKey`.
-- **static sign(sk: PrivateKey, msg: Uint8Array)**: `G2Element`.
-- **static verify(pk: G1Element, msg: Uint8Array, sig: G2Element)**: Boolean.
-- **static aggregate(g2s: Array<G2Element>)**: `G2Element`.
-- **static aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)**: Boolean.
-- **static deriveChildSk(sk: PrivateKey, index: number)**: `PrivateKey`.
-- **static deriveChildSkUnhardened(sk: PrivateKey, index: number)**: `PrivateKey`.
-- **static deriveChildPkUnhardened(pk: G1Element, index: number)**: `G1Element`.
-- **static popVerify(pk: G1Element, signatureProof: G2Element)**: Boolean.
-- **static popProve(sk: PrivateKey)**: `G2Element`.
-- **static fastAggregateVerify(pks: Array<G1Element>, msg: Uint8Array, sig: G2Element)**: Boolean.
+- **`skToG1(sk: PrivateKey)`**: Returns `G1Element`
+- **`keyGen(seed: Uint8Array)`**: Returns `PrivateKey`
+- **`sign(sk: PrivateKey, msg: Uint8Array)`**: Returns `G2Element`
+- **`verify(pk: G1Element, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
+- **`aggregate(g2s: Array<G2Element>)`**: Returns `G2Element`
+- **`aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)`**: Returns `boolean`
+- **`deriveChildSk(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
+- **`deriveChildSkUnhardened(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
+- **`deriveChildPkUnhardened(pk: G1Element, index: number)`**: Returns `G1Element`
+
+## `PopSchemeMPL`
+
+### Static Methods:
+
+- **`skToG1(sk: PrivateKey)`**: Returns `G1Element`
+- **`keyGen(seed: Uint8Array)`**: Returns `PrivateKey`
+- **`sign(sk: PrivateKey, msg: Uint8Array)`**: Returns `G2Element`
+- **`verify(pk: G1Element, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
+- **`aggregate(g2s: Array<G2Element>)`**: Returns `G2Element`
+- **`aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)`**: Returns `boolean`
+- **`deriveChildSk(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
+- **`deriveChildSkUnhardened(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
+- **`deriveChildPkUnhardened(pk: G1Element, index: number)`**: Returns `G1Element`
+- **`popVerify(pk: G1Element, signatureProof: G2Element)`**: Returns `boolean`
+- **`popProve(sk: PrivateKey)`**: Returns `G2Element`
+- **`fastAggregateVerify(pks: Array<G1Element>, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
 
 ## `PrivateKey`
 
-- **static fromBytes(bytes: Uint8Array, modOrder?: boolean)**: `PrivateKey`.
-- **static fromHex(hex: string)**: `PrivateKey`.
-- **static aggregate(privateKeys: Array<PrivateKey>)**: `PrivateKey`.
-- **toBytes()**: `Uint8Array`
-- **toHex()**: String.
-- **toString()**: String.
-- **equalTo(value: PrivateKey)**: Boolean.
-- **getG1()**: `G1Element`
-- **getG2()**: `G2Element`
+### Static Methods:
+
+- **`fromBytes(bytes: Uint8Array, modOrder?: boolean)`**: Returns `PrivateKey`
+- **`fromHex(hex: string)`**: Returns `PrivateKey`
+- **`aggregate(privateKeys: Array<PrivateKey>)`**: Returns `PrivateKey`
+
+### Methods:
+
+- **`toBytes()`**: Returns `Uint8Array`
+- **`toHex()`**: Returns `string`
+- **`toString()`**: Returns `string`
+- **`equalTo(value: PrivateKey)`**: Returns `boolean`
+- **`getG1()`**: Returns `G1Element`
+- **`getG2()`**: Returns `G2Element`
 
 ## `G1Element`
 
-- **static fromBytes(bytes: Uint8Array)**: `G1Element`.
-- **static fromHex(hex: string)**: `G1Element`.
-- **toBytes()**: `Uint8Array`
-- **toHex()**: String.
-- **getFingerPrint()**: Number.
-- **add(e1: G1Element)**: `G1Element`
-- **negate()**: `G1Element`
-- **equalTo(value: G1Element)**: Boolean.
+### Static Methods:
+
+- **`fromBytes(bytes: Uint8Array)`**: Returns `G1Element`
+- **`fromHex(hex: string)`**: Returns `G1Element`
+
+### Methods:
+
+- **`toBytes()`**: Returns `Uint8Array`
+- **`toHex()`**: Returns `string`
+- **`getFingerPrint()`**: Returns `number`
+- **`add(e1: G1Element)`**: Returns `G1Element`
+- **`negate()`**: Returns `G1Element`
+- **`equalTo(value: G1Element)`**: Returns `boolean`
 
 ## `G2Element`
 
-- **static fromBytes(bytes: Uint8Array)**: `G2Element`.
-- **static fromHex(hex: string)**: `G2Element`.
-- **toBytes()**: `Uint8Array`
-- **toHex()**: String.
-- **add(e2: G2Element)**: `G2Element`
-- **negate()**: `G2Element`
-- **equalTo(value: G2Element)**: Boolean.
+### Static Methods:
 
-## Utils
+- **`fromBytes(bytes: Uint8Array)`**: Returns `G2Element`
+- **`fromHex(hex: string)`**: Returns `G2Element`
 
-- **hash256(msg: Uint8Array)**: SHA-256 hash.
-- **toHex(bytes: Uint8Array)**: String.
-- **fromHex(hex: string)**: `Uint8Array`
-- **getRandomSeed()**: `Uint8Array`
+### Methods:
+
+- **`toBytes()`**: Returns `Uint8Array`
+- **`toHex()`**: Returns `string`
+- **`add(e2: G2Element)`**: Returns `G2Element`
+- **`negate()`**: Returns `G2Element`
+- **`equalTo(value: G2Element)`**: Returns `boolean`
+
+## `Utils`
+
+- **`hash256(msg: Uint8Array)`**: Returns SHA-256 hash
+- **`toHex(bytes: Uint8Array)`**: Returns `string`
+- **`fromHex(hex: string)`**: Returns `Uint8Array`
+- **`getRandomSeed()`**: Returns `Uint8Array`
 
 ## Libsodium license
 
