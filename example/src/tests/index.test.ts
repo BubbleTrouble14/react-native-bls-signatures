@@ -8,6 +8,10 @@ import {
 } from 'react-native-bls-signatures';
 import { Buffer } from '@craftzdog/react-native-buffer';
 
+function logTest(name: any, ok: boolean = false) {
+  console.log(`${ok ? 'passed' : 'failed'} -> `, name);
+}
+
 function testSchemes() {
   var seedArray = [
     0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220, 18, 102,
@@ -21,7 +25,7 @@ function testSchemes() {
   [BasicSchemeMPL, AugSchemeMPL, PopSchemeMPL].map((Scheme) => {
     const sig = Scheme.sign(sk, msg);
     const schemaName = Scheme.constructor.name; // Get the name of the Scheme
-    console.log(
+    logTest(
       `${schemaName} - Scheme.verify(pk, msg, sig):`,
       Scheme.verify(pk, msg, sig)
     );
@@ -47,14 +51,14 @@ function testSchemes() {
       sig2 = Scheme.sign(sk2, msg);
     }
     var agg_sig = Scheme.aggregate([sig1, sig2]);
-    console.log(
+    logTest(
       `${schemaName} - Scheme.verify(agg_pk, msg, agg_sig):`,
       Scheme.verify(agg_pk, msg, agg_sig)
     );
     sig1 = Scheme.sign(sk1, msg);
     sig2 = Scheme.sign(sk2, msg2);
     agg_sig = Scheme.aggregate([sig1, sig2]);
-    console.log(
+    logTest(
       `${schemaName} - Scheme.aggregateVerify([pk1, pk2], [msg, msg2], agg_sig):`,
       Scheme.aggregateVerify([pk1, pk2], [msg, msg2], agg_sig)
     );
@@ -62,12 +66,12 @@ function testSchemes() {
     const childU = Scheme.deriveChildSkUnhardened(sk1, 123);
     const childUPk = Scheme.deriveChildPkUnhardened(pk1, 123);
     const sig_child = Scheme.sign(child, msg);
-    console.log(
+    logTest(
       `${schemaName} - Scheme.verify(child.getG1(), msg, sig_child):`,
       Scheme.verify(child.getG1(), msg, sig_child)
     );
     const sigU_child = Scheme.sign(childU, msg);
-    console.log(
+    logTest(
       `${schemaName} - Scheme.verify(childUPk, msg, sigU_child):`,
       Scheme.verify(childUPk, msg, sigU_child)
     );
@@ -119,7 +123,7 @@ function testVectorsInvalid() {
   invalid_inputs_1.map((s) => {
     try {
       const g1 = G1Element.fromHex(s);
-      console.log(`Failed to disallow creation of G1 element for string ${s}`);
+      logTest(`Failed to disallow creation of G1 element for string ${s}`);
     } catch (e) {
       g1_exn_count++;
     }
@@ -128,14 +132,14 @@ function testVectorsInvalid() {
   invalid_inputs_2.map((s) => {
     try {
       const g2 = G2Element.fromHex(s);
-      console.log(`Failed to disallow creation of G2 element for string ${s}`);
+      logTest(`Failed to disallow creation of G2 element for string ${s}`);
     } catch (e) {
       g2_exn_count++;
     }
   });
 
   if (g1_exn_count != invalid_inputs_1.length) {
-    console.log(
+    logTest(
       `Error: Expected all invalid G1 inputs to throw exceptions. Successful G1 conversions: ${
         invalid_inputs_1.length - g1_exn_count
       }`
@@ -143,7 +147,7 @@ function testVectorsInvalid() {
   }
 
   if (g2_exn_count != invalid_inputs_2.length) {
-    console.log(
+    logTest(
       `Error: Expected all invalid G2 inputs to throw exceptions. Successful G2 conversions: ${
         invalid_inputs_2.length - g2_exn_count
       }`
@@ -154,7 +158,7 @@ function testVectorsInvalid() {
     g1_exn_count == invalid_inputs_1.length &&
     g2_exn_count == invalid_inputs_2.length
   )
-    console.log('finished testVectorsInvalid with successfully');
+    logTest('finished testVectorsInvalid with successfully', true);
 }
 
 function createRepeatedUint8Array(length: number, value: number) {
@@ -214,52 +218,47 @@ function testVectorsValid() {
 
 function checkEquality(buffer1: string, buffer2Hex: string, label: string) {
   const isEqual = buffer1 === buffer2Hex;
-  console.log(`${label} matches reference: ${isEqual ? 'Passed' : 'Failed'}`);
+  logTest(`${label} matches reference`, isEqual);
 }
 
 function testReadme() {
-  console.log('Starting test_readme function...');
+  // console.log('Starting test_readme function...');
 
   let seed = Uint8Array.from([
     0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220, 18, 102,
     58, 209, 82, 12, 62, 89, 110, 182, 9, 44, 20, 254, 22,
   ]);
-  console.log('Initial seed:', seed);
+  // console.log(`Initial seed: ${seed}`);
 
   let sk = AugSchemeMPL.keyGen(seed);
   let pk = sk.getG1();
-  console.log('Generated sk and pk');
+  // logTest('Generated sk and pk');
 
   const message = Uint8Array.from([1, 2, 3, 4, 5]);
   let signature = AugSchemeMPL.sign(sk, message);
-  console.log('Generated signature:', signature.toHex());
+  // logTest('Generated signature:', signature.toHex());
 
   let ok = AugSchemeMPL.verify(pk, message, signature);
-  console.log('Verification result:', ok);
+  logTest('Verification result:', ok);
 
-  // const sk_bytes = sk.toHex();
-  // const pk_bytes = pk.toHex();
-  // const signature_bytes = signature.toHex();
-  // console.log(
-  //   'Serialized sk, pk, signature:',
-  //   sk_bytes,
-  //   pk_bytes,
-  //   signature_bytes
-  // );
+  const sk_bytes = sk.toHex();
+  const pk_bytes = pk.toHex();
+  const signature_bytes = signature.toHex();
+  // logTest('Serialized sk, pk, signature:', sk_bytes, pk_bytes, signature_bytes);
 
   // Deserialize process
   sk = PrivateKey.fromBytes(sk.toBytes(), false);
   pk = G1Element.fromBytes(pk.toBytes());
   signature = G2Element.fromBytes(signature.toBytes());
-  console.log('Deserialization complete.');
+  // logTest('Deserialization complete.');
 
   seed = Uint8Array.from([1, ...seed.slice(1)]);
-  console.log('Modified seed:', seed);
+  // logTest(`Modified seed: ${seed}`, true);
 
   const sk1 = AugSchemeMPL.keyGen(seed);
   seed = Uint8Array.from([2, ...seed.slice(1)]);
   const sk2 = AugSchemeMPL.keyGen(seed);
-  console.log('Derived sk1 and sk2.');
+  // logTest('Derived sk1 and sk2.');
 
   const message2 = Uint8Array.from([1, 2, 3, 4, 5, 6, 7]);
 
@@ -268,38 +267,38 @@ function testReadme() {
 
   const pk2 = sk2.getG1();
   const sig2 = AugSchemeMPL.sign(sk2, message2);
-  console.log('Signed messages with sk1 and sk2.');
+  // logTest('Signed messages with sk1 and sk2.');
 
   const agg_sig = AugSchemeMPL.aggregate([sig1, sig2]);
-  console.log('Aggregated signatures.');
+  // logTest('Aggregated signatures.');
 
   ok = AugSchemeMPL.aggregateVerify([pk1, pk2], [message, message2], agg_sig);
-  console.log('Aggregate verification result:', ok);
+  logTest('Aggregate verification result:', ok);
 
   seed = Uint8Array.from([3, ...seed.slice(1)]);
-  // console.log('Updated Seed:', seed.toString('hex'));
+  //logTest('Updated Seed:', seed.toString('hex'));
 
   const sk3 = AugSchemeMPL.keyGen(seed);
-  // console.log('sk3:', sk3); // Assuming sk3 can be logged directly. If not, serialize or transform it into a readable format.
+  //logTest('sk3:', sk3); // Assuming sk3 can be logged directly. If not, serialize or transform it into a readable format.
 
   const pk3 = sk3.getG1();
-  // console.log('pk3:', pk3); // Similarly, adjust if direct logging isn't possible.
+  //logTest('pk3:', pk3); // Similarly, adjust if direct logging isn't possible.
 
   const message3 = Uint8Array.from([100, 2, 254, 88, 90, 45, 23]);
-  // console.log('message3:', message3.toString('hex'));
+  //logTest('message3:', message3.toString('hex'));
 
   const sig3 = AugSchemeMPL.sign(sk3, message3);
-  // console.log('sig3:', sig3); // Again, adjust logging format if necessary.
+  //logTest('sig3:', sig3); // Again, adjust logging format if necessary.
 
   const agg_sig_final = AugSchemeMPL.aggregate([agg_sig, sig3]);
-  // console.log('agg_sig_final:', agg_sig_final); // Adjust logging format if necessary.
+  //logTest('agg_sig_final:', agg_sig_final); // Adjust logging format if necessary.
 
   ok = AugSchemeMPL.aggregateVerify(
     [pk1, pk2, pk3],
     [message, message2, message3],
     agg_sig_final
   );
-  console.log('Aggregate Verification Result:', ok);
+  logTest('Aggregate Verification Result:', ok);
 
   const pop_sig1 = PopSchemeMPL.sign(sk1, message);
   const pop_sig2 = PopSchemeMPL.sign(sk2, message);
@@ -309,32 +308,32 @@ function testReadme() {
   const pop3 = PopSchemeMPL.popProve(sk3);
 
   ok = PopSchemeMPL.popVerify(pk1, pop1);
-  console.log('Verification for pk1 and pop1:', ok);
+  logTest('Verification for pk1 and pop1:', ok);
   ok = PopSchemeMPL.popVerify(pk2, pop2);
-  console.log('Verification for pk2 and pop2:', ok);
+  logTest('Verification for pk2 and pop2:', ok);
   ok = PopSchemeMPL.popVerify(pk3, pop3);
-  console.log('Verification for pk3 and pop3:', ok);
+  logTest('Verification for pk3 and pop3:', ok);
 
   const pop_sig_agg = PopSchemeMPL.aggregate([pop_sig1, pop_sig2, pop_sig3]);
 
   ok = PopSchemeMPL.fastAggregateVerify([pk1, pk2, pk3], message, pop_sig_agg);
-  console.log('Fast aggregate verification result:', ok);
+  logTest('Fast aggregate verification result:', ok);
 
   const pop_agg_pk = pk1.add(pk2).add(pk3);
-  // console.log('Serialized pop_agg_pk:', pop_agg_pk.toHex());
+  //logTest('Serialized pop_agg_pk:', pop_agg_pk.toHex());
   const t_pop_agg_pk_1 = pk1.add(pk2.add(pk3));
-  console.log(
+  logTest(
     'Do serialized pop_agg_pk and t_pop_agg_pk_1 match?',
     pop_agg_pk.equalTo(t_pop_agg_pk_1)
   );
 
-  // console.log('Serialized pop_sig_agg:', pop_sig_agg.toHex());
+  //logTest('Serialized pop_sig_agg:', pop_sig_agg.toHex());
   ok = PopSchemeMPL.verify(pop_agg_pk, message, pop_sig_agg);
-  console.log('PopSchemeMPL.verify result:', ok);
+  logTest('PopSchemeMPL.verify result:', ok);
 
   const pop_agg_sk = PrivateKey.aggregate([sk1, sk2, sk3]);
   ok = PopSchemeMPL.sign(pop_agg_sk, message).toHex() === pop_sig_agg.toHex();
-  console.log('Does signed pop_agg_sk match pop_sig_agg?', ok);
+  logTest('Does signed pop_agg_sk match pop_sig_agg?', ok);
 
   const master_sk = AugSchemeMPL.keyGen(seed);
   const child = AugSchemeMPL.deriveChildSk(master_sk, 152);
@@ -348,10 +347,15 @@ function testReadme() {
   const grandchild_u_pk = AugSchemeMPL.deriveChildPkUnhardened(child_u_pk, 0);
 
   ok = grandchild_u_pk.equalTo(grandchild_u.getG1());
-  console.log('Do serialized grandchild_u_pk and grandchild_u match?', ok);
-
-  console.log('test_readme function completed.');
+  logTest('Do serialized grandchild_u_pk and grandchild_u match?', ok);
 }
 
-export { testSchemes, testVectorsInvalid, testVectorsValid, testReadme };
-// const msg3 = Uint8Array.from([1, 2, 3]);
+export const tests = () => {
+  testSchemes();
+  testVectorsInvalid();
+  testVectorsValid();
+  testReadme();
+};
+
+// export { testSchemes, testVectorsInvalid, testVectorsValid, testReadme };
+// // const msg3 = Uint8Array.from([1, 2, 3]);

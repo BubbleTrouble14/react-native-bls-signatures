@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Button, StyleSheet, View } from 'react-native';
 import { testBridgeFunctions } from './tests/Bridge.test';
+import { tests } from './tests/index.test';
 
 export default function App() {
   return (
@@ -9,7 +10,8 @@ export default function App() {
       <Button
         title="Run"
         onPress={() => {
-          testBridgeFunctions();
+          // testBridgeFunctions();
+          tests();
         }}
       />
     </View>
