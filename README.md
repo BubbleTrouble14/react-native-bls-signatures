@@ -1,147 +1,100 @@
-# react-native-bls-signatures
-
-A React Native library for bls signatures.
-
-## Documentation
-
-- [AugSchemeMPL](#augschemempl)
-- [BasicSchemeMPL](#basicschemempl)
-- [PopSchemeMPL](#popschemempl)
-- [PrivateKey](#privatekey)
-- [G1Element](#g1element)
-- [G2Element](#g2element)
-- [Utils](#utils)
-
-## `AugSchemeMPL`
+## AugSchemeMPL
 
 ### Static Methods:
 
-- **`skToG1(sk: PrivateKey)`**: Returns `G1Element`
-- **`keyGen(seed: Uint8Array)`**: Returns `PrivateKey`
-- **`sign(sk: PrivateKey, msg: Uint8Array)`**: Returns `G2Element`
-- **`signPrepend(sk: PrivateKey, msg: Uint8Array, prependPk: G1Element)`**: Returns `G2Element`
-- **`verify(pk: G1Element, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
-- **`aggregate(g2s: Array<G2Element>)`**: Returns `G2Element`
-- **`aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)`**: Returns `boolean`
-- **`deriveChildSk(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
-- **`deriveChildSkUnhardened(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
-- **`deriveChildPkUnhardened(pk: G1Element, index: number)`**: Returns `G1Element`
+- **skToG1**(_sk_: `PrivateKey`): Returns `G1Element`
+- **keyGen**(_seed_: `Uint8Array`): Returns `PrivateKey`
+- **sign**(_sk_: `PrivateKey`, _msg_: `Uint8Array`): Returns `G2Element`
+- **signPrepend**(_sk_: `PrivateKey`, _msg_: `Uint8Array`, _prependPk_: `G1Element`): Returns `G2Element`
+- **verify**(_pk_: `G1Element`, _msg_: `Uint8Array`, _sig_: `G2Element`): Returns `boolean`
+- **aggregate**(_g2s_: `Array<G2Element>`): Returns `G2Element`
+- **aggregateVerify**(_pks_: `Array<G1Element>`, _msgs_: `Array<Uint8Array>`, _sig_: `G2Element`): Returns `boolean`
+- **deriveChildSk**(_sk_: `PrivateKey`, _index_: `number`): Returns `PrivateKey`
+- **deriveChildSkUnhardened**(_sk_: `PrivateKey`, _index_: `number`): Returns `PrivateKey`
+- **deriveChildPkUnhardened**(_pk_: `G1Element`, _index_: `number`): Returns `G1Element`
 
-## `BasicSchemeMPL`
-
-### Static Methods:
-
-- **`skToG1(sk: PrivateKey)`**: Returns `G1Element`
-- **`keyGen(seed: Uint8Array)`**: Returns `PrivateKey`
-- **`sign(sk: PrivateKey, msg: Uint8Array)`**: Returns `G2Element`
-- **`verify(pk: G1Element, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
-- **`aggregate(g2s: Array<G2Element>)`**: Returns `G2Element`
-- **`aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)`**: Returns `boolean`
-- **`deriveChildSk(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
-- **`deriveChildSkUnhardened(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
-- **`deriveChildPkUnhardened(pk: G1Element, index: number)`**: Returns `G1Element`
-
-## `PopSchemeMPL`
+## BasicSchemeMPL
 
 ### Static Methods:
 
-- **`skToG1(sk: PrivateKey)`**: Returns `G1Element`
-- **`keyGen(seed: Uint8Array)`**: Returns `PrivateKey`
-- **`sign(sk: PrivateKey, msg: Uint8Array)`**: Returns `G2Element`
-- **`verify(pk: G1Element, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
-- **`aggregate(g2s: Array<G2Element>)`**: Returns `G2Element`
-- **`aggregateVerify(pks: Array<G1Element>, msgs: Array<Uint8Array>, sig: G2Element)`**: Returns `boolean`
-- **`deriveChildSk(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
-- **`deriveChildSkUnhardened(sk: PrivateKey, index: number)`**: Returns `PrivateKey`
-- **`deriveChildPkUnhardened(pk: G1Element, index: number)`**: Returns `G1Element`
-- **`popVerify(pk: G1Element, signatureProof: G2Element)`**: Returns `boolean`
-- **`popProve(sk: PrivateKey)`**: Returns `G2Element`
-- **`fastAggregateVerify(pks: Array<G1Element>, msg: Uint8Array, sig: G2Element)`**: Returns `boolean`
+- **skToG1**(_sk_: `PrivateKey`): Returns `G1Element`
+- **keyGen**(_seed_: `Uint8Array`): Returns `PrivateKey`
+- **sign**(_sk_: `PrivateKey`, _msg_: `Uint8Array`): Returns `G2Element`
+- **verify**(_pk_: `G1Element`, _msg_: `Uint8Array`, _sig_: `G2Element`): Returns `boolean`
+- **aggregate**(_g2s_: `Array<G2Element>`): Returns `G2Element`
+- **aggregateVerify**(_pks_: `Array<G1Element>`, _msgs_: `Array<Uint8Array>`, _sig_: `G2Element`): Returns `boolean`
+- **deriveChildSk**(_sk_: `PrivateKey`, _index_: `number`): Returns `PrivateKey`
+- **deriveChildSkUnhardened**(_sk_: `PrivateKey`, _index_: `number`): Returns `PrivateKey`
+- **deriveChildPkUnhardened**(_pk_: `G1Element`, _index_: `number`): Returns `G1Element`
 
-## `PrivateKey`
+## PopSchemeMPL
 
 ### Static Methods:
 
-- **`fromBytes(bytes: Uint8Array, modOrder?: boolean)`**: Returns `PrivateKey`
-- **`fromHex(hex: string)`**: Returns `PrivateKey`
-- **`aggregate(privateKeys: Array<PrivateKey>)`**: Returns `PrivateKey`
+- **skToG1**(_sk_: `PrivateKey`): Returns `G1Element`
+- **keyGen**(_seed_: `Uint8Array`): Returns `PrivateKey`
+- **sign**(_sk_: `PrivateKey`, _msg_: `Uint8Array`): Returns `G2Element`
+- **verify**(_pk_: `G1Element`, _msg_: `Uint8Array`, _sig_: `G2Element`): Returns `boolean`
+- **aggregate**(_g2s_: `Array<G2Element>`): Returns `G2Element`
+- **aggregateVerify**(_pks_: `Array<G1Element>`, _msgs_: `Array<Uint8Array>`, _sig_: `G2Element`): Returns `boolean`
+- **deriveChildSk**(_sk_: `PrivateKey`, _index_: `number`): Returns `PrivateKey`
+- **deriveChildSkUnhardened**(_sk_: `PrivateKey`, _index_: `number`): Returns `PrivateKey`
+- **deriveChildPkUnhardened**(_pk_: `G1Element`, _index_: `number`): Returns `G1Element`
+- **popVerify**(_pk_: `G1Element`, _signatureProof_: `G2Element`): Returns `boolean`
+- **popProve**(_sk_: `PrivateKey`): Returns `G2Element`
+- **fastAggregateVerify**(_pks_: `Array<G1Element>`, _msg_: `Uint8Array`, _sig_: `G2Element`): Returns `boolean`
+
+## PrivateKey
+
+### Static Methods:
+
+- **fromBytes**(_bytes_: `Uint8Array`, _modOrder_?: `boolean`): Returns `PrivateKey`
+- **fromHex**(_hex_: `string`): Returns `PrivateKey`
+- **aggregate**(_privateKeys_: `Array<PrivateKey>`): Returns `PrivateKey`
 
 ### Methods:
 
-- **`toBytes()`**: Returns `Uint8Array`
-- **`toHex()`**: Returns `string`
-- **`toString()`**: Returns `string`
-- **`equalTo(value: PrivateKey)`**: Returns `boolean`
-- **`getG1()`**: Returns `G1Element`
-- **`getG2()`**: Returns `G2Element`
+- **toBytes()**: Returns `Uint8Array`
+- **toHex()**: Returns `string`
+- **toString()**: Returns `string`
+- **equalTo**(_value_: `PrivateKey`): Returns `boolean`
+- **getG1()**: Returns `G1Element`
+- **getG2()**: Returns `G2Element`
 
-## `G1Element`
-
-### Static Methods:
-
-- **`fromBytes(bytes: Uint8Array)`**: Returns `G1Element`
-- **`fromHex(hex: string)`**: Returns `G1Element`
-
-### Methods:
-
-- **`toBytes()`**: Returns `Uint8Array`
-- **`toHex()`**: Returns `string`
-- **`getFingerPrint()`**: Returns `number`
-- **`add(e1: G1Element)`**: Returns `G1Element`
-- **`negate()`**: Returns `G1Element`
-- **`equalTo(value: G1Element)`**: Returns `boolean`
-
-## `G2Element`
+## G1Element
 
 ### Static Methods:
 
-- **`fromBytes(bytes: Uint8Array)`**: Returns `G2Element`
-- **`fromHex(hex: string)`**: Returns `G2Element`
+- **fromBytes**(_bytes_: `Uint8Array`): Returns `G1Element`
+- **fromHex**(_hex_: `string`): Returns `G1Element`
 
 ### Methods:
 
-- **`toBytes()`**: Returns `Uint8Array`
-- **`toHex()`**: Returns `string`
-- **`add(e2: G2Element)`**: Returns `G2Element`
-- **`negate()`**: Returns `G2Element`
-- **`equalTo(value: G2Element)`**: Returns `boolean`
+- **toBytes()**: Returns `Uint8Array`
+- **toHex()**: Returns `string`
+- **getFingerPrint()**: Returns `number`
+- **add**(_e1_: `G1Element`): Returns `G1Element`
+- **negate()**: Returns `G1Element`
+- **equalTo**(_value_: `G1Element`): Returns `boolean`
 
-## `Utils`
+## G2Element
 
-- **`hash256(msg: Uint8Array)`**: Returns SHA-256 hash
-- **`toHex(bytes: Uint8Array)`**: Returns `string`
-- **`fromHex(hex: string)`**: Returns `Uint8Array`
-- **`getRandomSeed()`**: Returns `Uint8Array`
+### Static Methods:
 
-## Libsodium license
+- **fromBytes**(_bytes_: `Uint8Array`): Returns `G2Element`
+- **fromHex**(_hex_: `string`): Returns `G2Element`
 
-The libsodium static library is licensed under the ISC license which requires
-the following copyright notice.
+### Methods:
 
-> ISC License
->
-> Copyright (c) 2013-2020
-> Frank Denis \<j at pureftpd dot org\>
->
-> Permission to use, copy, modify, and/or distribute this software for any
-> purpose with or without fee is hereby granted, provided that the above
-> copyright notice and this permission notice appear in all copies.
->
-> THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-> WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-> MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-> ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-> WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-> ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-> OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+- **toBytes()**: Returns `Uint8Array`
+- **toHex()**: Returns `string`
+- **add**(_e2_: `G2Element`): Returns `G2Element`
+- **negate()**: Returns `G2Element`
+- **equalTo**(_value_: `G2Element`): Returns `boolean`
 
-## BLST license
+## Utils
 
-BLST is used with the
-[Apache 2.0 license](https://github.com/supranational/blst/blob/master/LICENSE)
-
-## Resources
-
-- [Chia-Network/bls-signatures](https://github.com/Chia-Network/bls-signatures) code for bls
-- [Marc Rousavy](https://github.com/mrousavy) thanks for all the examples
-- [animo/react-native-bbs-signatures](https://github.com/animo/react-native-bbs-signatures) also great example
+- **hash256**(_msg_: `Uint8Array`): Returns SHA-256 hash
+- **toHex**(_bytes_: `Uint8Array`): Returns `string`
+- **fromHex**(_hex_: `string`): Returns `Uint8Array`
+- **getRandomSeed()**: Returns `Uint8Array`
