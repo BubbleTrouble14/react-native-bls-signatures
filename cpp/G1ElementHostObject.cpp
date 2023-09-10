@@ -71,7 +71,7 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
             return newTypedArray;
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Cannot call toBytes on a null G1Element instance.");
         });
   }
 
@@ -87,7 +87,7 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
             return jsi::String::createFromUtf8(runtime, Util::HexStr(g1Element->Serialize()));
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Cannot call toHex on a null G1Element instance.");
         });
   }
 
@@ -95,29 +95,28 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
+        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+           size_t count) -> jsi::Value
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "fromBytes(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "fromBytes method expects one argument (Uint8Array).");
           }
 
           auto object = arguments[0].asObject(runtime);
           if (!isTypedArray(runtime, object))
           {
-            throw jsi::JSError(runtime, "fromBytes argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "fromBytes argument is not a Uint8Array.");
           }
 
           auto typedArray = getTypedArray(runtime, object);
 
           if (typedArray.size(runtime) != G1Element::SIZE)
           {
-            throw std::invalid_argument("G1Element::FromBytes: Invalid size");
+            throw jsi::JSError(runtime, "Invalid size for the fromBytes argument.");
           }
 
           G1Element g1 = G1Element::FromByteVector(typedArray.toVector(runtime));
-
           auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
           return jsi::Object::createFromHostObject(runtime, g1Obj);
         });
@@ -127,21 +126,20 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
+        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+           size_t count) -> jsi::Value
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "fromHex(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "fromHex method expects one argument (hexString).");
           }
 
           if (!arguments[0].isString())
           {
-            throw jsi::JSError(runtime, "Expected the argument to be a hex string");
+            throw jsi::JSError(runtime, "fromHex argument is not a string.");
           }
 
           auto hex = arguments[0].asString(runtime);
-
           G1Element g1 = G1Element::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
 
           auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
@@ -158,11 +156,10 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
         {
           if (this->g1Element != nullptr)
           {
-
             return jsi::Value(static_cast<double>(g1Element->GetFingerprint()));
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Cannot call getFingerprint on a null G1Element instance.");
         });
   }
 
@@ -175,14 +172,14 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "add(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "add method expects one argument (G1Element).");
           }
 
           // pk
           auto g1ElementObject = arguments[0].asObject(runtime);
           if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+            throw jsi::JSError(runtime, "First argument is not a G1Element.");
           }
           auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
           G1Element pk1 = g1ElementHostObject->getG1Element();
@@ -194,7 +191,7 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
             return jsi::Object::createFromHostObject(runtime, pkObj);
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Cannot call add on a null G1Element instance.");
         });
   }
 
@@ -211,7 +208,7 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
             return jsi::Object::createFromHostObject(runtime, g1Obj);
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Cannot call negate on a null G1Element instance.");
         });
   }
 
@@ -224,14 +221,14 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "equalTo(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "equalTo method expects one argument (G1Element).");
           }
 
           // sk
           auto g1KeyObject = arguments[0].asObject(runtime);
           if (!g1KeyObject.isHostObject<G1ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "equalTo first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "First argument is not a G1Element.");
           }
           auto g1HostObject = g1KeyObject.getHostObject<G1ElementHostObject>(runtime);
           G1Element g1 = g1HostObject->getG1Element();
@@ -242,9 +239,9 @@ jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
             return jsi::Value(areEqual);
           }
 
-          return jsi::Value(false);
+          throw jsi::JSError(runtime, "Cannot call equalTo on a null G1Element instance.");
         });
   }
 
-  return jsi::Value::undefined();
+  throw jsi::JSError(runtime, "Unknown property: " + propName);
 }

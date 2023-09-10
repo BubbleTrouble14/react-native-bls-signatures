@@ -44,7 +44,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
@@ -56,7 +56,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "skToG1 first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -72,7 +72,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
@@ -103,20 +103,20 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "sign")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and message
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
           {
-            throw jsi::JSError(runtime, "deriveChildSk(..) expects two arguments (privateKey, index)!");
+            throw jsi::JSError(runtime, "sign(..) expects two arguments (privateKey, message)!");
           }
 
           // pk
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "sign first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -140,8 +140,8 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "verify")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // 3 arguments
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // 3 arguments: pk, message, prependPk
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 3)
@@ -153,7 +153,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto g1ElementObject = arguments[0].asObject(runtime);
           if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+            throw jsi::JSError(runtime, "First argument is an object, but not of type G1ElementHostObject!");
           }
           auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
           G1Element pk = g1ElementHostObject->getG1Element();
@@ -171,7 +171,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto g2ElementObject = arguments[2].asObject(runtime);
           if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2Element!");
+            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2ElementHostObject!");
           }
           auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
           G2Element prependPk = g2ElementHostObject->getG2Element();
@@ -186,7 +186,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1, // expecting 1 argument
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
@@ -210,14 +210,14 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
             auto g2ElementObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
             if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
             {
-              throw jsi::JSError(runtime, "Element in the array is not of type G2Element!");
+              throw jsi::JSError(runtime, "Element in the array is not of type G2ElementHostObject!");
             }
             auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
             G2Element g2Element = g2ElementHostObject->getG2Element();
             g2Elements.push_back(g2Element);
           }
 
-          // Assuming PopSchemeMPL().Aggregate() returns a G2Element, but this is just an example.
+          // Assuming PopSchemeMPL().Aggregate() returns a G2Element, but  is just an example.
           G2Element g2Element = PopSchemeMPL().Aggregate(g2Elements);
 
           auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
@@ -228,8 +228,8 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "aggregateVerify")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // expecting 1 argument
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // expecting 3 arguments
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 3)
@@ -250,7 +250,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
             auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
             if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
             {
-              throw jsi::JSError(runtime, "Element in the array is not of type G1Element!");
+              throw jsi::JSError(runtime, "Element in the array is not of type G1ElementHostObject!");
             }
             auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
             G1Element g1Element = g1ElementHostObject->getG1Element();
@@ -281,7 +281,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto g2ElementObject = arguments[2].asObject(runtime);
           if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2Element!");
+            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2ElementHostObject!");
           }
           auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
           G2Element sig = g2ElementHostObject->getG2Element();
@@ -296,7 +296,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
@@ -308,11 +308,10 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
-          // blst::SecretKey secretKey = privateKeyHostObject->getSecretKey();
 
           // Handle the index argument
           if (!arguments[1].isNumber())
@@ -332,7 +331,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
@@ -344,7 +343,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSkUnhardened first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "deriveChildSkUnhardened first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -367,7 +366,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
@@ -379,7 +378,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto g1ElementObject = arguments[0].asObject(runtime);
           if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildPkUnhardened first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "deriveChildPkUnhardened first argument is an object, but not of type G1ElementHostObject!");
           }
           auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
           G1Element g1Element = g1ElementHostObject->getG1Element();
@@ -402,7 +401,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
@@ -414,7 +413,7 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "popProve first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "popProve first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -429,30 +428,29 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "popVerify")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: publicKey and signatureProof
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
           {
-            throw jsi::JSError(runtime, "popVerify(..) expects three arguments (pk, message, prependPk)!");
+            throw jsi::JSError(runtime, "popVerify(..) expects two arguments (publicKey, signatureProof)!");
           }
 
-          // pk
+          // publicKey
           auto g1ElementObject = arguments[0].asObject(runtime);
           if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+            throw jsi::JSError(runtime, "popVerify first argument is an object, but not of type G1ElementHostObject!");
           }
           auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
           G1Element pk = g1ElementHostObject->getG1Element();
-          ;
 
           // signatureProof
           auto g2ElementObject = arguments[1].asObject(runtime);
           if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "Second argument is an object, but not of type G2Element!");
+            throw jsi::JSError(runtime, "popVerify second argument is an object, but not of type G2ElementHostObject!");
           }
           auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
           G2Element signatureProof = g2ElementHostObject->getG2Element();
@@ -465,19 +463,19 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "fastAggregateVerify")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // expecting 1 argument
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // Three arguments: publicKeys, message, and signature
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 3)
           {
-            throw jsi::JSError(runtime, "aggregateVerify(..) expects three arguments!");
+            throw jsi::JSError(runtime, "fastAggregateVerify(..) expects three arguments (publicKeys, message, signature)!");
           }
 
-          // pks
+          // publicKeys
           if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime))
           {
-            throw jsi::JSError(runtime, "Expected first argument to be an array");
+            throw jsi::JSError(runtime, "fastAggregateVerify first argument is not an array!");
           }
           jsi::Array pksArr = arguments[0].asObject(runtime).asArray(runtime);
           size_t pksLength = pksArr.length(runtime);
@@ -487,33 +485,32 @@ jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
             auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
             if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
             {
-              throw jsi::JSError(runtime, "Element in the array is not of type G1Element!");
+              throw jsi::JSError(runtime, "Element in the array is not of type G1ElementHostObject!");
             }
             auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
             G1Element g1Element = g1ElementHostObject->getG1Element();
             g1Elements.push_back(g1Element);
           }
 
-          // msg
-          auto typeArrayObject = arguments[1].asObject(runtime);
-          if (!isTypedArray(runtime, typeArrayObject))
+          // message
+          auto messageObject = arguments[1].asObject(runtime);
+          if (!isTypedArray(runtime, messageObject))
           {
-            throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "fastAggregateVerify second argument is not a typed array!");
           }
+          auto messageArray = getTypedArray(runtime, messageObject);
+          std::vector<uint8_t> message = messageArray.toVector(runtime);
 
-          auto messageArray = getTypedArray(runtime, typeArrayObject);
-          vector<uint8_t> message = messageArray.toVector(runtime);
-
-          // sig
+          // signature
           auto g2ElementObject = arguments[2].asObject(runtime);
           if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2Element!");
+            throw jsi::JSError(runtime, "fastAggregateVerify third argument is not of type G2ElementHostObject!");
           }
           auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element sig = g2ElementHostObject->getG2Element();
+          G2Element signature = g2ElementHostObject->getG2Element();
 
-          auto value = PopSchemeMPL().FastAggregateVerify(g1Elements, message, sig);
+          auto value = PopSchemeMPL().FastAggregateVerify(g1Elements, message, signature);
 
           return jsi::Value(value);
         });

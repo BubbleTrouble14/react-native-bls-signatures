@@ -94,7 +94,7 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
@@ -126,17 +126,17 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "fromHex(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "fromHex(..) expects one argument (hexString)!");
           }
 
           if (!arguments[0].isString())
           {
-            throw jsi::JSError(runtime, "Expected the argument to be a hex string");
+            throw jsi::JSError(runtime, "fromHex argument is not a string");
           }
 
           auto hex = arguments[0].asString(runtime);
@@ -157,23 +157,23 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "add(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "add(..) expects one argument (otherG2Element)!");
           }
 
-          // pk
+          // otherG2Element
           auto g2ElementObject = arguments[0].asObject(runtime);
           if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "First argument is an object, but not of type G1Element!");
+            throw jsi::JSError(runtime, "First argument is an object, but not of type G2Element!");
           }
           auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element g2 = g2ElementHostObject->getG2Element();
+          G2Element otherG2Element = g2ElementHostObject->getG2Element();
 
           if (this->g2Element != nullptr)
           {
-            G2Element pk = *this->g2Element + g2;
-            auto pkObj = std::make_shared<G2ElementHostObject>(pk);
-            return jsi::Object::createFromHostObject(runtime, pkObj);
+            G2Element result = *this->g2Element + otherG2Element;
+            auto resultObj = std::make_shared<G2ElementHostObject>(result);
+            return jsi::Object::createFromHostObject(runtime, resultObj);
           }
 
           return jsi::Value::undefined();
@@ -206,21 +206,21 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "equalTo(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "equalTo(..) expects one argument (otherG2Element)!");
           }
 
-          // sk
+          // otherG2Element
           auto g2KeyObject = arguments[0].asObject(runtime);
           if (!g2KeyObject.isHostObject<G2ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "equalTo first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "equalTo first argument is an object, but not of type G2Element!");
           }
           auto g2HostObject = g2KeyObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element g2 = g2HostObject->getG2Element();
+          G2Element otherG2Element = g2HostObject->getG2Element();
 
           if (this->g2Element != nullptr)
           {
-            bool areEqual = (*g2Element == g2);
+            bool areEqual = (*this->g2Element == otherG2Element);
             return jsi::Value(areEqual);
           }
 
@@ -228,5 +228,5 @@ jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID
         });
   }
 
-  return jsi::Value::undefined();
+  throw jsi::JSError(runtime, "Unknown property: " + propName);
 }

@@ -15,7 +15,6 @@ namespace utils
 
   void install(Runtime &jsiRuntime)
   {
-
     auto hash256 = jsi::Function::createFromHostFunction(
         jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "hash256"), 1,
         [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
@@ -29,7 +28,7 @@ namespace utils
           auto object = arguments[0].asObject(runtime);
           if (!isTypedArray(runtime, object))
           {
-            throw jsi::JSError(runtime, "Argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "hash256 argument is an object, but not of type Uint8Array!");
           }
           auto typedArray = getTypedArray(runtime, object);
 
@@ -59,7 +58,7 @@ namespace utils
           auto object = arguments[0].asObject(runtime);
           if (!isTypedArray(runtime, object))
           {
-            throw jsi::JSError(runtime, "Argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "toHex argument is an object, but not of type Uint8Array!");
           }
           auto typedArray = getTypedArray(runtime, object);
 
@@ -82,7 +81,7 @@ namespace utils
 
           if (!arguments[0].isString())
           {
-            throw jsi::JSError(runtime, "Expected the argument to be a hex string");
+            throw jsi::JSError(runtime, "fromHex argument is not a string!");
           }
 
           auto hex = arguments[0].asString(runtime);
@@ -106,7 +105,7 @@ namespace utils
         {
           if (count != 0)
           {
-            throw jsi::JSError(runtime, "The function does not expect any arguments.");
+            throw jsi::JSError(runtime, "getRandomSeed does not expect any arguments.");
           }
 
           uint8_t buf[32];

@@ -60,7 +60,6 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (this->privateKey != nullptr)
           {
-
             auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, PrivateKey::PRIVATE_KEY_SIZE);
             auto newBuffer = newTypedArray.getBuffer(runtime);
 
@@ -69,7 +68,7 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
             return newTypedArray;
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Private key is null.");
         });
   }
 
@@ -85,7 +84,7 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
             return jsi::String::createFromUtf8(runtime, Util::HexStr(privateKey->Serialize()));
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Private key is null.");
         });
   }
 
@@ -103,7 +102,7 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
             return jsi::String::createFromUtf8(runtime, finalString);
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Private key is null.");
         });
   }
 
@@ -116,12 +115,11 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (this->privateKey != nullptr)
           {
-
             auto g1ElementObj = std::make_shared<G1ElementHostObject>(privateKey->GetG1Element());
             return jsi::Object::createFromHostObject(runtime, g1ElementObj);
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Private key is null.");
         });
   }
 
@@ -134,12 +132,11 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (this->privateKey != nullptr)
           {
-
             auto g2ElementObj = std::make_shared<G2ElementHostObject>(privateKey->GetG2Element());
             return jsi::Object::createFromHostObject(runtime, g2ElementObj);
           }
 
-          return jsi::Value::undefined();
+          throw jsi::JSError(runtime, "Private key is null.");
         });
   }
 
@@ -152,25 +149,25 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (count != 2)
           {
-            throw jsi::JSError(runtime, "fromBytes(..) expects two argument (object)!");
+            throw jsi::JSError(runtime, "The 'fromBytes' function expects exactly two arguments.");
           }
 
           auto object = arguments[0].asObject(runtime);
           if (!isTypedArray(runtime, object))
           {
-            throw jsi::JSError(runtime, "fromBytes argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type Uint8Array.");
           }
 
           auto typedArray = getTypedArray(runtime, object);
 
           if (typedArray.size(runtime) != PrivateKey::PRIVATE_KEY_SIZE)
           {
-            throw std::invalid_argument("PrivateKey::FromBytes: Invalid size");
+            throw jsi::JSError(runtime, "Invalid size for 'fromBytes' argument. Expected " + std::to_string(PrivateKey::PRIVATE_KEY_SIZE) + " bytes.");
           }
 
           if (!arguments[1].isBool())
           {
-            throw jsi::JSError(runtime, "Expected second argument to be of type boolean!");
+            throw jsi::JSError(runtime, "The second argument of 'fromBytes' must be of type boolean.");
           }
           auto modOrder = arguments[1].asBool();
 
@@ -190,12 +187,12 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "fromHex(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "The 'fromHex' function expects exactly one argument.");
           }
 
           if (!arguments[0].isString())
           {
-            throw jsi::JSError(runtime, "Expected the argument to be a hex string");
+            throw jsi::JSError(runtime, "The argument of 'fromHex' must be a hex string.");
           }
 
           auto hex = arguments[0].asString(runtime);
@@ -216,13 +213,13 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "aggregate(..) expects one argument!");
+            throw jsi::JSError(runtime, "The 'aggregate' function expects exactly one argument.");
           }
 
           // Ensure the argument is an array
           if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime))
           {
-            throw jsi::JSError(runtime, "Expected first argument to be an array");
+            throw jsi::JSError(runtime, "The first argument of 'aggregate' must be an array.");
           }
 
           jsi::Array arr = arguments[0].asObject(runtime).asArray(runtime);
@@ -235,7 +232,7 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
             auto privateKeyObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
             if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
             {
-              throw jsi::JSError(runtime, "Element in the array is not of type PrivateKey!");
+              throw jsi::JSError(runtime, "Element in the array is not of type PrivateKeyHostObject.");
             }
             auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
             PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -257,14 +254,14 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "equalTo(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "The 'equalTo' function expects exactly one argument.");
           }
 
-          // sk
+          // Ensure the argument is a PrivateKeyHostObject
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "The argument of 'equalTo' must be a PrivateKeyHostObject.");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey1 = privateKeyHostObject->getPrivateKey();
@@ -275,9 +272,9 @@ jsi::Value PrivateKeyHostObject::get(jsi::Runtime &runtime, const jsi::PropNameI
             return jsi::Value(areEqual);
           }
 
-          return jsi::Value(false);
+          throw jsi::JSError(runtime, "Private key is null.");
         });
   }
 
-  return jsi::Value::undefined();
+  throw jsi::JSError(runtime, "Unknown property: " + propName);
 }

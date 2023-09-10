@@ -41,19 +41,19 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "skToG1(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "skToG1(..) expects one argument (privateKey) of type PrivateKeyHostObject!");
           }
 
           // sk
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "skToG1 argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -69,12 +69,12 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "keyGen(..) expects one argument (object)!");
+            throw jsi::JSError(runtime, "keyGen(..) expects one argument (seed) of type Uint8Array!");
           }
 
           auto object = arguments[0].asObject(runtime);
@@ -100,20 +100,20 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "sign")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and message
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
           {
-            throw jsi::JSError(runtime, "deriveChildSk(..) expects two arguments (privateKey, index)!");
+            throw jsi::JSError(runtime, "sign(..) expects two arguments (privateKey, message) of appropriate types!");
           }
 
           // pk
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "sign first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -122,11 +122,10 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto typeArrayObject = arguments[1].asObject(runtime);
           if (!isTypedArray(runtime, typeArrayObject))
           {
-            throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "sign second argument is an object, but not of type Uint8Array!");
           }
           auto messageArray = getTypedArray(runtime, typeArrayObject);
           vector<uint8_t> message = messageArray.toVector(runtime);
-          // vector<uint8_t> message = {1, 2, 3, 4, 5, 6, 7};  // Message is passed in as a byte vector
 
           // g2
           G2Element g2Element = AugSchemeMPL().Sign(privateKey, message);
@@ -139,19 +138,19 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   {
     return jsi::Function::createFromHostFunction(
         runtime, jsi::PropNameID::forAscii(runtime, funcName), 3,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 3)
           {
-            throw jsi::JSError(runtime, "signPrepend(..) expects three arguments (pk, message, prependPk)!");
+            throw jsi::JSError(runtime, "signPrepend(..) expects three arguments (privateKey, message, prependPk) of appropriate types!");
           }
 
           // sk
           auto privateKeyObject = arguments[0].asObject(runtime);
           if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "signPrepend first argument is an object, but not of type PrivateKey!");
+            throw jsi::JSError(runtime, "signPrepend first argument is an object, but not of type PrivateKeyHostObject!");
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
@@ -160,7 +159,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto typeArrayObject = arguments[1].asObject(runtime);
           if (!isTypedArray(runtime, typeArrayObject))
           {
-            throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+            throw jsi::JSError(runtime, "signPrepend second argument is an object, but not of type Uint8Array!");
           }
           auto messageArray = getTypedArray(runtime, typeArrayObject);
           vector<uint8_t> message = messageArray.toVector(runtime);
@@ -169,7 +168,7 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           auto g1ElementObject = arguments[2].asObject(runtime);
           if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
           {
-            throw jsi::JSError(runtime, "argument is an object, but not of type G1Element!");
+            throw jsi::JSError(runtime, "signPrepend third argument is an object, but not of type G1ElementHostObject!");
           }
           auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
           G1Element prependPk = g1ElementHostObject->getG1Element();
@@ -184,8 +183,8 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "verify")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // 3 arguments
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 3)
@@ -229,16 +228,15 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "aggregate")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1, // expecting 1 argument
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 1)
           {
-            throw jsi::JSError(runtime, "aggregate(..) expects one argument!");
+            throw jsi::JSError(runtime, "aggregate(..) expects one argument (g2Elements)!");
           }
 
-          // Ensure the argument is an array
           if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime))
           {
             throw jsi::JSError(runtime, "Expected first argument to be an array");
@@ -261,7 +259,6 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
             g2Elements.push_back(g2Element);
           }
 
-          // Assuming AugSchemeMPL().Aggregate() returns a G2Element, but this is just an example.
           G2Element g2Element = AugSchemeMPL().Aggregate(g2Elements);
 
           auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
@@ -272,13 +269,13 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "aggregateVerify")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // expecting 1 argument
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 3)
           {
-            throw jsi::JSError(runtime, "aggregateVerify(..) expects three arguments!");
+            throw jsi::JSError(runtime, "aggregateVerify(..) expects three arguments (pks, messages, sig)!");
           }
 
           // pks
@@ -308,7 +305,6 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           }
           jsi::Array messagesArr = arguments[1].asObject(runtime).asArray(runtime);
           size_t messagesLength = messagesArr.length(runtime);
-          // vector<uint8_t> message = messageArray.toVector(runtime);
           std::vector<vector<uint8_t>> messages;
           for (size_t i = 0; i < messagesLength; i++)
           {
@@ -340,8 +336,8 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "deriveChildSk")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
@@ -357,7 +353,6 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           }
           auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
           PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
-          // blst::SecretKey secretKey = privateKeyHostObject->getSecretKey();
 
           // Handle the index argument
           if (!arguments[1].isNumber())
@@ -376,8 +371,8 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "deriveChildSkUnhardened")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
@@ -411,8 +406,8 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
   if (propName == "deriveChildPkUnhardened")
   {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
+        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2,
+        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
                size_t count) -> jsi::Value
         {
           if (count != 2)
@@ -443,5 +438,5 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
         });
   }
 
-  return jsi::Value::undefined();
+  throw jsi::JSError(runtime, "Unknown property: " + propName);
 }
