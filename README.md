@@ -1,4 +1,4 @@
-# React Native Bls Signatures
+# React Native BLS Signatures
 
 This is a React Native wrapper for [BLS Signatures](https://github.com/Chia-Network/bls-signatures) that offers quick and direct bindings to the native C++ library, accessible through a user-friendly TypeScript API.
 
