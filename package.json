@@ -45,7 +45,7 @@
   ],
   "repository": "https://github.com/BubbleTrouble14/react-native-bls-signatures",
   "author": "Ronald Goedeke (https://github.com/BubbleTrouble14)",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/BubbleTrouble14/react-native-bls-signatures/issues"
   },
