@@ -1,5 +1,4 @@
 {
-  "exclude": ["example"],
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
@@ -24,6 +23,5 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext"
-  },
-  "include": ["src"]
+  }
 }
