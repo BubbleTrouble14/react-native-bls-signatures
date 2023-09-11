@@ -2,6 +2,20 @@
 
 This is a React Native wrapper for [BLS Signatures](https://github.com/Chia-Network/bls-signatures) that offers quick and direct bindings to the native C++ library, accessible through a user-friendly TypeScript API.
 
+## Installation
+
+To use this library in your React Native project run the following command:
+
+```sh
+yarn add react-native-bls-signatures
+```
+
+or
+
+```sh
+npm install react-native-bls-signatures
+```
+
 ## Documentation
 
 - [AugSchemeMPL](#augschemempl)
