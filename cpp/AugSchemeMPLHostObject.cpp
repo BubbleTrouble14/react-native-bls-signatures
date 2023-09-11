@@ -84,12 +84,6 @@ jsi::Value AugSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNam
           }
 
           auto typedArray = getTypedArray(runtime, object);
-
-          if (typedArray.size(runtime) != PrivateKey::PRIVATE_KEY_SIZE)
-          {
-            throw std::invalid_argument("PrivateKey::FromBytes: Invalid size");
-          }
-
           PrivateKey sk = AugSchemeMPL().KeyGen(typedArray.toVector(runtime));
 
           auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);

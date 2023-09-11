@@ -73,7 +73,7 @@ export class PrivateKey {
     return this.instance.toString();
   }
 
-  equalTo(sk: PrivateKey): boolean {
+  equals(sk: PrivateKey): boolean {
     return this.instance.equalTo(sk.getCppPrivateKey());
   }
 

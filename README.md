@@ -71,7 +71,7 @@ This is a React Native wrapper for [BLS Signatures](https://github.com/Chia-Netw
 - **toBytes()** -> `Uint8Array`
 - **toHex()** -> `string`
 - **toString()** -> `string`
-- **equalTo**(_sk:_ `PrivateKey`) -> `boolean`
+- **equals**(_sk:_ `PrivateKey`) -> `boolean`
 - **getG1()** -> `G1Element`
 - **getG2()** -> `G2Element`
 
@@ -89,7 +89,7 @@ This is a React Native wrapper for [BLS Signatures](https://github.com/Chia-Netw
 - **getFingerPrint()** -> `number`
 - **add**(_g1e:_ `G1Element`) -> `G1Element`
 - **negate()** -> `G1Element`
-- **equalTo**(_g1e:_ `G1Element`) -> `boolean`
+- **equals**(_g1e:_ `G1Element`) -> `boolean`
 
 ## G2Element
 
@@ -104,7 +104,7 @@ This is a React Native wrapper for [BLS Signatures](https://github.com/Chia-Netw
 - **toHex()** -> `string`
 - **add**(_g2e:_ `G2Element`) -> `G2Element`
 - **negate()** -> `G2Element`
-- **equalTo**(_g2e:_ `G2Element`) -> `boolean`
+- **equals**(_g2e:_ `G2Element`) -> `boolean`
 
 ## Utils
 

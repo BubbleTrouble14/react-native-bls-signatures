@@ -1,17 +1,24 @@
 import * as React from 'react';
 
 import { Button, StyleSheet, View } from 'react-native';
-import { testBridgeFunctions } from './tests/Bridge.test';
-import { tests } from './tests/index.test';
+import { testLib } from './testing/MochaSetup';
+import { TEST_LIST } from './testing/TestList';
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Button
-        title="Run"
+        title="Test"
         onPress={() => {
-          // testBridgeFunctions();
-          tests();
+          const addTestResult = (testResult: any) => {
+            // console.log(testResult);
+          };
+
+          const registrators = TEST_LIST.map(
+            (testItem) => testItem.registrator
+          );
+
+          testLib(addTestResult, registrators);
         }}
       />
     </View>

@@ -70,7 +70,7 @@ export class G1Element {
     return new G1Element(this.instance.negate());
   }
 
-  equalTo(g1e: G1Element): boolean {
+  equals(g1e: G1Element): boolean {
     return this.instance.equalTo(g1e.getCppG1Element());
   }
 

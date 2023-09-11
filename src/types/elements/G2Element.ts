@@ -58,7 +58,7 @@ export class G2Element {
     return new G2Element(this.instance.negate());
   }
 
-  equalTo(g2e: G2Element): boolean {
+  equals(g2e: G2Element): boolean {
     return this.instance.equalTo(g2e.getCppG2Element());
   }
 
