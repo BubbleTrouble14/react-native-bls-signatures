@@ -1,6 +1,6 @@
 {
   "name": "react-native-bls-signatures",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A React Native library for bls signatures",
   "main": "./src/index.ts",
   "react-native": "src/index",
