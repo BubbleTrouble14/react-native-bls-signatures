@@ -2,9 +2,7 @@
   "name": "react-native-bls-signatures",
   "version": "0.0.1",
   "description": "A React Native library for bls signatures",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
+  "main": "./src/index.ts",
   "react-native": "src/index",
   "source": "src/index",
   "files": [
@@ -24,7 +22,6 @@
     "src",
     "README.md",
     "react-native-bls-signatures.podspec",
-    "!lib/typescript/example",
     "!android/build",
     "!ios/build"
   ],
