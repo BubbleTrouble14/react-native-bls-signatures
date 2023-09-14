@@ -36,7 +36,8 @@
   "scripts": {
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "build": "bob build",
+    "build-with-instances": "bob build",
+    "build": "bob build && node postProcess.js",
     "release": "release-it",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
