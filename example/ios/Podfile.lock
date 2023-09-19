@@ -266,7 +266,7 @@ PODS:
   - React-jsinspector (0.71.13)
   - React-logger (0.71.13):
     - glog
-  - react-native-bls-signatures (0.0.6):
+  - react-native-bls-signatures (0.0.7):
     - React
     - React-Core
   - React-perflogger (0.71.13)
@@ -494,7 +494,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: a2867f1f81301b1f56ad968632b6ebc45c64a530
   React-jsinspector: 7e58fe86c7cc442fd11da0c9d8bef12a8d63f771
   React-logger: a3f6ca0d018749852a2a6f07c154bfc6fcd4195a
-  react-native-bls-signatures: 5f121970942d4d20f264a1ac4e2fae12606bb765
+  react-native-bls-signatures: d16b241535a9dc3345d4042ce16ef990e632591d
   React-perflogger: 431a655960a02f01257d631b2a9bfbb02fd21064
   React-RCTActionSheet: 38c8d496d0faa63013d16f709e10a3acf6b5f100
   React-RCTAnimation: 6da4d599f3262ed8021433ddd96de45ac9e731b1

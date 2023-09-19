@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		520E5FFD2AB9A11E00525A77 /* Clibblst.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 520E5FFC2AB9A11E00525A77 /* Clibblst.xcframework */; };
 		5E555C0D2413F4C50049A1A2 /* BlsSignatures.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BlsSignatures.mm */; };
 		D39833522AACDF9F00A85733 /* Clibsodium.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39833512AACDF9F00A85733 /* Clibsodium.xcframework */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libBlsSignatures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBlsSignatures.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		520E5FFC2AB9A11E00525A77 /* Clibblst.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Clibblst.xcframework; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* BlsSignatures.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlsSignatures.mm; sourceTree = "<group>"; };
 		D336A8E02AACCD9D00983E25 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = Frameworks/Clibsodium.xcframework; sourceTree = "<group>"; };
 		D39833512AACDF9F00A85733 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Clibsodium.xcframework; sourceTree = "<group>"; };
@@ -35,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				520E5FFD2AB9A11E00525A77 /* Clibblst.xcframework in Frameworks */,
 				D39833522AACDF9F00A85733 /* Clibsodium.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -62,6 +65,7 @@
 		D336A8DB2AAB480000983E25 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				520E5FFC2AB9A11E00525A77 /* Clibblst.xcframework */,
 				D39833512AACDF9F00A85733 /* Clibsodium.xcframework */,
 				D336A8E02AACCD9D00983E25 /* Clibsodium.xcframework */,
 			);

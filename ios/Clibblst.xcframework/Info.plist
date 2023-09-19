@@ -5,6 +5,8 @@
 	<key>AvailableLibraries</key>
 	<array>
     <dict>
+        <key>BinaryPath</key>
+			  <string>libblst.a</string>
         <key>HeadersPath</key>
 			  <string>Headers</string>
         <key>LibraryIdentifier</key>
@@ -18,6 +20,8 @@
         </array>
         <key>SupportedPlatform</key>
         <string>ios</string>
+        <key>SupportedPlatformVariant</key>
+        <string>simulator</string>
     </dict>
     <dict>
         <key>HeadersPath</key>
