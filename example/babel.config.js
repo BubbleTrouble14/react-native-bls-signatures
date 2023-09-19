@@ -10,7 +10,9 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js', '.json'],
         alias: {
           [pak.name]: path.join(__dirname, '..', pak.source),
+          crypto: 'react-native-quick-crypto',
           stream: 'stream-browserify',
+          buffer: '@craftzdog/react-native-buffer',
         },
       },
     ],

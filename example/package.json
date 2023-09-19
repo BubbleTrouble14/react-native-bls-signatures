@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@craftzdog/react-native-buffer": "^6.0.5",
+    "@dreson4/react-native-quick-bip39": "^0.0.5",
     "buffer": "^6.0.3",
     "chai": "^4.3.8",
     "events": "^3.3.0",
     "mocha": "^10.2.0",
     "react": "^18.2.0",
     "react-native": "^0.71.0",
+    "react-native-quick-base64": "^2.0.7",
+    "react-native-quick-crypto": "^0.6.1",
     "stream-browserify": "^3.0.0",
     "util": "^0.12.5"
   },

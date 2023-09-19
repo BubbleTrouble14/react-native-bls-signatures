@@ -10,15 +10,11 @@ export default function App() {
       <Button
         title="Test"
         onPress={() => {
-          const addTestResult = (testResult: any) => {
-            // console.log(testResult);
-          };
-
           const registrators = TEST_LIST.map(
             (testItem) => testItem.registrator
           );
 
-          testLib(addTestResult, registrators);
+          testLib(() => {}, registrators);
         }}
       />
     </View>

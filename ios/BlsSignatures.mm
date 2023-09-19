@@ -4,48 +4,46 @@
 #import <jsi/jsi.h>
 
 #import "BlsSignatures.h"
-#include "../cpp/PrivateKeyHostObject.h"
-#include "../cpp/AugSchemeMPLHostObject.h"
-#include "../cpp/BasicSchemeMPLHostObject.h"
-#include "../cpp/PopSchemeMPLHostObject.h"
-#include "../cpp/G1ElementHostObject.h"
-#include "../cpp/G2ElementHostObject.h"
-#include "../cpp/Util.h"
+#import "../cpp/PrivateKeyHostObject.h"
+#import "../cpp/AugSchemeMPLHostObject.h"
+#import "../cpp/BasicSchemeMPLHostObject.h"
+#import "../cpp/PopSchemeMPLHostObject.h"
+#import "../cpp/G1ElementHostObject.h"
+#import "../cpp/G2ElementHostObject.h"
+#import "../cpp/Util.h"
+#import "../cpp/TypedArray.h"
 
 using namespace bls;
-using namespace facebook;
 
 @implementation BlsSignatures
 
 RCT_EXPORT_MODULE(BlsSignatures)
 
-+ (NSString*)getPropertyAsStringOrNilFromObject:(jsi::Object&)object
-                                   propertyName:(std::string)propertyName
-                                        runtime:(jsi::Runtime&)runtime {
-  jsi::Value value = object.getProperty(runtime, propertyName.c_str());
-  std::string string = value.isString() ? value.asString(runtime).utf8(runtime) : "";
-  return string.length() > 0 ? [NSString stringWithUTF8String:string.c_str()] : nil;
-}
-
-// Installing JSI Bindings as done by
-// https://github.com/mrousavy/react-native-mmkv
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 {
+    NSLog(@"Installing React Native BLS Signatures...");
     RCTBridge* bridge = [RCTBridge currentBridge];
     RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
     if (cxxBridge == nil) {
-        return @false;
+      return @false;
     }
+
+    using namespace facebook;
 
     auto jsiRuntime = (jsi::Runtime*) cxxBridge.runtime;
     if (jsiRuntime == nil) {
-        return @false;
+      return @false;
     }
+    auto& runtime = *jsiRuntime;
 
-    utils::install(*(facebook::jsi::Runtime *)jsiRuntime);
-    install(*(facebook::jsi::Runtime *)jsiRuntime);
+    utils::install(runtime);
+    install(runtime);
 
+    jsi::Object cacheCleaner = jsi::Object::createFromHostObject(runtime,
+                                                               std::make_shared<InvalidateCacheOnDestroy>(runtime));
+    runtime.global().setProperty(runtime, "__blsCacheCleaner", cacheCleaner);
 
+    NSLog(@"Installed React Native BLS Signatures");
     return @true;
 }
 
