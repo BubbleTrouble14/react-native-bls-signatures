@@ -143,7 +143,7 @@ console.log(ok); // true
 - **hash256**(_msg:_ `Uint8Array`) -> `Uint8Array`
 - **toHex**(_bytes:_ `Uint8Array`) -> `string`
 - **fromHex**(_hex:_ `string`) -> `Uint8Array`
-- **getRandomSeed()** -> `Uint8Array`
+- **getRandomSeed()** -> `Uint8Array` (Used for testing)
 
 ## Libsodium license
 
