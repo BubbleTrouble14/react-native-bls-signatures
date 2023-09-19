@@ -4,10 +4,7 @@
 <dict>
 	<key>AvailableLibraries</key>
 	<array>
-      <!-- libblst.a for ios-simulators -->
     <dict>
-        <key>BinaryPath</key>
-			  <string>libblst.a</string>
         <key>HeadersPath</key>
 			  <string>Headers</string>
         <key>LibraryIdentifier</key>
@@ -21,13 +18,8 @@
         </array>
         <key>SupportedPlatform</key>
         <string>ios</string>
-        <key>SupportedPlatformVariant</key>
-        <string>simulator</string>
     </dict>
-      <!-- libblst.a for ios -->
     <dict>
-        <key>BinaryPath</key>
-			  <string>libblst.a</string>
         <key>HeadersPath</key>
         <string>Headers</string>
         <key>LibraryIdentifier</key>
@@ -39,8 +31,6 @@
 				    <string>arm64</string>
         </array>
         <key>SupportedPlatform</key>
-        <string>ios</string>
-        <key>SupportedPlatformVariant</key>
         <string>ios</string>
     </dict>
 	</array>
