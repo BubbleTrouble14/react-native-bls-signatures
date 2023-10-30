@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
     :USE_HEADERMAP => "No"
   }
 
-  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{h,cpp}"
+  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{h,hpp,cpp}"
 
   s.dependency "React-Core"
   s.dependency "React"
