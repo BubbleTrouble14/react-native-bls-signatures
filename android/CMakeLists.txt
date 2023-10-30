@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
         ../cpp
+        ../cpp/include
+        ../cpp/include/bls
+        ../cpp/include/sodium
 )
 
 add_library(reactnativebls  # <-- Library name

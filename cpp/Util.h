@@ -2,8 +2,9 @@
 
 #include <jsi/jsi.h>
 
-namespace utils {
+namespace utils
+{
 
-  void install(facebook::jsi::Runtime &jsiRuntime);
+void install(facebook::jsi::Runtime& jsiRuntime);
 
 }

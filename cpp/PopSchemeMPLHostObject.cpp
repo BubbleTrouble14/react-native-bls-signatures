@@ -1,514 +1,452 @@
 #include "PopSchemeMPLHostObject.h"
-#include "PrivateKeyHostObject.h"
 #include "G1ElementHostObject.h"
 #include "G2ElementHostObject.h"
+#include "PrivateKeyHostObject.h"
+#include "TypedArray.h"
 #include <string>
 #include <vector>
-#include "TypedArray.h"
 
 // Constructor
-PopSchemeMPLHostObject::PopSchemeMPLHostObject()
-{
-}
+PopSchemeMPLHostObject::PopSchemeMPLHostObject() { }
 
 // Destructor
-PopSchemeMPLHostObject::~PopSchemeMPLHostObject()
+PopSchemeMPLHostObject::~PopSchemeMPLHostObject() { }
+
+std::vector<jsi::PropNameID> PopSchemeMPLHostObject::getPropertyNames(jsi::Runtime& rt)
 {
+    std::vector<jsi::PropNameID> result;
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("skToG1")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("keyGen")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("sign")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("verify")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregate")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregateVerify")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildSk")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildSkUnhardened")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildPkUnhardened")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("popProve")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("popVerify")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fastAggregateVerify")));
+
+    return result;
 }
 
-std::vector<jsi::PropNameID> PopSchemeMPLHostObject::getPropertyNames(jsi::Runtime &rt)
+jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId)
 {
-  std::vector<jsi::PropNameID> result;
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("skToG1")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("keyGen")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("sign")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("verify")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregate")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("aggregateVerify")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildSk")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildSkUnhardened")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("deriveChildPkUnhardened")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("popProve")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("popVerify")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fastAggregateVerify")));
+    auto propName = propNameId.utf8(runtime);
+    auto funcName = "PopSchemeMPL." + propName;
 
-  return result;
-}
+    if (propName == "skToG1") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "skToG1(..) expects one argument (object)!");
+                }
 
-jsi::Value PopSchemeMPLHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID &propNameId)
-{
-  auto propName = propNameId.utf8(runtime);
-  auto funcName = "PopSchemeMPL." + propName;
+                // sk
+                auto privateKeyObject = arguments[0].asObject(runtime);
+                if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "skToG1 first argument is an object, but not of type PrivateKeyHostObject!");
+                }
+                auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+                PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
 
-  if (propName == "skToG1")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "skToG1(..) expects one argument (object)!");
-          }
+                // g1
+                G1Element g1Element = PopSchemeMPL().SkToG1(privateKey);
+                auto g1ElementObj = std::make_shared<G1ElementHostObject>(g1Element);
+                return jsi::Object::createFromHostObject(runtime, g1ElementObj);
+            });
+    }
 
-          // sk
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "skToG1 first argument is an object, but not of type PrivateKeyHostObject!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+    if (propName == "keyGen") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "keyGen(..) expects one argument (object)!");
+                }
 
-          // g1
-          G1Element g1Element = PopSchemeMPL().SkToG1(privateKey);
-          auto g1ElementObj = std::make_shared<G1ElementHostObject>(g1Element);
-          return jsi::Object::createFromHostObject(runtime, g1ElementObj);
-        });
-  }
+                auto object = arguments[0].asObject(runtime);
+                if (!isTypedArray(runtime, object)) {
+                    throw jsi::JSError(runtime, "keyGen argument is an object, but not of type Uint8Array!");
+                }
 
-  if (propName == "keyGen")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "keyGen(..) expects one argument (object)!");
-          }
+                auto typedArray = getTypedArray(runtime, object);
+                PrivateKey sk = PopSchemeMPL().KeyGen(typedArray.toVector(runtime));
 
-          auto object = arguments[0].asObject(runtime);
-          if (!isTypedArray(runtime, object))
-          {
-            throw jsi::JSError(runtime, "keyGen argument is an object, but not of type Uint8Array!");
-          }
+                auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
+                return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
+            });
+    }
 
-          auto typedArray = getTypedArray(runtime, object);
-          PrivateKey sk = PopSchemeMPL().KeyGen(typedArray.toVector(runtime));
+    if (propName == "sign") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            2, // Two arguments: privateKey and message
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 2) {
+                    throw jsi::JSError(runtime, "sign(..) expects two arguments (privateKey, message)!");
+                }
 
-          auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(sk);
-          return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
-        });
-  }
+                // pk
+                auto privateKeyObject = arguments[0].asObject(runtime);
+                if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "sign first argument is an object, but not of type PrivateKeyHostObject!");
+                }
+                auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+                PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
 
-  if (propName == "sign")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and message
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 2)
-          {
-            throw jsi::JSError(runtime, "sign(..) expects two arguments (privateKey, message)!");
-          }
+                // msg
+                auto typeArrayObject = arguments[1].asObject(runtime);
+                if (!isTypedArray(runtime, typeArrayObject)) {
+                    throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+                }
+                auto messageArray = getTypedArray(runtime, typeArrayObject);
+                vector<uint8_t> message = messageArray.toVector(runtime);
 
-          // pk
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "sign first argument is an object, but not of type PrivateKeyHostObject!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+                // g2
+                G2Element g2Element = PopSchemeMPL().Sign(privateKey, message);
+                auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
+                return jsi::Object::createFromHostObject(runtime, g2ElementObj);
+            });
+    }
 
-          // msg
-          auto typeArrayObject = arguments[1].asObject(runtime);
-          if (!isTypedArray(runtime, typeArrayObject))
-          {
-            throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
-          }
-          auto messageArray = getTypedArray(runtime, typeArrayObject);
-          vector<uint8_t> message = messageArray.toVector(runtime);
+    if (propName == "verify") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            3, // 3 arguments: pk, message, prependPk
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 3) {
+                    throw jsi::JSError(runtime, "verify(..) expects three arguments (pk, message, prependPk)!");
+                }
 
-          // g2
-          G2Element g2Element = PopSchemeMPL().Sign(privateKey, message);
-          auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
-          return jsi::Object::createFromHostObject(runtime, g2ElementObj);
-        });
-  }
+                // pk
+                auto g1ElementObject = arguments[0].asObject(runtime);
+                if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "First argument is an object, but not of type G1ElementHostObject!");
+                }
+                auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                G1Element pk = g1ElementHostObject->getG1Element();
 
-  if (propName == "verify")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // 3 arguments: pk, message, prependPk
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 3)
-          {
-            throw jsi::JSError(runtime, "verify(..) expects three arguments (pk, message, prependPk)!");
-          }
+                // msg
+                auto typeArrayObject = arguments[1].asObject(runtime);
+                if (!isTypedArray(runtime, typeArrayObject)) {
+                    throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+                }
+                auto messageArray = getTypedArray(runtime, typeArrayObject);
+                vector<uint8_t> message = messageArray.toVector(runtime);
 
-          // pk
-          auto g1ElementObject = arguments[0].asObject(runtime);
-          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "First argument is an object, but not of type G1ElementHostObject!");
-          }
-          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element pk = g1ElementHostObject->getG1Element();
+                // prependPk
+                auto g2ElementObject = arguments[2].asObject(runtime);
+                if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "Third argument is an object, but not of type G2ElementHostObject!");
+                }
+                auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+                G2Element prependPk = g2ElementHostObject->getG2Element();
 
-          // msg
-          auto typeArrayObject = arguments[1].asObject(runtime);
-          if (!isTypedArray(runtime, typeArrayObject))
-          {
-            throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
-          }
-          auto messageArray = getTypedArray(runtime, typeArrayObject);
-          vector<uint8_t> message = messageArray.toVector(runtime);
+                auto value = PopSchemeMPL().Verify(pk, message, prependPk);
 
-          // prependPk
-          auto g2ElementObject = arguments[2].asObject(runtime);
-          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2ElementHostObject!");
-          }
-          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element prependPk = g2ElementHostObject->getG2Element();
+                return jsi::Value(value);
+            });
+    }
 
-          auto value = PopSchemeMPL().Verify(pk, message, prependPk);
+    if (propName == "aggregate") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            1, // expecting 1 argument
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "aggregate(..) expects one argument!");
+                }
 
-          return jsi::Value(value);
-        });
-  }
+                // Ensure the argument is an array
+                if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime)) {
+                    throw jsi::JSError(runtime, "Expected first argument to be an array");
+                }
 
-  if (propName == "aggregate")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1, // expecting 1 argument
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "aggregate(..) expects one argument!");
-          }
+                jsi::Array arr = arguments[0].asObject(runtime).asArray(runtime);
+                size_t length = arr.length(runtime);
 
-          // Ensure the argument is an array
-          if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime))
-          {
-            throw jsi::JSError(runtime, "Expected first argument to be an array");
-          }
+                std::vector<G2Element> g2Elements;
+                g2Elements.reserve(length);
+                for (size_t i = 0; i < length; i++) {
+                    auto g2ElementObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
+                    if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                        throw jsi::JSError(runtime, "Element in the array is not of type G2ElementHostObject!");
+                    }
+                    auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+                    G2Element g2Element = g2ElementHostObject->getG2Element();
+                    g2Elements.push_back(g2Element);
+                }
 
-          jsi::Array arr = arguments[0].asObject(runtime).asArray(runtime);
-          size_t length = arr.length(runtime);
+                // Assuming PopSchemeMPL().Aggregate() returns a G2Element, but  is just an example.
+                G2Element g2Element = PopSchemeMPL().Aggregate(g2Elements);
 
-          std::vector<G2Element> g2Elements;
-          g2Elements.reserve(length);
-          for (size_t i = 0; i < length; i++)
-          {
-            auto g2ElementObject = arr.getValueAtIndex(runtime, i).asObject(runtime);
-            if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
-            {
-              throw jsi::JSError(runtime, "Element in the array is not of type G2ElementHostObject!");
-            }
-            auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-            G2Element g2Element = g2ElementHostObject->getG2Element();
-            g2Elements.push_back(g2Element);
-          }
+                auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
+                return jsi::Object::createFromHostObject(runtime, g2ElementObj);
+            });
+    }
 
-          // Assuming PopSchemeMPL().Aggregate() returns a G2Element, but  is just an example.
-          G2Element g2Element = PopSchemeMPL().Aggregate(g2Elements);
+    if (propName == "aggregateVerify") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            3, // expecting 3 arguments
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 3) {
+                    throw jsi::JSError(runtime, "aggregateVerify(..) expects three arguments!");
+                }
 
-          auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
-          return jsi::Object::createFromHostObject(runtime, g2ElementObj);
-        });
-  }
+                // pks
+                if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime)) {
+                    throw jsi::JSError(runtime, "Expected first argument to be an array");
+                }
+                jsi::Array pksArr = arguments[0].asObject(runtime).asArray(runtime);
+                size_t pksLength = pksArr.length(runtime);
+                std::vector<G1Element> g1Elements;
+                for (size_t i = 0; i < pksLength; i++) {
+                    auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
+                    if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                        throw jsi::JSError(runtime, "Element in the array is not of type G1ElementHostObject!");
+                    }
+                    auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                    G1Element g1Element = g1ElementHostObject->getG1Element();
+                    g1Elements.push_back(g1Element);
+                }
 
-  if (propName == "aggregateVerify")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // expecting 3 arguments
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 3)
-          {
-            throw jsi::JSError(runtime, "aggregateVerify(..) expects three arguments!");
-          }
+                // messages
+                if (!arguments[1].isObject() || !arguments[1].asObject(runtime).isArray(runtime)) {
+                    throw jsi::JSError(runtime, "Expected second argument to be an array");
+                }
+                jsi::Array messagesArr = arguments[1].asObject(runtime).asArray(runtime);
+                size_t messagesLength = messagesArr.length(runtime);
+                std::vector<vector<uint8_t>> messages;
+                for (size_t i = 0; i < messagesLength; i++) {
+                    auto typeArrayObject = messagesArr.getValueAtIndex(runtime, i).asObject(runtime);
+                    if (!isTypedArray(runtime, typeArrayObject)) {
+                        throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
+                    }
+                    auto messageArray = getTypedArray(runtime, typeArrayObject);
+                    vector<uint8_t> message = messageArray.toVector(runtime);
+                    messages.push_back(message);
+                }
 
-          // pks
-          if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime))
-          {
-            throw jsi::JSError(runtime, "Expected first argument to be an array");
-          }
-          jsi::Array pksArr = arguments[0].asObject(runtime).asArray(runtime);
-          size_t pksLength = pksArr.length(runtime);
-          std::vector<G1Element> g1Elements;
-          for (size_t i = 0; i < pksLength; i++)
-          {
-            auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
-            if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
-            {
-              throw jsi::JSError(runtime, "Element in the array is not of type G1ElementHostObject!");
-            }
-            auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-            G1Element g1Element = g1ElementHostObject->getG1Element();
-            g1Elements.push_back(g1Element);
-          }
+                // sig
+                auto g2ElementObject = arguments[2].asObject(runtime);
+                if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "Third argument is an object, but not of type G2ElementHostObject!");
+                }
+                auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+                G2Element sig = g2ElementHostObject->getG2Element();
 
-          // messages
-          if (!arguments[1].isObject() || !arguments[1].asObject(runtime).isArray(runtime))
-          {
-            throw jsi::JSError(runtime, "Expected second argument to be an array");
-          }
-          jsi::Array messagesArr = arguments[1].asObject(runtime).asArray(runtime);
-          size_t messagesLength = messagesArr.length(runtime);
-          std::vector<vector<uint8_t>> messages;
-          for (size_t i = 0; i < messagesLength; i++)
-          {
-            auto typeArrayObject = messagesArr.getValueAtIndex(runtime, i).asObject(runtime);
-            if (!isTypedArray(runtime, typeArrayObject))
-            {
-              throw jsi::JSError(runtime, "message argument is an object, but not of type Uint8Array!");
-            }
-            auto messageArray = getTypedArray(runtime, typeArrayObject);
-            vector<uint8_t> message = messageArray.toVector(runtime);
-            messages.push_back(message);
-          }
+                auto value = PopSchemeMPL().AggregateVerify(g1Elements, messages, sig);
 
-          // sig
-          auto g2ElementObject = arguments[2].asObject(runtime);
-          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "Third argument is an object, but not of type G2ElementHostObject!");
-          }
-          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element sig = g2ElementHostObject->getG2Element();
+                return jsi::Value(value);
+            });
+    }
 
-          auto value = PopSchemeMPL().AggregateVerify(g1Elements, messages, sig);
+    if (propName == "deriveChildSk") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            2, // Two arguments: privateKey and index
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 2) {
+                    throw jsi::JSError(runtime, "deriveChildSk(..) expects two arguments (privateKey, index)!");
+                }
 
-          return jsi::Value(value);
-        });
-  }
+                // Handle the PrivateKey argument
+                auto privateKeyObject = arguments[0].asObject(runtime);
+                if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "deriveChildSk first argument is an object, but not of type PrivateKeyHostObject!");
+                }
+                auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+                PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
 
-  if (propName == "deriveChildSk")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 2)
-          {
-            throw jsi::JSError(runtime, "deriveChildSk(..) expects two arguments (privateKey, index)!");
-          }
+                // Handle the index argument
+                if (!arguments[1].isNumber()) {
+                    throw jsi::JSError(runtime, "deriveChildSk second argument is not a number!");
+                }
+                uint32_t index = arguments[1].asNumber();
 
-          // Handle the PrivateKey argument
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "deriveChildSk first argument is an object, but not of type PrivateKeyHostObject!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+                PrivateKey childSecretKey = PopSchemeMPL().DeriveChildSk(privateKey, index);
 
-          // Handle the index argument
-          if (!arguments[1].isNumber())
-          {
-            throw jsi::JSError(runtime, "deriveChildSk second argument is not a number!");
-          }
-          uint32_t index = arguments[1].asNumber();
+                auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(childSecretKey);
+                return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
+            });
+    }
 
-          PrivateKey childSecretKey = PopSchemeMPL().DeriveChildSk(privateKey, index);
+    if (propName == "deriveChildSkUnhardened") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            2, // Two arguments: privateKey and index
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 2) {
+                    throw jsi::JSError(
+                        runtime, "deriveChildSkUnhardened(..) expects two arguments (privateKey, index)!");
+                }
 
-          auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(childSecretKey);
-          return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
-        });
-  }
+                // Handle the PrivateKey argument
+                auto privateKeyObject = arguments[0].asObject(runtime);
+                if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+                    throw jsi::JSError(runtime,
+                        "deriveChildSkUnhardened first argument is an object, but not of type PrivateKeyHostObject!");
+                }
+                auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+                PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
 
-  if (propName == "deriveChildSkUnhardened")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 2)
-          {
-            throw jsi::JSError(runtime, "deriveChildSkUnhardened(..) expects two arguments (privateKey, index)!");
-          }
+                // Handle the index argument
+                if (!arguments[1].isNumber()) {
+                    throw jsi::JSError(runtime, "deriveChildSkUnhardened second argument is not a number!");
+                }
+                uint32_t index = arguments[1].asNumber();
 
-          // Handle the PrivateKey argument
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "deriveChildSkUnhardened first argument is an object, but not of type PrivateKeyHostObject!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+                PrivateKey childSecretKey = PopSchemeMPL().DeriveChildSkUnhardened(privateKey, index);
 
-          // Handle the index argument
-          if (!arguments[1].isNumber())
-          {
-            throw jsi::JSError(runtime, "deriveChildSkUnhardened second argument is not a number!");
-          }
-          uint32_t index = arguments[1].asNumber();
+                auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(childSecretKey);
+                return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
+            });
+    }
 
-          PrivateKey childSecretKey = PopSchemeMPL().DeriveChildSkUnhardened(privateKey, index);
+    if (propName == "deriveChildPkUnhardened") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            2, // Two arguments: privateKey and index
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 2) {
+                    throw jsi::JSError(
+                        runtime, "deriveChildPkUnhardened(..) expects two arguments (privateKey, index)!");
+                }
 
-          auto childPrivateKeyObj = std::make_shared<PrivateKeyHostObject>(childSecretKey);
-          return jsi::Object::createFromHostObject(runtime, childPrivateKeyObj);
-        });
-  }
+                // Handle the PrivateKey argument
+                auto g1ElementObject = arguments[0].asObject(runtime);
+                if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime,
+                        "deriveChildPkUnhardened first argument is an object, but not of type G1ElementHostObject!");
+                }
+                auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                G1Element g1Element = g1ElementHostObject->getG1Element();
 
-  if (propName == "deriveChildPkUnhardened")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: privateKey and index
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 2)
-          {
-            throw jsi::JSError(runtime, "deriveChildPkUnhardened(..) expects two arguments (privateKey, index)!");
-          }
+                // Handle the index argument
+                if (!arguments[1].isNumber()) {
+                    throw jsi::JSError(runtime, "deriveChildPkUnhardened second argument is not a number!");
+                }
+                uint32_t index = arguments[1].asNumber();
 
-          // Handle the PrivateKey argument
-          auto g1ElementObject = arguments[0].asObject(runtime);
-          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "deriveChildPkUnhardened first argument is an object, but not of type G1ElementHostObject!");
-          }
-          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element g1Element = g1ElementHostObject->getG1Element();
+                G1Element dG1Element = PopSchemeMPL().DeriveChildPkUnhardened(g1Element, index);
 
-          // Handle the index argument
-          if (!arguments[1].isNumber())
-          {
-            throw jsi::JSError(runtime, "deriveChildPkUnhardened second argument is not a number!");
-          }
-          uint32_t index = arguments[1].asNumber();
+                auto dG1ElementObject = std::make_shared<G1ElementHostObject>(dG1Element);
+                return jsi::Object::createFromHostObject(runtime, dG1ElementObject);
+            });
+    }
 
-          G1Element dG1Element = PopSchemeMPL().DeriveChildPkUnhardened(g1Element, index);
+    if (propName == "popProve") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "popProve(..) expects one argument (object)!");
+                }
 
-          auto dG1ElementObject = std::make_shared<G1ElementHostObject>(dG1Element);
-          return jsi::Object::createFromHostObject(runtime, dG1ElementObject);
-        });
-  }
+                // sk
+                auto privateKeyObject = arguments[0].asObject(runtime);
+                if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "popProve first argument is an object, but not of type PrivateKeyHostObject!");
+                }
+                auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
+                PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
 
-  if (propName == "popProve")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "popProve(..) expects one argument (object)!");
-          }
+                // g1
+                G2Element g2Element = PopSchemeMPL().PopProve(privateKey);
+                auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
+                return jsi::Object::createFromHostObject(runtime, g2ElementObj);
+            });
+    }
 
-          // sk
-          auto privateKeyObject = arguments[0].asObject(runtime);
-          if (!privateKeyObject.isHostObject<PrivateKeyHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "popProve first argument is an object, but not of type PrivateKeyHostObject!");
-          }
-          auto privateKeyHostObject = privateKeyObject.getHostObject<PrivateKeyHostObject>(runtime);
-          PrivateKey privateKey = privateKeyHostObject->getPrivateKey();
+    if (propName == "popVerify") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            2, // Two arguments: publicKey and signatureProof
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 2) {
+                    throw jsi::JSError(runtime, "popVerify(..) expects two arguments (publicKey, signatureProof)!");
+                }
 
-          // g1
-          G2Element g2Element = PopSchemeMPL().PopProve(privateKey);
-          auto g2ElementObj = std::make_shared<G2ElementHostObject>(g2Element);
-          return jsi::Object::createFromHostObject(runtime, g2ElementObj);
-        });
-  }
+                // publicKey
+                auto g1ElementObject = arguments[0].asObject(runtime);
+                if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "popVerify first argument is an object, but not of type G1ElementHostObject!");
+                }
+                auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                G1Element pk = g1ElementHostObject->getG1Element();
 
-  if (propName == "popVerify")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 2, // Two arguments: publicKey and signatureProof
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 2)
-          {
-            throw jsi::JSError(runtime, "popVerify(..) expects two arguments (publicKey, signatureProof)!");
-          }
+                // signatureProof
+                auto g2ElementObject = arguments[1].asObject(runtime);
+                if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "popVerify second argument is an object, but not of type G2ElementHostObject!");
+                }
+                auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+                G2Element signatureProof = g2ElementHostObject->getG2Element();
 
-          // publicKey
-          auto g1ElementObject = arguments[0].asObject(runtime);
-          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "popVerify first argument is an object, but not of type G1ElementHostObject!");
-          }
-          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element pk = g1ElementHostObject->getG1Element();
+                auto value = PopSchemeMPL().PopVerify(pk, signatureProof);
+                return jsi::Value(value);
+            });
+    }
 
-          // signatureProof
-          auto g2ElementObject = arguments[1].asObject(runtime);
-          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "popVerify second argument is an object, but not of type G2ElementHostObject!");
-          }
-          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element signatureProof = g2ElementHostObject->getG2Element();
+    if (propName == "fastAggregateVerify") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName),
+            3, // Three arguments: publicKeys, message, and signature
+            [](jsi::Runtime& runtime, const jsi::Value& Value, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 3) {
+                    throw jsi::JSError(
+                        runtime, "fastAggregateVerify(..) expects three arguments (publicKeys, message, signature)!");
+                }
 
-          auto value = PopSchemeMPL().PopVerify(pk, signatureProof);
-          return jsi::Value(value);
-        });
-  }
+                // publicKeys
+                if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime)) {
+                    throw jsi::JSError(runtime, "fastAggregateVerify first argument is not an array!");
+                }
+                jsi::Array pksArr = arguments[0].asObject(runtime).asArray(runtime);
+                size_t pksLength = pksArr.length(runtime);
+                std::vector<G1Element> g1Elements;
+                for (size_t i = 0; i < pksLength; i++) {
+                    auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
+                    if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                        throw jsi::JSError(runtime, "Element in the array is not of type G1ElementHostObject!");
+                    }
+                    auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                    G1Element g1Element = g1ElementHostObject->getG1Element();
+                    g1Elements.push_back(g1Element);
+                }
 
-  if (propName == "fastAggregateVerify")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 3, // Three arguments: publicKeys, message, and signature
-        [](jsi::Runtime &runtime, const jsi::Value &Value, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 3)
-          {
-            throw jsi::JSError(runtime, "fastAggregateVerify(..) expects three arguments (publicKeys, message, signature)!");
-          }
+                // message
+                auto messageObject = arguments[1].asObject(runtime);
+                if (!isTypedArray(runtime, messageObject)) {
+                    throw jsi::JSError(runtime, "fastAggregateVerify second argument is not a typed array!");
+                }
+                auto messageArray = getTypedArray(runtime, messageObject);
+                std::vector<uint8_t> message = messageArray.toVector(runtime);
 
-          // publicKeys
-          if (!arguments[0].isObject() || !arguments[0].asObject(runtime).isArray(runtime))
-          {
-            throw jsi::JSError(runtime, "fastAggregateVerify first argument is not an array!");
-          }
-          jsi::Array pksArr = arguments[0].asObject(runtime).asArray(runtime);
-          size_t pksLength = pksArr.length(runtime);
-          std::vector<G1Element> g1Elements;
-          for (size_t i = 0; i < pksLength; i++)
-          {
-            auto g1ElementObject = pksArr.getValueAtIndex(runtime, i).asObject(runtime);
-            if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
-            {
-              throw jsi::JSError(runtime, "Element in the array is not of type G1ElementHostObject!");
-            }
-            auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-            G1Element g1Element = g1ElementHostObject->getG1Element();
-            g1Elements.push_back(g1Element);
-          }
+                // signature
+                auto g2ElementObject = arguments[2].asObject(runtime);
+                if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                    throw jsi::JSError(
+                        runtime, "fastAggregateVerify third argument is not of type G2ElementHostObject!");
+                }
+                auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+                G2Element signature = g2ElementHostObject->getG2Element();
 
-          // message
-          auto messageObject = arguments[1].asObject(runtime);
-          if (!isTypedArray(runtime, messageObject))
-          {
-            throw jsi::JSError(runtime, "fastAggregateVerify second argument is not a typed array!");
-          }
-          auto messageArray = getTypedArray(runtime, messageObject);
-          std::vector<uint8_t> message = messageArray.toVector(runtime);
+                auto value = PopSchemeMPL().FastAggregateVerify(g1Elements, message, signature);
 
-          // signature
-          auto g2ElementObject = arguments[2].asObject(runtime);
-          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "fastAggregateVerify third argument is not of type G2ElementHostObject!");
-          }
-          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element signature = g2ElementHostObject->getG2Element();
+                return jsi::Value(value);
+            });
+    }
 
-          auto value = PopSchemeMPL().FastAggregateVerify(g1Elements, message, signature);
-
-          return jsi::Value(value);
-        });
-  }
-
-  return jsi::Value::undefined();
+    return jsi::Value::undefined();
 }

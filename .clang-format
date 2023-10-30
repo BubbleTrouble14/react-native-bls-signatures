@@ -1,0 +1,10 @@
+---
+Language:                         Cpp
+BasedOnStyle:                     Webkit
+AccessModifierOffset:             -4
+BreakBeforeBraces:                Linux
+ColumnLimit:                      120 
+IndentWidth:                      4
+DerivePointerAlignment:           false
+PointerAlignment:                 Left
+NamespaceIndentation:             None

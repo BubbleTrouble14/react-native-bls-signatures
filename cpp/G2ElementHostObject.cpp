@@ -1,249 +1,206 @@
 #include "G2ElementHostObject.h"
 #include "PrivateKeyHostObject.h"
+#include "TypedArray.h"
 #include <string>
 #include <vector>
-#include "TypedArray.h"
 
 // Default Constructor
 G2ElementHostObject::G2ElementHostObject()
 {
-  g2Element = new G2Element();
-  if (g2Element == nullptr)
-  {
-    throw std::runtime_error("G2Element Memory allocation failed");
-  }
+    g2Element = new G2Element();
+    if (g2Element == nullptr) {
+        throw std::runtime_error("G2Element Memory allocation failed");
+    }
 }
 
 // Parameterized Constructor
-G2ElementHostObject::G2ElementHostObject(const G2Element &otherG2Element)
+G2ElementHostObject::G2ElementHostObject(const G2Element& otherG2Element)
 {
-  g2Element = new G2Element(otherG2Element);
-  if (g2Element == nullptr)
-  {
-    throw std::runtime_error("G2Element Memory allocation failed");
-  }
+    g2Element = new G2Element(otherG2Element);
+    if (g2Element == nullptr) {
+        throw std::runtime_error("G2Element Memory allocation failed");
+    }
 }
 
 // Copy Constructor
-G2ElementHostObject::G2ElementHostObject(const G2ElementHostObject &other)
+G2ElementHostObject::G2ElementHostObject(const G2ElementHostObject& other)
 {
-  g2Element = new G2Element(*other.g2Element);
+    g2Element = new G2Element(*other.g2Element);
 }
 
 // Assignment Operator
-G2ElementHostObject &G2ElementHostObject::operator=(const G2ElementHostObject &other)
+G2ElementHostObject& G2ElementHostObject::operator=(const G2ElementHostObject& other)
 {
-  if (this != &other) // Check for self-assignment
-  {
-    delete g2Element;
-    g2Element = new G2Element(*other.g2Element);
-  }
-  return *this;
+    if (this != &other) // Check for self-assignment
+    {
+        delete g2Element;
+        g2Element = new G2Element(*other.g2Element);
+    }
+    return *this;
 }
 
 // Destructor
-G2ElementHostObject::~G2ElementHostObject()
+G2ElementHostObject::~G2ElementHostObject() { delete g2Element; }
+
+const G2Element& G2ElementHostObject::getG2Element() const { return *g2Element; }
+
+std::vector<jsi::PropNameID> G2ElementHostObject::getPropertyNames(jsi::Runtime& rt)
 {
-  delete g2Element;
+    std::vector<jsi::PropNameID> result;
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("negate")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
+    return result;
 }
 
-const G2Element &G2ElementHostObject::getG2Element() const
+jsi::Value G2ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId)
 {
-  return *g2Element;
-}
+    auto propName = propNameId.utf8(runtime);
+    auto funcName = "G2Element." + propName;
 
-std::vector<jsi::PropNameID> G2ElementHostObject::getPropertyNames(jsi::Runtime &rt)
-{
-  std::vector<jsi::PropNameID> result;
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("negate")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
-  return result;
-}
+    if (propName == "toBytes") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g2Element != nullptr) {
+                    auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G2Element::SIZE);
+                    auto newBuffer = newTypedArray.getBuffer(runtime);
 
-jsi::Value G2ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID &propNameId)
-{
-  auto propName = propNameId.utf8(runtime);
-  auto funcName = "G2Element." + propName;
+                    std::memcpy(newBuffer.data(runtime), g2Element->Serialize().data(), G2Element::SIZE);
 
-  if (propName == "toBytes")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g2Element != nullptr)
-          {
-            auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G2Element::SIZE);
-            auto newBuffer = newTypedArray.getBuffer(runtime);
+                    return newTypedArray;
+                }
 
-            std::memcpy(newBuffer.data(runtime), g2Element->Serialize().data(), G2Element::SIZE);
+                return jsi::Value::undefined();
+            });
+    }
 
-            return newTypedArray;
-          }
+    if (propName == "toHex") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g2Element != nullptr) {
+                    return jsi::String::createFromUtf8(runtime, Util::HexStr(g2Element->Serialize()));
+                }
 
-          return jsi::Value::undefined();
-        });
-  }
+                return jsi::Value::undefined();
+            });
+    }
 
-  if (propName == "toHex")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g2Element != nullptr)
-          {
-            return jsi::String::createFromUtf8(runtime, Util::HexStr(g2Element->Serialize()));
-          }
+    if (propName == "fromBytes") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "fromBytes(..) expects one argument (object)!");
+                }
 
-          return jsi::Value::undefined();
-        });
-  }
+                auto object = arguments[0].asObject(runtime);
+                if (!isTypedArray(runtime, object)) {
+                    throw jsi::JSError(runtime, "fromBytes argument is an object, but not of type Uint8Array!");
+                }
 
-  if (propName == "fromBytes")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-           size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "fromBytes(..) expects one argument (object)!");
-          }
+                auto typedArray = getTypedArray(runtime, object);
 
-          auto object = arguments[0].asObject(runtime);
-          if (!isTypedArray(runtime, object))
-          {
-            throw jsi::JSError(runtime, "fromBytes argument is an object, but not of type Uint8Array!");
-          }
+                if (typedArray.size(runtime) != G2Element::SIZE) {
+                    throw std::invalid_argument("G2Element::FromBytes: Invalid size");
+                }
 
-          auto typedArray = getTypedArray(runtime, object);
+                G2Element g2 = G2Element::FromByteVector(typedArray.toVector(runtime));
 
-          if (typedArray.size(runtime) != G2Element::SIZE)
-          {
-            throw std::invalid_argument("G2Element::FromBytes: Invalid size");
-          }
+                auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
+                return jsi::Object::createFromHostObject(runtime, g2Obj);
+            });
+    }
 
-          G2Element g2 = G2Element::FromByteVector(typedArray.toVector(runtime));
+    if (propName == "fromHex") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "fromHex(..) expects one argument (hexString)!");
+                }
 
-          auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
-          return jsi::Object::createFromHostObject(runtime, g2Obj);
-        });
-  }
+                if (!arguments[0].isString()) {
+                    throw jsi::JSError(runtime, "fromHex argument is not a string");
+                }
 
-  if (propName == "fromHex")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-           size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "fromHex(..) expects one argument (hexString)!");
-          }
+                auto hex = arguments[0].asString(runtime);
 
-          if (!arguments[0].isString())
-          {
-            throw jsi::JSError(runtime, "fromHex argument is not a string");
-          }
+                G2Element g2 = G2Element::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
 
-          auto hex = arguments[0].asString(runtime);
+                auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
+                return jsi::Object::createFromHostObject(runtime, g2Obj);
+            });
+    }
 
-          G2Element g2 = G2Element::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
+    if (propName == "add") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "add(..) expects one argument (otherG2Element)!");
+                }
 
-          auto g2Obj = std::make_shared<G2ElementHostObject>(g2);
-          return jsi::Object::createFromHostObject(runtime, g2Obj);
-        });
-  }
+                // otherG2Element
+                auto g2ElementObject = arguments[0].asObject(runtime);
+                if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "First argument is an object, but not of type G2Element!");
+                }
+                auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
+                G2Element otherG2Element = g2ElementHostObject->getG2Element();
 
-  if (propName == "add")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "add(..) expects one argument (otherG2Element)!");
-          }
+                if (this->g2Element != nullptr) {
+                    G2Element result = *this->g2Element + otherG2Element;
+                    auto resultObj = std::make_shared<G2ElementHostObject>(result);
+                    return jsi::Object::createFromHostObject(runtime, resultObj);
+                }
 
-          // otherG2Element
-          auto g2ElementObject = arguments[0].asObject(runtime);
-          if (!g2ElementObject.isHostObject<G2ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "First argument is an object, but not of type G2Element!");
-          }
-          auto g2ElementHostObject = g2ElementObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element otherG2Element = g2ElementHostObject->getG2Element();
+                return jsi::Value::undefined();
+            });
+    }
 
-          if (this->g2Element != nullptr)
-          {
-            G2Element result = *this->g2Element + otherG2Element;
-            auto resultObj = std::make_shared<G2ElementHostObject>(result);
-            return jsi::Object::createFromHostObject(runtime, resultObj);
-          }
+    if (propName == "negate") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g2Element != nullptr) {
+                    auto g2Obj = std::make_shared<G2ElementHostObject>(g2Element->Negate());
+                    return jsi::Object::createFromHostObject(runtime, g2Obj);
+                }
 
-          return jsi::Value::undefined();
-        });
-  }
+                return jsi::Value::undefined();
+            });
+    }
 
-  if (propName == "negate")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g2Element != nullptr)
-          {
-            auto g2Obj = std::make_shared<G2ElementHostObject>(g2Element->Negate());
-            return jsi::Object::createFromHostObject(runtime, g2Obj);
-          }
+    if (propName == "equalTo") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "equalTo(..) expects one argument (otherG2Element)!");
+                }
 
-          return jsi::Value::undefined();
-        });
-  }
+                // otherG2Element
+                auto g2KeyObject = arguments[0].asObject(runtime);
+                if (!g2KeyObject.isHostObject<G2ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "equalTo first argument is an object, but not of type G2Element!");
+                }
+                auto g2HostObject = g2KeyObject.getHostObject<G2ElementHostObject>(runtime);
+                G2Element otherG2Element = g2HostObject->getG2Element();
 
-  if (propName == "equalTo")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "equalTo(..) expects one argument (otherG2Element)!");
-          }
+                if (this->g2Element != nullptr) {
+                    bool areEqual = (*this->g2Element == otherG2Element);
+                    return jsi::Value(areEqual);
+                }
 
-          // otherG2Element
-          auto g2KeyObject = arguments[0].asObject(runtime);
-          if (!g2KeyObject.isHostObject<G2ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "equalTo first argument is an object, but not of type G2Element!");
-          }
-          auto g2HostObject = g2KeyObject.getHostObject<G2ElementHostObject>(runtime);
-          G2Element otherG2Element = g2HostObject->getG2Element();
+                return jsi::Value(false);
+            });
+    }
 
-          if (this->g2Element != nullptr)
-          {
-            bool areEqual = (*this->g2Element == otherG2Element);
-            return jsi::Value(areEqual);
-          }
-
-          return jsi::Value(false);
-        });
-  }
-
-  throw jsi::JSError(runtime, "Unknown property: " + propName);
+    throw jsi::JSError(runtime, "Unknown property: " + propName);
 }

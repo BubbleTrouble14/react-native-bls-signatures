@@ -1,263 +1,216 @@
 #include "G1ElementHostObject.h"
 #include "PrivateKeyHostObject.h"
+#include "TypedArray.h"
 #include <string>
 #include <vector>
-#include "TypedArray.h"
 
 G1ElementHostObject::G1ElementHostObject()
 {
-  g1Element = new G1Element();
-  if (g1Element == nullptr)
-  {
-    throw std::runtime_error("G1Element Memory allocation failed");
-  }
+    g1Element = new G1Element();
+    if (g1Element == nullptr) {
+        throw std::runtime_error("G1Element Memory allocation failed");
+    }
 }
 
 // Parameterized Constructor
-G1ElementHostObject::G1ElementHostObject(const G1Element &otherG1Element)
+G1ElementHostObject::G1ElementHostObject(const G1Element& otherG1Element)
 {
-  g1Element = new G1Element(otherG1Element);
-  if (g1Element == nullptr)
-  {
-    throw std::runtime_error("G1Element Memory allocation failed");
-  }
+    g1Element = new G1Element(otherG1Element);
+    if (g1Element == nullptr) {
+        throw std::runtime_error("G1Element Memory allocation failed");
+    }
 }
 
 // Copy Constructor
-G1ElementHostObject::G1ElementHostObject(const G1ElementHostObject &other)
+G1ElementHostObject::G1ElementHostObject(const G1ElementHostObject& other)
 {
-  g1Element = new G1Element(*other.g1Element);
+    g1Element = new G1Element(*other.g1Element);
 }
 
 // Assignment Operator
-G1ElementHostObject &G1ElementHostObject::operator=(const G1ElementHostObject &other)
+G1ElementHostObject& G1ElementHostObject::operator=(const G1ElementHostObject& other)
 {
-  if (this != &other) // Check for self-assignment
-  {
-    delete g1Element;
-    g1Element = new G1Element(*other.g1Element);
-  }
-  return *this;
+    if (this != &other) // Check for self-assignment
+    {
+        delete g1Element;
+        g1Element = new G1Element(*other.g1Element);
+    }
+    return *this;
 }
 
 // Destructor
-G1ElementHostObject::~G1ElementHostObject()
+G1ElementHostObject::~G1ElementHostObject() { delete g1Element; }
+
+const G1Element& G1ElementHostObject::getG1Element() const { return *g1Element; }
+
+std::vector<jsi::PropNameID> G1ElementHostObject::getPropertyNames(jsi::Runtime& rt)
 {
-  delete g1Element;
+    std::vector<jsi::PropNameID> result;
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getFingerprint")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("negate")));
+    result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
+    return result;
 }
 
-const G1Element &G1ElementHostObject::getG1Element() const
+jsi::Value G1ElementHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId)
 {
-  return *g1Element;
-}
+    auto propName = propNameId.utf8(runtime);
+    auto funcName = "G1Element." + propName;
 
-std::vector<jsi::PropNameID> G1ElementHostObject::getPropertyNames(jsi::Runtime &rt)
-{
-  std::vector<jsi::PropNameID> result;
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toBytes")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("toHex")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromBytes")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("fromHex")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("getFingerprint")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("add")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("negate")));
-  result.push_back(jsi::PropNameID::forUtf8(rt, std::string("equalTo")));
-  return result;
-}
+    if (propName == "toBytes") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g1Element != nullptr) {
+                    auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G1Element::SIZE);
+                    auto newBuffer = newTypedArray.getBuffer(runtime);
 
-jsi::Value G1ElementHostObject::get(jsi::Runtime &runtime, const jsi::PropNameID &propNameId)
-{
-  auto propName = propNameId.utf8(runtime);
-  auto funcName = "G1Element." + propName;
+                    std::memcpy(newBuffer.data(runtime), g1Element->Serialize().data(), G1Element::SIZE);
 
-  if (propName == "toBytes")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g1Element != nullptr)
-          {
-            auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G1Element::SIZE);
-            auto newBuffer = newTypedArray.getBuffer(runtime);
+                    return newTypedArray;
+                }
 
-            std::memcpy(newBuffer.data(runtime), g1Element->Serialize().data(), G1Element::SIZE);
+                throw jsi::JSError(runtime, "Cannot call toBytes on a null G1Element instance.");
+            });
+    }
 
-            return newTypedArray;
-          }
+    if (propName == "toHex") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g1Element != nullptr) {
+                    return jsi::String::createFromUtf8(runtime, Util::HexStr(g1Element->Serialize()));
+                }
 
-          throw jsi::JSError(runtime, "Cannot call toBytes on a null G1Element instance.");
-        });
-  }
+                throw jsi::JSError(runtime, "Cannot call toHex on a null G1Element instance.");
+            });
+    }
 
-  if (propName == "toHex")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g1Element != nullptr)
-          {
-            return jsi::String::createFromUtf8(runtime, Util::HexStr(g1Element->Serialize()));
-          }
+    if (propName == "fromBytes") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "fromBytes method expects one argument (Uint8Array).");
+                }
 
-          throw jsi::JSError(runtime, "Cannot call toHex on a null G1Element instance.");
-        });
-  }
+                auto object = arguments[0].asObject(runtime);
+                if (!isTypedArray(runtime, object)) {
+                    throw jsi::JSError(runtime, "fromBytes argument is not a Uint8Array.");
+                }
 
-  if (propName == "fromBytes")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-           size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "fromBytes method expects one argument (Uint8Array).");
-          }
+                auto typedArray = getTypedArray(runtime, object);
 
-          auto object = arguments[0].asObject(runtime);
-          if (!isTypedArray(runtime, object))
-          {
-            throw jsi::JSError(runtime, "fromBytes argument is not a Uint8Array.");
-          }
+                if (typedArray.size(runtime) != G1Element::SIZE) {
+                    throw jsi::JSError(runtime, "Invalid size for the fromBytes argument.");
+                }
 
-          auto typedArray = getTypedArray(runtime, object);
+                G1Element g1 = G1Element::FromByteVector(typedArray.toVector(runtime));
+                auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
+                return jsi::Object::createFromHostObject(runtime, g1Obj);
+            });
+    }
 
-          if (typedArray.size(runtime) != G1Element::SIZE)
-          {
-            throw jsi::JSError(runtime, "Invalid size for the fromBytes argument.");
-          }
+    if (propName == "fromHex") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "fromHex method expects one argument (hexString).");
+                }
 
-          G1Element g1 = G1Element::FromByteVector(typedArray.toVector(runtime));
-          auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
-          return jsi::Object::createFromHostObject(runtime, g1Obj);
-        });
-  }
+                if (!arguments[0].isString()) {
+                    throw jsi::JSError(runtime, "fromHex argument is not a string.");
+                }
 
-  if (propName == "fromHex")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-           size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "fromHex method expects one argument (hexString).");
-          }
+                auto hex = arguments[0].asString(runtime);
+                G1Element g1 = G1Element::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
 
-          if (!arguments[0].isString())
-          {
-            throw jsi::JSError(runtime, "fromHex argument is not a string.");
-          }
+                auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
+                return jsi::Object::createFromHostObject(runtime, g1Obj);
+            });
+    }
 
-          auto hex = arguments[0].asString(runtime);
-          G1Element g1 = G1Element::FromBytes(Util::HexToBytes(hex.utf8(runtime)));
+    if (propName == "getFingerprint") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g1Element != nullptr) {
+                    return jsi::Value(static_cast<double>(g1Element->GetFingerprint()));
+                }
 
-          auto g1Obj = std::make_shared<G1ElementHostObject>(g1);
-          return jsi::Object::createFromHostObject(runtime, g1Obj);
-        });
-  }
+                throw jsi::JSError(runtime, "Cannot call getFingerprint on a null G1Element instance.");
+            });
+    }
 
-  if (propName == "getFingerprint")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g1Element != nullptr)
-          {
-            return jsi::Value(static_cast<double>(g1Element->GetFingerprint()));
-          }
+    if (propName == "add") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "add method expects one argument (G1Element).");
+                }
 
-          throw jsi::JSError(runtime, "Cannot call getFingerprint on a null G1Element instance.");
-        });
-  }
+                // pk
+                auto g1ElementObject = arguments[0].asObject(runtime);
+                if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "First argument is not a G1Element.");
+                }
+                auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
+                G1Element pk1 = g1ElementHostObject->getG1Element();
 
-  if (propName == "add")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "add method expects one argument (G1Element).");
-          }
+                if (this->g1Element != nullptr) {
+                    G1Element pk = *this->g1Element + pk1;
+                    auto pkObj = std::make_shared<G1ElementHostObject>(pk);
+                    return jsi::Object::createFromHostObject(runtime, pkObj);
+                }
 
-          // pk
-          auto g1ElementObject = arguments[0].asObject(runtime);
-          if (!g1ElementObject.isHostObject<G1ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "First argument is not a G1Element.");
-          }
-          auto g1ElementHostObject = g1ElementObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element pk1 = g1ElementHostObject->getG1Element();
+                throw jsi::JSError(runtime, "Cannot call add on a null G1Element instance.");
+            });
+    }
 
-          if (this->g1Element != nullptr)
-          {
-            G1Element pk = *this->g1Element + pk1;
-            auto pkObj = std::make_shared<G1ElementHostObject>(pk);
-            return jsi::Object::createFromHostObject(runtime, pkObj);
-          }
+    if (propName == "negate") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (this->g1Element != nullptr) {
+                    auto g1Obj = std::make_shared<G1ElementHostObject>(g1Element->Negate());
+                    return jsi::Object::createFromHostObject(runtime, g1Obj);
+                }
 
-          throw jsi::JSError(runtime, "Cannot call add on a null G1Element instance.");
-        });
-  }
+                throw jsi::JSError(runtime, "Cannot call negate on a null G1Element instance.");
+            });
+    }
 
-  if (propName == "negate")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 0,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (this->g1Element != nullptr)
-          {
-            auto g1Obj = std::make_shared<G1ElementHostObject>(g1Element->Negate());
-            return jsi::Object::createFromHostObject(runtime, g1Obj);
-          }
+    if (propName == "equalTo") {
+        return jsi::Function::createFromHostFunction(runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
+            [this](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+                size_t count) -> jsi::Value {
+                if (count != 1) {
+                    throw jsi::JSError(runtime, "equalTo method expects one argument (G1Element).");
+                }
 
-          throw jsi::JSError(runtime, "Cannot call negate on a null G1Element instance.");
-        });
-  }
+                // sk
+                auto g1KeyObject = arguments[0].asObject(runtime);
+                if (!g1KeyObject.isHostObject<G1ElementHostObject>(runtime)) {
+                    throw jsi::JSError(runtime, "First argument is not a G1Element.");
+                }
+                auto g1HostObject = g1KeyObject.getHostObject<G1ElementHostObject>(runtime);
+                G1Element g1 = g1HostObject->getG1Element();
 
-  if (propName == "equalTo")
-  {
-    return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, funcName), 1,
-        [this](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments,
-               size_t count) -> jsi::Value
-        {
-          if (count != 1)
-          {
-            throw jsi::JSError(runtime, "equalTo method expects one argument (G1Element).");
-          }
+                if (this->g1Element != nullptr) {
+                    bool areEqual = (*g1Element == g1);
+                    return jsi::Value(areEqual);
+                }
 
-          // sk
-          auto g1KeyObject = arguments[0].asObject(runtime);
-          if (!g1KeyObject.isHostObject<G1ElementHostObject>(runtime))
-          {
-            throw jsi::JSError(runtime, "First argument is not a G1Element.");
-          }
-          auto g1HostObject = g1KeyObject.getHostObject<G1ElementHostObject>(runtime);
-          G1Element g1 = g1HostObject->getG1Element();
+                throw jsi::JSError(runtime, "Cannot call equalTo on a null G1Element instance.");
+            });
+    }
 
-          if (this->g1Element != nullptr)
-          {
-            bool areEqual = (*g1Element == g1);
-            return jsi::Value(areEqual);
-          }
-
-          throw jsi::JSError(runtime, "Cannot call equalTo on a null G1Element instance.");
-        });
-  }
-
-  throw jsi::JSError(runtime, "Unknown property: " + propName);
+    throw jsi::JSError(runtime, "Unknown property: " + propName);
 }

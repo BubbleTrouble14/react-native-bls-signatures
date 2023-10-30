@@ -10,12 +10,12 @@ using namespace facebook;
 class JSI_EXPORT PopSchemeMPLHostObject : public jsi::HostObject
 {
 public:
-  // Constructor
-  PopSchemeMPLHostObject();
+    // Constructor
+    PopSchemeMPLHostObject();
 
-  // Destructor
-  ~PopSchemeMPLHostObject();
+    // Destructor
+    ~PopSchemeMPLHostObject();
 
-  jsi::Value get(jsi::Runtime &, const jsi::PropNameID &name) override;
-  std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime &rt) override;
+    jsi::Value get(jsi::Runtime&, const jsi::PropNameID& name) override;
+    std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime& rt) override;
 };
