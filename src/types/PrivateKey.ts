@@ -35,7 +35,6 @@ const createPrivateKey = (): CppPrivateKey => {
     throw new Error(
       'Failed to create a new PrivateKey instance, the native initializer function does not exist. Are you trying to use PrivateKey from different JS Runtimes?'
     );
-  // const buffer = global.createPrivateKeyInstance();
   return global.createPrivateKeyInstance();
 };
 

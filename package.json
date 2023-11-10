@@ -17,21 +17,14 @@
     "android/CMakeLists.txt",
     "ios/BlsSignatures.xcodeproj/project.pbxproj",
     "ios/Clibsodium.xcframework",
-    "ios/Clibsodium",
     "ios/Clibblst.xcframework",
-    "ios/**/*.h",
     "ios/**/*.m",
     "ios/**/*.mm",
-    "ios/**/*.cpp",
     "README.md",
     "react-native-bls-signatures.podspec",
     "!lib/typescript/example",
     "!ios/build",
-    "!android/build",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__",
-    "!**/.*"
+    "!android/build"
   ],
   "scripts": {
     "typescript": "tsc --noEmit",
