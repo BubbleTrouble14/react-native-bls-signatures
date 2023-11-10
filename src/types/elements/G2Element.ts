@@ -22,24 +22,22 @@ const createG2Element = (): CppG2Element => {
     throw new Error(
       'Failed to create a new G2Element instance, the native initializer function does not exist. Are you trying to use PrivateKey from different JS Runtimes?'
     );
-  // const buffer = global.createPrivateKeyInstance();
   return global.createG2Element();
 };
 
 export class G2Element {
   private instance: CppG2Element;
-  private static cppInstance: CppG2Element = createG2Element();
 
   constructor(instance: CppG2Element) {
     this.instance = instance;
   }
 
   static fromBytes(bytes: Uint8Array): G2Element {
-    return new G2Element(this.cppInstance.fromBytes(bytes));
+    return new G2Element(createG2Element().fromBytes(bytes));
   }
 
   static fromHex(hex: string): G2Element {
-    return new G2Element(this.cppInstance.fromHex(hex));
+    return new G2Element(createG2Element().fromHex(hex));
   }
 
   toBytes(): Uint8Array {

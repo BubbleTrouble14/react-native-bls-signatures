@@ -30,24 +30,22 @@ const createG1Element = (): CppG1Element => {
     throw new Error(
       'Failed to create a new G1Element instance, the native initializer function does not exist. Are you trying to use PrivateKey from different JS Runtimes?'
     );
-  // const buffer = global.createPrivateKeyInstance();
   return global.createG1Element();
 };
 
 export class G1Element {
   private instance: CppG1Element;
-  private static cppInstance: CppG1Element = createG1Element();
 
   constructor(instance: CppG1Element) {
     this.instance = instance;
   }
 
   static fromBytes(bytes: Uint8Array): G1Element {
-    return new G1Element(this.cppInstance.fromBytes(bytes));
+    return new G1Element(createG1Element().fromBytes(bytes));
   }
 
   static fromHex(hex: string): G1Element {
-    return new G1Element(this.cppInstance.fromHex(hex));
+    return new G1Element(createG1Element().fromHex(hex));
   }
 
   toBytes(): Uint8Array {

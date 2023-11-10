@@ -31,32 +31,35 @@ type CppPrivateKey = Pick<
 >;
 
 const createPrivateKey = (): CppPrivateKey => {
-  if (global.createPrivateKeyInstance == null)
+  if (global.createPrivateKeyInstance == null) {
     throw new Error(
       'Failed to create a new PrivateKey instance, the native initializer function does not exist. Are you trying to use PrivateKey from different JS Runtimes?'
     );
+  }
   return global.createPrivateKeyInstance();
 };
 
 export class PrivateKey {
   private instance: CppPrivateKey;
-  private static cppInstance: CppPrivateKey = createPrivateKey();
-
   constructor(instance: CppPrivateKey) {
     this.instance = instance;
   }
 
   static fromBytes(bytes: Uint8Array, modOrder?: boolean): PrivateKey {
-    return new PrivateKey(this.cppInstance.fromBytes(bytes, modOrder ?? false));
+    return new PrivateKey(
+      createPrivateKey().fromBytes(bytes, modOrder ?? false)
+    );
   }
 
   static fromHex(hex: string): PrivateKey {
-    return new PrivateKey(this.cppInstance.fromHex(hex));
+    return new PrivateKey(createPrivateKey().fromHex(hex));
   }
 
   static aggregate(privateKeys: PrivateKey[]): PrivateKey {
     return new PrivateKey(
-      this.cppInstance.aggregate(privateKeys.map((pk) => pk.getCppPrivateKey()))
+      createPrivateKey().aggregate(
+        privateKeys.map((pk) => pk.getCppPrivateKey())
+      )
     );
   }
 

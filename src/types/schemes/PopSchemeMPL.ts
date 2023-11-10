@@ -56,22 +56,20 @@ const createPopSchemeMPL = (): CppPopSchemeMPL => {
 };
 
 export class PopSchemeMPL {
-  private static nativeInstance: CppPopSchemeMPL = createPopSchemeMPL();
-
   static skToG1(sk: PrivateKey): G1Element {
-    return new G1Element(this.nativeInstance.skToG1(sk.getCppPrivateKey()));
+    return new G1Element(createPopSchemeMPL().skToG1(sk.getCppPrivateKey()));
   }
 
   static keyGen(seed: Uint8Array): PrivateKey {
-    return new PrivateKey(this.nativeInstance.keyGen(seed));
+    return new PrivateKey(createPopSchemeMPL().keyGen(seed));
   }
 
   static sign(sk: PrivateKey, msg: Uint8Array): G2Element {
-    return new G2Element(this.nativeInstance.sign(sk.getCppPrivateKey(), msg));
+    return new G2Element(createPopSchemeMPL().sign(sk.getCppPrivateKey(), msg));
   }
 
   static verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean {
-    return this.nativeInstance.verify(
+    return createPopSchemeMPL().verify(
       pk.getCppG1Element(),
       msg,
       sig.getCppG2Element()
@@ -80,7 +78,7 @@ export class PopSchemeMPL {
 
   static aggregate(g2s: G2Element[]): G2Element {
     return new G2Element(
-      this.nativeInstance.aggregate(g2s.map((g2) => g2.getCppG2Element()))
+      createPopSchemeMPL().aggregate(g2s.map((g2) => g2.getCppG2Element()))
     );
   }
 
@@ -89,7 +87,7 @@ export class PopSchemeMPL {
     msgs: Uint8Array[],
     sig: G2Element
   ): boolean {
-    return this.nativeInstance.aggregateVerify(
+    return createPopSchemeMPL().aggregateVerify(
       pks.map((pk) => pk.getCppG1Element()),
       msgs,
       sig.getCppG2Element()
@@ -98,31 +96,31 @@ export class PopSchemeMPL {
 
   static deriveChildSk(sk: PrivateKey, index: number): PrivateKey {
     return new PrivateKey(
-      this.nativeInstance.deriveChildSk(sk.getCppPrivateKey(), index)
+      createPopSchemeMPL().deriveChildSk(sk.getCppPrivateKey(), index)
     );
   }
 
   static deriveChildSkUnhardened(sk: PrivateKey, index: number): PrivateKey {
     return new PrivateKey(
-      this.nativeInstance.deriveChildSkUnhardened(sk.getCppPrivateKey(), index)
+      createPopSchemeMPL().deriveChildSkUnhardened(sk.getCppPrivateKey(), index)
     );
   }
 
   static deriveChildPkUnhardened(pk: G1Element, index: number): G1Element {
     return new G1Element(
-      this.nativeInstance.deriveChildPkUnhardened(pk.getCppG1Element(), index)
+      createPopSchemeMPL().deriveChildPkUnhardened(pk.getCppG1Element(), index)
     );
   }
 
   static popVerify(pk: G1Element, signatureProof: G2Element): boolean {
-    return this.nativeInstance.popVerify(
+    return createPopSchemeMPL().popVerify(
       pk.getCppG1Element(),
       signatureProof.getCppG2Element()
     );
   }
 
   static popProve(sk: PrivateKey): G2Element {
-    return new G2Element(this.nativeInstance.popProve(sk.getCppPrivateKey()));
+    return new G2Element(createPopSchemeMPL().popProve(sk.getCppPrivateKey()));
   }
 
   static fastAggregateVerify(
@@ -130,7 +128,7 @@ export class PopSchemeMPL {
     msg: Uint8Array,
     sig: G2Element
   ): boolean {
-    return this.nativeInstance.fastAggregateVerify(
+    return createPopSchemeMPL().fastAggregateVerify(
       pks.map((pk) => pk.getCppG1Element()),
       msg,
       sig.getCppG2Element()

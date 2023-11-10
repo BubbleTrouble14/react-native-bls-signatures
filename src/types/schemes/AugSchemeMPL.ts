@@ -52,18 +52,16 @@ const createAugSchemeMPL = (): CppAugSchemeMPL => {
 };
 
 export class AugSchemeMPL {
-  private static nativeInstance: CppAugSchemeMPL = createAugSchemeMPL();
-
   static skToG1(sk: PrivateKey): G1Element {
-    return new G1Element(this.nativeInstance.skToG1(sk.getCppPrivateKey()));
+    return new G1Element(createAugSchemeMPL().skToG1(sk.getCppPrivateKey()));
   }
 
   static keyGen(seed: Uint8Array): PrivateKey {
-    return new PrivateKey(this.nativeInstance.keyGen(seed));
+    return new PrivateKey(createAugSchemeMPL().keyGen(seed));
   }
 
   static sign(sk: PrivateKey, msg: Uint8Array): G2Element {
-    return new G2Element(this.nativeInstance.sign(sk.getCppPrivateKey(), msg));
+    return new G2Element(createAugSchemeMPL().sign(sk.getCppPrivateKey(), msg));
   }
 
   static signPrepend(
@@ -72,7 +70,7 @@ export class AugSchemeMPL {
     prependPk: G1Element
   ): G2Element {
     return new G2Element(
-      this.nativeInstance.signPrepend(
+      createAugSchemeMPL().signPrepend(
         sk.getCppPrivateKey(),
         msg,
         prependPk.getCppG1Element()
@@ -81,7 +79,7 @@ export class AugSchemeMPL {
   }
 
   static verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean {
-    return this.nativeInstance.verify(
+    return createAugSchemeMPL().verify(
       pk.getCppG1Element(),
       msg,
       sig.getCppG2Element()
@@ -90,7 +88,7 @@ export class AugSchemeMPL {
 
   static aggregate(g2s: G2Element[]): G2Element {
     return new G2Element(
-      this.nativeInstance.aggregate(g2s.map((g2) => g2.getCppG2Element()))
+      createAugSchemeMPL().aggregate(g2s.map((g2) => g2.getCppG2Element()))
     );
   }
 
@@ -99,7 +97,7 @@ export class AugSchemeMPL {
     msgs: Uint8Array[],
     sig: G2Element
   ): boolean {
-    return this.nativeInstance.aggregateVerify(
+    return createAugSchemeMPL().aggregateVerify(
       pks.map((pk) => pk.getCppG1Element()),
       msgs,
       sig.getCppG2Element()
@@ -108,19 +106,19 @@ export class AugSchemeMPL {
 
   static deriveChildSk(sk: PrivateKey, index: number): PrivateKey {
     return new PrivateKey(
-      this.nativeInstance.deriveChildSk(sk.getCppPrivateKey(), index)
+      createAugSchemeMPL().deriveChildSk(sk.getCppPrivateKey(), index)
     );
   }
 
   static deriveChildSkUnhardened(sk: PrivateKey, index: number): PrivateKey {
     return new PrivateKey(
-      this.nativeInstance.deriveChildSkUnhardened(sk.getCppPrivateKey(), index)
+      createAugSchemeMPL().deriveChildSkUnhardened(sk.getCppPrivateKey(), index)
     );
   }
 
   static deriveChildPkUnhardened(pk: G1Element, index: number): G1Element {
     return new G1Element(
-      this.nativeInstance.deriveChildPkUnhardened(pk.getCppG1Element(), index)
+      createAugSchemeMPL().deriveChildPkUnhardened(pk.getCppG1Element(), index)
     );
   }
 }
