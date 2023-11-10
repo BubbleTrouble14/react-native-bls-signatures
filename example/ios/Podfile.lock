@@ -267,7 +267,7 @@ PODS:
   - React-jsinspector (0.71.13)
   - React-logger (0.71.13):
     - glog
-  - react-native-bls-signatures (0.0.9):
+  - react-native-bls-signatures (0.0.11):
     - React
     - React-Core
   - react-native-quick-base64 (2.0.7):
@@ -510,7 +510,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: a2867f1f81301b1f56ad968632b6ebc45c64a530
   React-jsinspector: 7e58fe86c7cc442fd11da0c9d8bef12a8d63f771
   React-logger: a3f6ca0d018749852a2a6f07c154bfc6fcd4195a
-  react-native-bls-signatures: 54619dba41df93409e93c29a0aacbc2ee2fb39dc
+  react-native-bls-signatures: 8c859ba7ac80c83486f85ca7c5c7ddedd5731d14
   react-native-quick-base64: a5dbe4528f1453e662fcf7351029500b8b63e7bb
   react-native-quick-crypto: 455c1b411db006dba1026a30681ececb19180187
   React-perflogger: 431a655960a02f01257d631b2a9bfbb02fd21064
