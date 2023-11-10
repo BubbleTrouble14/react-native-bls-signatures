@@ -18,7 +18,7 @@
     "ios/BlsSignatures.xcodeproj/project.pbxproj",
     "ios/Clibsodium.xcframework",
     "ios/Clibblst.xcframework",
-    "ios/**/*.m",
+    "ios/**/*.h",
     "ios/**/*.mm",
     "README.md",
     "react-native-bls-signatures.podspec",
