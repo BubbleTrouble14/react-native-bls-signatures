@@ -146,5 +146,13 @@
         }
       ]
     ]
+  },
+  "codegenConfig": {
+    "name": "RNBlsSpec",
+    "type": "modules",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.bls"
+    }
   }
 }
