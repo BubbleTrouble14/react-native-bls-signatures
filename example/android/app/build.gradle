@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.example.reactnativebls"
+    namespace "com.blsexample"
     defaultConfig {
-        applicationId "com.example.reactnativebls"
+        applicationId "com.blsexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -149,7 +149,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
@@ -160,14 +159,6 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
-    // react-native-bls-signatures sources from parent folder
-    implementation project(':reactnativebls')
 }
-
-// task copyDownloadableDepsToLibs(type: Copy) {
-//     from configurations.compile
-//     into 'libs'
-// }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

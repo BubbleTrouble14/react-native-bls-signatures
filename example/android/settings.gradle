@@ -1,7 +1,4 @@
-rootProject.name = 'BlsSignaturesExample'
+rootProject.name = 'BlsExample'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 includeBuild('../node_modules/react-native-gradle-plugin')
-
-include ':reactnativebls'
-project(':reactnativebls').projectDir = new File(rootProject.projectDir, '../../android')

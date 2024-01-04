@@ -1,6 +1,6 @@
 #include "Util.h"
 #include "TypedArray.h"
-#include "include/bls/bls.hpp"
+#include "bls.hpp"
 #include <jsi/jsi.h>
 #include <string>
 #include <thread>

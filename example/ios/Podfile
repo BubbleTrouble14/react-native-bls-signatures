@@ -32,8 +32,6 @@ target 'BlsSignaturesExample' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  pod 'react-native-bls-signatures', :path => '../..'
-
   post_install do |installer|
     react_native_post_install(
       installer,

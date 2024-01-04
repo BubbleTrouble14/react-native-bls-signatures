@@ -1,62 +1,51 @@
-project(ReactNativeBLSSignatures)
-cmake_minimum_required(VERSION 3.9.0)
+project("rnbls")
+cmake_minimum_required(VERSION 3.8)
 
-set(PACKAGE_NAME "react-native-bls-signatures")
-set(BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(
-        ../cpp
-        ../cpp/include
-        ../cpp/include/bls
-        ../cpp/include/sodium
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  string(APPEND CMAKE_CXX_FLAGS " -DDEBUG")
+endif()
+
+set(PACKAGE_NAME "rnbls")
+
+file(GLOB_RECURSE SOURCES_COMMON CONFIGURE_DEPENDS "../cpp/**.cpp")
+
+add_library(
+  ${PACKAGE_NAME}
+  SHARED
+  ${SOURCES_COMMON}
+  cpp-adapter.cpp
 )
 
-add_library(reactnativebls  # <-- Library name
-        SHARED
-        src/main/cpp/cpp-adapter.cpp
-        ../cpp/PrivateKeyHostObject.cpp
-        ../cpp/AugSchemeMPLHostObject.cpp
-        ../cpp/BasicSchemeMPLHostObject.cpp
-        ../cpp/PopSchemeMPLHostObject.cpp
-        ../cpp/G1ElementHostObject.cpp
-        ../cpp/G2ElementHostObject.cpp
-        ../cpp/Util.cpp
-        ../cpp/TypedArray.cpp
-        ../cpp/include/bls/bls.cpp
-        ../cpp/include/bls/elements.cpp
-        ../cpp/include/bls/privatekey.cpp
-        ../cpp/include/bls/schemes.cpp
+# includes
+target_include_directories(
+  ${PACKAGE_NAME}
+  PRIVATE
+  ../cpp
+  ../cpp/base
+  ../cpp/wrappers
+  "${REACT_NATIVE_DIR}/ReactAndroid/src/main/jni/react/turbomodule"
+  "${REACT_NATIVE_DIR}/ReactCommon"
+  "${REACT_NATIVE_DIR}/ReactCommon/callinvoker"
+  "${REACT_NATIVE_DIR}/ReactCommon/runtimeexecutor"
 )
 
-# Configure C++ 17
-set_target_properties(
-        reactnativebls PROPERTIES
-        CXX_STANDARD 17
-        CXX_EXTENSIONS OFF
-        POSITION_INDEPENDENT_CODE ON
-)
-
-add_library( libblst STATIC IMPORTED )
-set_target_properties(libblst
-    PROPERTIES
-    IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libblst.a )
-
-
-add_library( libsodium STATIC IMPORTED )
-set_target_properties(libsodium
-    PROPERTIES
-    IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libsodium.a )
+# build shared lib
+set_target_properties(${PACKAGE_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 find_package(ReactAndroid REQUIRED CONFIG)
 find_library(log-lib log)
 
+find_package(blst REQUIRED CONFIG)
+find_package(sodium REQUIRED CONFIG)
+
 target_link_libraries(
-        reactnativebls
+        ${PACKAGE_NAME}
         ${log-lib}          # <-- Logcat logger
         ReactAndroid::jsi   # <-- JSI
         android             # <-- Android JNI core
-        libblst
-        libsodium
+        blst::blst
+        sodium::sodium
 )
