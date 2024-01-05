@@ -149,8 +149,6 @@ android {
       "**/libturbomodulejsijni.so",
       "**/libreact_nativemodule_core.so",
       "**/libjscexecutor.so",
-      "**/libblst.so",
-      "**/libsodium.so",
     ]
   }
 
