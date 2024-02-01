@@ -113,7 +113,7 @@ const run = (
   let indents = -1;
   let currentSuite: string = '';
 
-  const indent = () => Array(indents).join(' ');
+  const indent = () => Array(indents).join('  ');
   runner
     .once(EVENT_RUN_BEGIN, () => {
       stats.start = new Date();
