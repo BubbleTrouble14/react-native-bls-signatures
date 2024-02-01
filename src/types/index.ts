@@ -6,5 +6,4 @@ export * from './AugSchemeMPL';
 export * from './BasicSchemeMPL';
 export * from './PopSchemeMPL';
 export * from './Utils';
-export * from './Bls';
 export * from './HKDF256';

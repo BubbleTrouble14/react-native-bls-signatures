@@ -1,5 +1,4 @@
-/*global BlsApi*/
-import type { Bls as BlsApi } from './types';
+import type { Bls as BlsApi } from './types/Bls';
 
 /**
  * Declares the BlsApi as an available object in the global scope
@@ -7,5 +6,3 @@ import type { Bls as BlsApi } from './types';
 declare global {
   var BlsApi: BlsApi;
 }
-
-export const Bls = BlsApi;
