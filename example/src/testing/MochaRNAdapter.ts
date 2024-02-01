@@ -7,13 +7,6 @@ rootSuite.timeout(10 * 1000);
 let mochaContext = rootSuite;
 let only = false;
 
-export const clearTests = () => {
-  rootSuite.suites = [];
-  rootSuite.tests = [];
-  mochaContext = rootSuite;
-  only = false;
-};
-
 export const it = (
   name: string,
   f: MochaTypes.Func | MochaTypes.AsyncFunc
@@ -22,16 +15,6 @@ export const it = (
     const test = new Mocha.Test(name, f);
     mochaContext.addTest(test);
   }
-};
-
-export const itOnly = (
-  name: string,
-  f: MochaTypes.Func | MochaTypes.AsyncFunc
-): void => {
-  clearTests();
-  const test = new Mocha.Test(name, f);
-  mochaContext.addTest(test);
-  only = true;
 };
 
 export const describe = (name: string, f: () => void): void => {
@@ -43,4 +26,8 @@ export const describe = (name: string, f: () => void): void => {
   prevMochaContext.addSuite(mochaContext);
   f();
   mochaContext = prevMochaContext;
+};
+
+export const beforeEach = (f: MochaTypes.Func | MochaTypes.AsyncFunc): void => {
+  mochaContext.beforeEach(f);
 };

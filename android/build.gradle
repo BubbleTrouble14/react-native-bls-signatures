@@ -5,7 +5,16 @@ def getExtOrDefault(name) {
 }
 
 def getExtOrIntegerDefault(name) {
-  return getExtOrDefault(name).toInteger()
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["Bls_" + name]).toInteger()
+}
+
+def supportsNamespace() {
+  def parsed = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
+  def major = parsed[0].toInteger()
+  def minor = parsed[1].toInteger()
+
+  // Namespace support was added in 7.3.0
+  return (major == 7 && minor >= 3) || major >= 8
 }
 
 def isNewArchitectureEnabled() {
@@ -24,7 +33,7 @@ static def findNodeModules(baseDir) {
     }
     basePath = basePath.getParent()
   }
-  throw new GradleException("react-native-worklets-core: Failed to find node_modules/ path!")
+  throw new GradleException("react-native-bls: Failed to find node_modules/ path!")
 }
 
 def JS_RUNTIME = {
@@ -53,14 +62,23 @@ def reactNativeArchitectures() {
 apply plugin: "com.android.library"
 
 if (isNewArchitectureEnabled()) {
-    apply plugin: "com.facebook.react"
+  apply plugin: "com.facebook.react"
 }
 
 task prepareHeaders(type: Copy) {
   from fileTree('../cpp').filter { it.isFile() }
-  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
+  into "${project.buildDir}/headers/rnbls/react-native-bls/"
+  includeEmptyDirs = false
+  from fileTree('../bls_cpp/include').filter { it.isFile() }
+  into "${project.buildDir}/headers/rnbls/react-native-bls/"
   includeEmptyDirs = false
 }
+
+// task prepareHeaders(type: Copy) {
+//   from fileTree('../bls_cpp/include').filter { it.isFile() }
+//   into "${project.buildDir}/headers/rnbls/react-native-bls/"
+//   includeEmptyDirs = false
+// }
 
 task deleteCmakeCache() {
   doFirst {
@@ -69,30 +87,38 @@ task deleteCmakeCache() {
 }
 
 android {
+  if (supportsNamespace()) {
+    namespace "com.bls"
+
+    sourceSets {
+      main {
+        manifest.srcFile "src/main/AndroidManifestNew.xml"
+      }
+    }
+  }
+
+  ndkVersion getExtOrDefault("ndkVersion")
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
     externalNativeBuild {
       cmake {
         arguments "-DANDROID_STL=c++_shared",
-                "-DANDROID_TOOLCHAIN=clang",
-                "-DREACT_NATIVE_DIR=${nodeModules}/react-native",
-                "-DJS_RUNTIME=${JS_RUNTIME}"
+          "-DANDROID_TOOLCHAIN=clang",
+          "-DREACT_NATIVE_DIR=${nodeModules}/react-native",
+          "-DJS_RUNTIME=${JS_RUNTIME}"
         abiFilters (*reactNativeArchitectures())
+        // cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
       }
     }
   }
 
   buildFeatures {
     prefab true
-  }
-
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
   }
 
   externalNativeBuild {
@@ -122,10 +148,23 @@ android {
     }
   }
 
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
   sourceSets {
     main {
       if (isNewArchitectureEnabled()) {
-        java.srcDirs += ["src/newarch"]
+        java.srcDirs += [
+          "src/newarch",
+          // This is needed to build Kotlin project with NewArch enabled
+          "${project.buildDir}/generated/source/codegen/java"
+        ]
       } else {
         java.srcDirs += ["src/oldarch"]
       }
@@ -149,6 +188,8 @@ android {
       "**/libturbomodulejsijni.so",
       "**/libreact_nativemodule_core.so",
       "**/libjscexecutor.so",
+      "**/libcrypto.so",
+      "**/libssl.so",
     ]
   }
 
@@ -163,13 +204,30 @@ android {
   }
 }
 
+repositories {
+  mavenCentral()
+  google()
+}
+
+
 dependencies {
-  implementation "com.facebook.react:react-android"
+  // For < 0.71, this will be from the local maven repo
+  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native:+"
   implementation fileTree(dir:'libs/',include:['*.aar'])
   if (JS_RUNTIME == "hermes") {
     implementation "com.facebook.react:hermes-android"
   }
 }
+
+// if (isNewArchitectureEnabled()) {
+//   react {
+//     jsRootDir = file("../src/")
+//     libraryName = "Bls"
+//     codegenJavaPackageName = "com.bls"
+//   }
+// }
 
 preBuild.dependsOn(prepareHeaders)
 

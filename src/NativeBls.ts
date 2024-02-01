@@ -7,13 +7,9 @@ export interface Spec extends TurboModule {
 
 const BlsInstaller = TurboModuleRegistry.getEnforcing<Spec>('Bls');
 
-console.log('Loading react-native-bls-signatures...');
+console.log('Loading react-native-bls...');
 
-declare global {
-  var Bls: any;
-}
-
-if (global.Bls === undefined || global.Bls == null) {
+if (global.BlsApi === undefined || global.BlsApi == null) {
   if (BlsInstaller == null || typeof BlsInstaller.install !== 'function') {
     console.error(
       'Native Bls Module cannot be found! Make sure you correctly ' +
@@ -31,35 +27,5 @@ if (global.Bls === undefined || global.Bls == null) {
     }
   }
 } else {
-  console.log('react-native-worklets-core installed.');
+  console.log('react-native-bls installed.');
 }
-
-// import { NativeModules, Platform } from 'react-native';
-
-// const LINKING_ERROR =
-//   `The package 'react-native-bls-signatures' doesn't seem to be linked. Make sure: \n\n` +
-//   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-//   '- You rebuilt the app after installing the package\n' +
-//   '- You are not using Expo managed workflow\n';
-
-// const ChiaBlsSignatures = NativeModules.BlsSignatures;
-
-// if (ChiaBlsSignatures == null) {
-//   throw new Error(LINKING_ERROR);
-// }
-
-// const result = ChiaBlsSignatures.install();
-
-// if (!result) {
-//   throw new Error(
-//     `Failed to create a new BLS Signatures instance: The native BLS Signatures Module could not be installed! Looks like something went wrong when installing JSI bindings: ${result}`
-//   );
-// }
-
-// export { PrivateKey } from './types/PrivateKey';
-// export { AugSchemeMPL } from './types/schemes/AugSchemeMPL';
-// export { PopSchemeMPL } from './types/schemes/PopSchemeMPL';
-// export { BasicSchemeMPL } from './types/schemes/BasicSchemeMPL';
-// export { G1Element } from './types/elements/G1Element';
-// export { G2Element } from './types/elements/G2Element';
-// export { hash256, fromHex, getRandomSeed, toHex } from './types/Utils';

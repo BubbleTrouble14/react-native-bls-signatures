@@ -1,6 +1,7 @@
 require "json"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
+folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 
 Pod::Spec.new do |s|
   s.name         = "react-native-bls-signatures"
@@ -10,21 +11,79 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "10.0" }
+  s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/BubbleTrouble14/react-native-bls-signatures.git", :tag => "#{s.version}" }
 
-  s.header_mappings_dir = "cpp"
+  # s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,c,h}"
+  # "bls-signatures/src/*.{h,hpp,cpp}"
 
-  s.pod_target_xcconfig = {
-    :USE_HEADERMAP => "No"
-  }
+  s.source_files = [
+    "ios/**/*.{h,m,mm}",
+    "cpp/**/*.{h,hpp,cpp}",
+    "bls-signatures/src/bls.cpp",
+    "bls-signatures/src/bls.hpp",
+    "bls-signatures/src/elements.cpp",
+    "bls-signatures/src/elements.hpp",
+    "bls-signatures/src/privatekey.cpp",
+    "bls-signatures/src/privatekey.hpp",
+    "bls-signatures/src/schemes.cpp",
+    "bls-signatures/src/schemes.hpp"
+  ]
 
-  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{h,hpp,cpp}"
+  s.vendored_frameworks = 'ios/Clibsodium.xcframework', 'ios/Clibblst.xcframework'
 
+  # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
+  # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
+  # if respond_to?(:install_modules_dependencies, true)
+  #   install_modules_dependencies(s)
+  # else
   s.dependency "React-Core"
-  s.dependency "React"
 
-  s.ios.vendored_frameworks = "ios/Clibblst.xcframework"
-  s.vendored_frameworks = "ios/Clibsodium.xcframework"
+
+  # Don't install the dependencies when we run `pod install` in the old architecture.
+  if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+    # s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+    s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1 -DBLSALLOC_SODIUM=1"
+    s.pod_target_xcconfig = {
+        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
+        "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+        "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
+    }
+    s.dependency "React-Codegen"
+    s.dependency "RCT-Folly"
+    s.dependency "RCTRequired"
+    s.dependency "RCTTypeSafety"
+    s.dependency "ReactCommon/turbomodule/core"
+  else
+    s.pod_target_xcconfig = {
+      'CLANG_CXX_LANGUAGE_STANDARD' => 'c++17',
+      'DEFINES_MODULE' => 'YES',
+      "HEADER_SEARCH_PATHS" => "\"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\"",
+      "OTHER_CFLAGS" => "$(inherited)",
+      "OTHER_CPLUSPLUSFLAGS" => "-DBLSALLOC_SODIUM=1"
+    }
+
+    s.dependency "React-callinvoker"
+    s.dependency "React"
+    s.dependency "React-Core"
+  end
+  # # Don't install the dependencies when we run `pod install` in the old architecture.
+  # if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+  #   s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+  #   s.pod_target_xcconfig    = {
+  #       "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
+  #       "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+  #       "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
+  #   }
+  #   s.dependency "React-Codegen"
+  #   s.dependency "RCT-Folly"
+  #   s.dependency "RCTRequired"
+  #   s.dependency "RCTTypeSafety"
+  #   s.dependency "ReactCommon/turbomodule/core"
+  #  end
+  # end
+
+  # s.vendored_frameworks = "ios/Clibsodium.xcframework"
+  # s.vendored_frameworks = "ios/Clibblst.xcframework"
 
 end
