@@ -8,7 +8,9 @@
     "start": "react-native start",
     "sim": "yarn ios --simulator \"iPhone 15 Pro Max\"",
     "pods-new-arch": "RCT_NEW_ARCH_ENABLED=1 pod-install --quiet",
+    "pods-new-arch-no-sodium": "SODIUM_ENABLED=0 RCT_NEW_ARCH_ENABLED=1 pod-install --quiet",
     "pods": "pod-install --quiet",
+    "pods-no-sodium": "SODIUM_ENABLED=0 pod-install --quiet",
     "build:android": "cd android && ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a",
     "build:ios": "cd ios && xcodebuild -workspace BlsSignaturesExample.xcworkspace -scheme BlsSignaturesExample -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO"
   },

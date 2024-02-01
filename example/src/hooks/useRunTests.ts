@@ -142,7 +142,7 @@ const run = (
         type: 'correct',
         indentation: indents,
       });
-      // console.log(`${indent()}pass: ${test.fullTitle()}`);
+      console.log(`${indent()}pass: ${test.fullTitle()}`);
     })
     .on(EVENT_TEST_FAIL, (test: MochaTypes.Runnable, err: Error) => {
       stats.failures++;

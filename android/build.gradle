@@ -86,6 +86,9 @@ task deleteCmakeCache() {
   }
 }
 
+def sodiumEnabled = hasProperty('sodiumEnabled') ? project.property('sodiumEnabled').toBoolean() : true // Default to true
+logger.warn("[react-native-bls-signatures] libsodium is ${sodiumEnabled ? "enabled" : "disabled"}!")
+
 android {
   if (supportsNamespace()) {
     namespace "com.bls"
@@ -109,6 +112,7 @@ android {
       cmake {
         arguments "-DANDROID_STL=c++_shared",
           "-DANDROID_TOOLCHAIN=clang",
+          "-DSODIUM_ENABLED=${sodiumEnabled}",
           "-DREACT_NATIVE_DIR=${nodeModules}/react-native",
           "-DJS_RUNTIME=${JS_RUNTIME}"
         abiFilters (*reactNativeArchitectures())

@@ -67,9 +67,9 @@ target_link_libraries(
   blst::blst
 )
 
-option(USE_SODIUM "Use libsodium for BLSALLOC" ON)
+# option(USE_SODIUM "Use libsodium for BLSALLOC" ON)
 
-if(USE_SODIUM)
+if(SODIUM_ENABLED)
   add_definitions(-DBLSALLOC_SODIUM)
   find_package(sodium REQUIRED CONFIG)
   target_link_libraries(

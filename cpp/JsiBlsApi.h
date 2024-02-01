@@ -110,10 +110,10 @@ public:
 #if BLSALLOC_SODIUM
     // Use libsodium's cryptographically secure RNG
     randombytes_buf(buf, 32);
-    RNBlsLogger::logToJavascriptConsole(runtime, "Secure random used from libsodium");
+    // RNBlsLogger::logToJavascriptConsole(runtime, "Secure random used from libsodium");
 #else
     // Fallback to a less secure RNG
-    RNBlsLogger::logToJavascriptConsole(runtime, "Not a secure random");
+    // RNBlsLogger::logToJavascriptConsole(runtime, "Not a secure random");
     for (int i = 0; i < 32; i++)
       buf[i] = rand();
 #endif
