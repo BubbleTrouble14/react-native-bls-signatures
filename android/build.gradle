@@ -69,7 +69,7 @@ task prepareHeaders(type: Copy) {
   from fileTree('../cpp').filter { it.isFile() }
   into "${project.buildDir}/headers/rnbls/react-native-bls/"
   includeEmptyDirs = false
-  from fileTree('../bls_cpp/include').filter { it.isFile() }
+  from fileTree('../bls-signatures/src').filter { it.isFile() }
   into "${project.buildDir}/headers/rnbls/react-native-bls/"
   includeEmptyDirs = false
 }
