@@ -48,7 +48,7 @@ public class BlsModule extends BlsSpec {
       CallInvokerHolder jsCallInvokerHolder = context.getCatalystInstance().getJSCallInvokerHolder();
       return nativeInstall(jsiRuntimeRef, jsCallInvokerHolder);
     } catch (Exception exception) {
-      Log.e(NAME, "Failed to initialize react-native-bls!", exception);
+      Log.e(NAME, "Failed to initialize react-native-bls-signatures!", exception);
       return false;
     }
   }

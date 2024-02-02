@@ -33,7 +33,7 @@ static def findNodeModules(baseDir) {
     }
     basePath = basePath.getParent()
   }
-  throw new GradleException("react-native-bls: Failed to find node_modules/ path!")
+  throw new GradleException("react-native-bls-signatures: Failed to find node_modules/ path!")
 }
 
 def JS_RUNTIME = {
@@ -67,18 +67,12 @@ if (isNewArchitectureEnabled()) {
 
 task prepareHeaders(type: Copy) {
   from fileTree('../cpp').filter { it.isFile() }
-  into "${project.buildDir}/headers/rnbls/react-native-bls/"
+  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
   includeEmptyDirs = false
   from fileTree('../bls-signatures/src').filter { it.isFile() }
-  into "${project.buildDir}/headers/rnbls/react-native-bls/"
+  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
   includeEmptyDirs = false
 }
-
-// task prepareHeaders(type: Copy) {
-//   from fileTree('../bls_cpp/include').filter { it.isFile() }
-//   into "${project.buildDir}/headers/rnbls/react-native-bls/"
-//   includeEmptyDirs = false
-// }
 
 task deleteCmakeCache() {
   doFirst {
@@ -224,14 +218,6 @@ dependencies {
     implementation "com.facebook.react:hermes-android"
   }
 }
-
-// if (isNewArchitectureEnabled()) {
-//   react {
-//     jsRootDir = file("../src/")
-//     libraryName = "Bls"
-//     codegenJavaPackageName = "com.bls"
-//   }
-// }
 
 preBuild.dependsOn(prepareHeaders)
 
