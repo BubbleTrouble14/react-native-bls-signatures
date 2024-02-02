@@ -81,7 +81,7 @@ task deleteCmakeCache() {
 }
 
 def sodiumEnabled = hasProperty('sodiumEnabled') ? project.property('sodiumEnabled').toBoolean() : true // Default to true
-logger.warn("[react-native-bls-signatures] libsodium is ${sodiumEnabled ? "enabled" : "disabled"}!")
+logger.warn("[BlsSignatures] react-native-bls-signatures has libsodium ${sodiumEnabled ? "enabled" : "disabled"}!")
 
 android {
   if (supportsNamespace()) {

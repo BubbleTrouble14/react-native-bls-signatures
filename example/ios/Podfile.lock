@@ -944,7 +944,7 @@ PODS:
   - React-Mapbuffer (0.73.2):
     - glog
     - React-debug
-  - react-native-bls-signatures (0.0.14):
+  - react-native-bls-signatures (0.0.24):
     - React
     - React-callinvoker
     - React-Core
@@ -1368,7 +1368,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 03644c063fc3621c9a4e8bf263a8150909129618
   React-logger: 66b168e2b2bee57bd8ce9e69f739d805732a5570
   React-Mapbuffer: 9ee041e1d7be96da6d76a251f92e72b711c651d6
-  react-native-bls-signatures: 95e2b092c69122df6d15651515af7e60687882e9
+  react-native-bls-signatures: 5b8b2d64c8fe9124a3ce7f2f5d2ca91dda1041ba
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   React-nativeconfig: d753fbbc8cecc8ae413d615599ac378bbf6999bb
   React-NativeModulesApple: 964f4eeab1b4325e8b6a799cf4444c3fd4eb0a9c

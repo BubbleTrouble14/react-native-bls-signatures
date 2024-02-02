@@ -5,7 +5,6 @@
 
 #include "JsiHostObject.h"
 #include "TypedArray.h"
-#include "Util.h"
 #include <jsi/jsi.h>
 
 #include "bls.hpp"

@@ -7,8 +7,8 @@
 #include "JsiG2Element.h"
 #include "JsiHostObject.h"
 #include "JsiPrivateKey.h"
+#include "RNBlsUtils.h"
 #include "TypedArray.h"
-#include "Util.h"
 #include <jsi/jsi.h>
 
 #include "bls.hpp"
@@ -43,7 +43,7 @@ public:
   //----------------------------sign----------------------------//
   JSI_HOST_FUNCTION(sign) {
     auto privateKey = JsiPrivateKey::fromValue(runtime, arguments[0]);
-    auto message = utils::messageFromValue(runtime, arguments[1]);
+    auto message = Utils::messageFromValue(runtime, arguments[1]);
 
     G2Element g2Element = AugSchemeMPL().Sign(privateKey, message);
     return JsiG2Element::toValue(runtime, g2Element);
@@ -52,7 +52,7 @@ public:
   //----------------------------signPrepend----------------------------//
   JSI_HOST_FUNCTION(signPrepend) {
     auto privateKey = JsiPrivateKey::fromValue(runtime, arguments[0]);
-    auto message = utils::messageFromValue(runtime, arguments[1]);
+    auto message = Utils::messageFromValue(runtime, arguments[1]);
     auto g1Element = JsiG1Element::fromValue(runtime, arguments[2]);
 
     G2Element g2Element = AugSchemeMPL().Sign(privateKey, message, g1Element);
@@ -62,7 +62,7 @@ public:
   //----------------------------verify----------------------------//
   JSI_HOST_FUNCTION(verify) {
     auto g1Element = JsiG1Element::fromValue(runtime, arguments[0]);
-    auto message = utils::messageFromValue(runtime, arguments[1]);
+    auto message = Utils::messageFromValue(runtime, arguments[1]);
     auto g2Element = JsiG2Element::fromValue(runtime, arguments[2]);
 
     auto valid = AugSchemeMPL().Verify(g1Element, message, g2Element);
@@ -81,7 +81,7 @@ public:
   //----------------------------aggregateVerify----------------------------//
   JSI_HOST_FUNCTION(aggregateVerify) {
     auto g1Elements = JsiG1Element::arrayFromValue(runtime, arguments[0]);
-    auto messages = utils::messagesArrayFromValue(runtime, arguments[1]);
+    auto messages = Utils::messagesArrayFromValue(runtime, arguments[1]);
     auto g2Element = JsiG2Element::fromValue(runtime, arguments[2]);
 
     auto value = AugSchemeMPL().AggregateVerify(g1Elements, messages, g2Element);

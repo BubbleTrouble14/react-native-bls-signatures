@@ -28,11 +28,21 @@ Pod::Spec.new do |s|
     "bls-signatures/src/privatekey.cpp",
     "bls-signatures/src/privatekey.hpp",
     "bls-signatures/src/schemes.cpp",
-    "bls-signatures/src/schemes.hpp"
+    "bls-signatures/src/schemes.hpp",
+    "bls-signatures/src/hdkeys.hpp",
+    "bls-signatures/src/hkdf.hpp",
+    "bls-signatures/src/util.hpp"
+  ]
+
+
+  s.preserve_paths = [
+    "cpp/**/*.h",
+    "ios/**/*.h",
+    "bls-signatures/src/*.hpp"
   ]
 
   sodium_enabled = ENV['SODIUM_ENABLED'] != '0' ? "enabled" : "disabled"
-  Pod::UI.puts("[react-native-bls-signatures] libsodium is #{sodium_enabled}.")
+  Pod::UI.puts("[BlsSignatures] react-native-bls-signatures has libsodium #{sodium_enabled}!")
 
   # Default to enabled unless explicitly set to '0'
   vendored_frameworks = ['ios/Clibblst.xcframework']
