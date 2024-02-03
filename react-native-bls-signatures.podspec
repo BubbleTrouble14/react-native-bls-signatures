@@ -15,11 +15,12 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/BubbleTrouble14/react-native-bls-signatures.git", :tag => "#{s.version}" }
 
+  # "ios/Clibblst.xcframework/**/*.{h,hpp}" (Added as hack, as for some reason when adding to vendored_frameworks, it loses the headers from the first one ??)
   s.source_files = [
     "ios/**/*.{m,mm}",
     "cpp/**/*.{cpp}",
     "bls-signatures/src/*.{hpp,cpp}",
-    # "ios/Clibblst.xcframework/**/*.{h,hpp}",
+    "ios/Clibblst.xcframework/**/*.{h,hpp}",
   ]
 
   s.exclude_files = [
@@ -31,19 +32,19 @@ Pod::Spec.new do |s|
   s.preserve_paths = [
     "cpp/**/*.h",
     "ios/**/*.h",
+    'ios/*.xcframework'
   ]
 
   sodium_enabled = ENV['SODIUM_ENABLED'] != '0' ? "enabled" : "disabled"
   Pod::UI.puts("[BlsSignatures] react-native-bls-signatures has libsodium #{sodium_enabled}!")
 
-  vendored_frameworks = ['ios/Clibblst.xcframework']
-
   # Default to enabled unless explicitly set to '0'
   if ENV['SODIUM_ENABLED'] != '0' then
-    vendored_frameworks << 'ios/Clibsodium.xcframework'
+    s.vendored_frameworks = 'ios/Clibblst.xcframework', 'ios/Clibsodium.xcframework'
     extra_flags = ' -DBLSALLOC_SODIUM=1'
+  else
+    s.vendored_frameworks = "ios/Clibblst.xcframework"
   end
-  s.vendored_frameworks = vendored_frameworks
 
   s.dependency "React-Core"
 
@@ -52,7 +53,7 @@ Pod::Spec.new do |s|
     # s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
     s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1" + extra_flags
     s.pod_target_xcconfig = {
-        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_TARGET_SRCROOT)/cpp\" \"$(PODS_TARGET_SRCROOT)/ios/Clibblst.xcframework/**\"",
+        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_TARGET_SRCROOT)/cpp\"",
         # "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(PODS_TARGET_SRCROOT)/cpp\" \"$(PODS_TARGET_SRCROOT)/ios/Clibblst.xcframework/**\"  \"$(PODS_TARGET_SRCROOT)/ios/Clibsodium.xcframework/**\"",
         "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
         "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
@@ -66,7 +67,7 @@ Pod::Spec.new do |s|
     s.pod_target_xcconfig = {
       'CLANG_CXX_LANGUAGE_STANDARD' => 'c++17',
       'DEFINES_MODULE' => 'YES',
-      "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/cpp\" \"$(PODS_TARGET_SRCROOT)/ios/Clibblst.xcframework/**\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\"",
+      "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/cpp\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\"",
       "OTHER_CFLAGS" => "$(inherited)",
       "OTHER_CPLUSPLUSFLAGS" => "#{extra_flags}"
     }

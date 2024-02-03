@@ -1,0 +1,4 @@
+module Clibblst {
+    header "blst.h"
+    export *
+}
