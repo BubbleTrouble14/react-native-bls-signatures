@@ -1,31 +1,39 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
+import type { Bls } from './types/Bls';
+import type { UnsafeObject } from 'react-native/Libraries/Types/CodegenTypes';
+import { ModuleNotFoundError } from './ModuleNotFoundError';
 
-export interface Spec extends TurboModule {
-  install(): boolean;
+if (__DEV__) {
+  console.log('Loading react-native-bls-signatures...');
 }
 
-const BlsInstaller = TurboModuleRegistry.getEnforcing<Spec>('Bls');
+export interface Spec extends TurboModule {
+  /**
+   * Create a new instance of the Bls API.
+   * The returned {@linkcode UnsafeObject} is a `jsi::HostObject`.
+   */
+  createBlsApi(): UnsafeObject;
+}
 
-console.log('Loading react-native-bls...');
+let module: Spec;
+try {
+  // Try to find the CxxTurboModule.
+  // CxxTurboModules can be autolinked on Android starting from react-native 0.74,
+  // and are manually linked in BlsOnLoad.mm on iOS.
+  module = TurboModuleRegistry.getEnforcing<Spec>('BlsCxx');
+} catch (e) {
+  // User didn't enable new arch, or the module does not exist.
+  throw new ModuleNotFoundError(e);
+}
 
-if (global.BlsApi === undefined || global.BlsApi == null) {
-  if (BlsInstaller == null || typeof BlsInstaller.install !== 'function') {
-    console.error(
-      'Native Bls Module cannot be found! Make sure you correctly ' +
-        'installed native dependencies and rebuilt your app.'
-    );
-  } else {
-    // Install the module
-    const result = BlsInstaller.install();
-    if (result !== true) {
-      console.error(
-        `Native Bls Module failed to correctly install JSI Bindings! Result: ${result}`
-      );
-    } else {
-      console.log('Bls loaded successfully');
-    }
-  }
-} else {
-  console.log('react-native-bls installed.');
+/**
+ * The Bls API.
+ * This object can be shared and accessed from multiple contexts,
+ * however it is advised to not hold unnecessary references to it.
+ */
+export const bls = module.createBlsApi() as Bls;
+
+if (__DEV__) {
+  console.log('react-native-bls-signatures loaded successfully!');
 }

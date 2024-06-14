@@ -28,8 +28,6 @@ namespace jsi = facebook::jsi;
 
 class JsiBlsApi : public RNJsi::JsiHostObject {
 public:
-  static void installApi(jsi::Runtime& runtime);
-
   JsiBlsApi(jsi::Runtime& runtime) : JsiHostObject() {
     installReadonlyProperty("PrivateKey", std::make_shared<RNBls::JsiPrivateKey>());
     installReadonlyProperty("G1Element", std::make_shared<RNBls::JsiG1Element>());

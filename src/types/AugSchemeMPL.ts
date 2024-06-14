@@ -1,6 +1,7 @@
 import { G1Element } from './G1Element';
 import { G2Element } from './G2Element';
 import { PrivateKey } from './PrivateKey';
+import { bls } from '../NativeBls';
 
 export interface JsiAugSchemeMPL {
   skToG1(sk: PrivateKey): G1Element;
@@ -21,15 +22,15 @@ export interface JsiAugSchemeMPL {
 
 export class AugSchemeMPL {
   static skToG1(sk: PrivateKey): G1Element {
-    return global.BlsApi.AugSchemeMPL.skToG1(sk);
+    return bls.AugSchemeMPL.skToG1(sk);
   }
 
   static keyGen(seed: Uint8Array): PrivateKey {
-    return global.BlsApi.AugSchemeMPL.keyGen(seed);
+    return bls.AugSchemeMPL.keyGen(seed);
   }
 
   static sign(sk: PrivateKey, msg: Uint8Array): G2Element {
-    return global.BlsApi.AugSchemeMPL.sign(sk, msg);
+    return bls.AugSchemeMPL.sign(sk, msg);
   }
 
   static signPrepend(
@@ -37,15 +38,15 @@ export class AugSchemeMPL {
     msg: Uint8Array,
     prependPk: G1Element
   ): G2Element {
-    return global.BlsApi.AugSchemeMPL.signPrepend(sk, msg, prependPk);
+    return bls.AugSchemeMPL.signPrepend(sk, msg, prependPk);
   }
 
   static verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean {
-    return global.BlsApi.AugSchemeMPL.verify(pk, msg, sig);
+    return bls.AugSchemeMPL.verify(pk, msg, sig);
   }
 
   static aggregate(g2s: G2Element[]): G2Element {
-    return global.BlsApi.AugSchemeMPL.aggregate(g2s);
+    return bls.AugSchemeMPL.aggregate(g2s);
   }
 
   static aggregateVerify(
@@ -53,18 +54,18 @@ export class AugSchemeMPL {
     msgs: Uint8Array[],
     sig: G2Element
   ): boolean {
-    return global.BlsApi.AugSchemeMPL.aggregateVerify(pks, msgs, sig);
+    return bls.AugSchemeMPL.aggregateVerify(pks, msgs, sig);
   }
 
   static deriveChildSk(sk: PrivateKey, index: number): PrivateKey {
-    return global.BlsApi.AugSchemeMPL.deriveChildSk(sk, index);
+    return bls.AugSchemeMPL.deriveChildSk(sk, index);
   }
 
   static deriveChildSkUnhardened(sk: PrivateKey, index: number): PrivateKey {
-    return global.BlsApi.AugSchemeMPL.deriveChildSkUnhardened(sk, index);
+    return bls.AugSchemeMPL.deriveChildSkUnhardened(sk, index);
   }
 
   static deriveChildPkUnhardened(pk: G1Element, index: number): G1Element {
-    return global.BlsApi.AugSchemeMPL.deriveChildPkUnhardened(pk, index);
+    return bls.AugSchemeMPL.deriveChildPkUnhardened(pk, index);
   }
 }

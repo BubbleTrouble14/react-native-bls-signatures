@@ -1,24 +1,51 @@
 import java.nio.file.Paths
+import com.android.Version
 
-def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["Bls_" + name]
-}
+def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
+def agpVersionMajor = agpVersion.tokenize('.')[0].toInteger()
+def agpVersionMinor = agpVersion.tokenize('.')[1].toInteger()
 
-def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["Bls_" + name]).toInteger()
-}
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    mavenCentral()
+    google()
+  }
 
-def supportsNamespace() {
-  def parsed = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
-  def major = parsed[0].toInteger()
-  def minor = parsed[1].toInteger()
-
-  // Namespace support was added in 7.3.0
-  return (major == 7 && minor >= 3) || major >= 8
+  dependencies {
+    classpath("com.android.tools.build:gradle:8.3.1")
+  }
 }
 
 def isNewArchitectureEnabled() {
-  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+  // To opt-in for the New Architecture, you can either:
+  // - Set `newArchEnabled` to true inside the `gradle.properties` file
+  // - Invoke gradle with `-newArchEnabled=true`
+  // - Set an environment variable `ORG_GRADLE_PROJECT_newArchEnabled=true`
+  return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
+def resolveBuildType() {
+    Gradle gradle = getGradle()
+    String tskReqStr = gradle.getStartParameter().getTaskRequests()['args'].toString()
+
+    return tskReqStr.contains('Release') ? 'release' : 'debug'
+}
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+apply plugin: 'com.android.library'
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+def reactNativeArchitectures() {
+  def value = project.getProperties().get("reactNativeArchitectures")
+  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
 static def findNodeModules(baseDir) {
@@ -33,90 +60,65 @@ static def findNodeModules(baseDir) {
     }
     basePath = basePath.getParent()
   }
-  throw new GradleException("react-native-bls-signatures: Failed to find node_modules/ path!")
+  throw new GradleException("react-native-face-sdk: Failed to find node_modules/ path!")
 }
-
-def JS_RUNTIME = {
-  // Override JS runtime with environment variable
-  if (System.getenv("JS_RUNTIME")) {
-    return System.getenv("JS_RUNTIME")
-  }
-
-  // Check if Hermes is enabled in app setup
-  def appProject = rootProject.allprojects.find { it.plugins.hasPlugin('com.android.application') }
-  if (appProject?.hermesEnabled?.toBoolean()) {
-    return "hermes"
-  }
-
-  // Use JavaScriptCore (JSC) by default
-  return "jsc"
-}.call()
 
 def nodeModules = findNodeModules(projectDir)
 
-def reactNativeArchitectures() {
-  def value = project.getProperties().get("reactNativeArchitectures")
-  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-}
-
-apply plugin: "com.android.library"
-
-if (isNewArchitectureEnabled()) {
-  apply plugin: "com.facebook.react"
-}
-
-task prepareHeaders(type: Copy) {
-  from fileTree('../cpp').filter { it.isFile() }
-  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
-  includeEmptyDirs = false
-  from fileTree('../bls-signatures/src').filter { it.isFile() }
-  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
-  includeEmptyDirs = false
-}
-
-task deleteCmakeCache() {
-  doFirst {
-    delete "${projectDir}/.cxx"
-  }
+repositories {
+  google()
+  mavenCentral()
 }
 
 def sodiumEnabled = hasProperty('sodiumEnabled') ? project.property('sodiumEnabled').toBoolean() : true // Default to true
 logger.warn("[BlsSignatures] react-native-bls-signatures has libsodium ${sodiumEnabled ? "enabled" : "disabled"}!")
 
 android {
-  if (supportsNamespace()) {
+  compileSdkVersion safeExtGet("compileSdkVersion", 31)
+
+  if ((agpVersionMajor == 7 && agpVersionMinor >= 3) || agpVersionMajor >= 8) {
+    // Namespace support was added in 7.3.0
     namespace "com.bls"
 
     sourceSets {
       main {
-        manifest.srcFile "src/main/AndroidManifestNew.xml"
+        manifest.srcFile "src/main/AndroidManifest.xml"
       }
     }
   }
 
-  ndkVersion getExtOrDefault("ndkVersion")
-  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
-
-  defaultConfig {
-    minSdkVersion getExtOrIntegerDefault("minSdkVersion")
-    targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-
-    externalNativeBuild {
-      cmake {
-        arguments "-DANDROID_STL=c++_shared",
-          "-DANDROID_TOOLCHAIN=clang",
-          "-DSODIUM_ENABLED=${sodiumEnabled}",
-          "-DREACT_NATIVE_DIR=${nodeModules}/react-native",
-          "-DJS_RUNTIME=${JS_RUNTIME}"
-        abiFilters (*reactNativeArchitectures())
-        // cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
+  if (agpVersionMajor >= 8) {
+      buildFeatures {
+          buildConfig = true
       }
-    }
+  }
+
+  // Used to override the NDK path/version on internal CI or by allowing
+  // users to customize the NDK path/version from their root project (e.g. for M1 support)
+  if (rootProject.hasProperty("ndkPath")) {
+    ndkPath rootProject.ext.ndkPath
+  }
+  if (rootProject.hasProperty("ndkVersion")) {
+    ndkVersion rootProject.ext.ndkVersion
   }
 
   buildFeatures {
     prefab true
+  }
+
+  defaultConfig {
+    minSdkVersion safeExtGet('minSdkVersion', 23)
+    targetSdkVersion safeExtGet('targetSdkVersion', 31)
+    versionCode 1
+    versionName "1.0"
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    externalNativeBuild {
+      cmake {
+        cppFlags "-O2 -frtti -fexceptions -Wall -Wno-unused-variable -fstack-protector-all -DANDROID"
+        arguments "-DANDROID_STL=c++_shared", "-DSODIUM_ENABLED=${sodiumEnabled}"
+        abiFilters (*reactNativeArchitectures())
+      }
+    }
   }
 
   externalNativeBuild {
@@ -125,81 +127,42 @@ android {
     }
   }
 
+  packagingOptions {
+    doNotStrip resolveBuildType() == 'debug' ? "**/**/*.so" : ''
+    excludes = [
+            "**/libc++_shared.so",
+            "**/libfbjni.so",
+            "**/libreactnativejni.so",
+            "**/libjsi.so",
+            "**/libreact_nativemodule_core.so",
+            "**/libturbomodulejsijni.so",
+            "**/MANIFEST.MF",
+    ]
+  }
+
   buildTypes {
-    debug {
-      externalNativeBuild {
-        cmake {
-          if (JS_RUNTIME == "hermes") {
-            arguments "-DHERMES_ENABLE_DEBUGGER=1"
-          } else {
-            arguments "-DHERMES_ENABLE_DEBUGGER=0"
-          }
-        }
-      }
-    }
     release {
-      externalNativeBuild {
-        cmake {
-          arguments "-DHERMES_ENABLE_DEBUGGER=0"
-        }
+      minifyEnabled false
+    }
+    debug {
+      packagingOptions {
+        doNotStrip '**/*.so'
       }
+      minifyEnabled false
+      debuggable true
+      jniDebuggable true
+      renderscriptDebuggable true
     }
   }
 
   lintOptions {
-    disable "GradleCompatible"
+    disable 'GradleCompatible'
   }
-
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
-  sourceSets {
-    main {
-      if (isNewArchitectureEnabled()) {
-        java.srcDirs += [
-          "src/newarch",
-          // This is needed to build Kotlin project with NewArch enabled
-          "${project.buildDir}/generated/source/codegen/java"
-        ]
-      } else {
-        java.srcDirs += ["src/oldarch"]
-      }
-    }
-  }
-
-  packagingOptions {
-    excludes = [
-      "META-INF",
-      "META-INF/**",
-      "**/libc++_shared.so",
-      "**/libfbjni.so",
-      "**/libjsi.so",
-      "**/libfolly_json.so",
-      "**/libfolly_runtime.so",
-      "**/libglog.so",
-      "**/libhermes.so",
-      "**/libhermes-executor-debug.so",
-      "**/libhermes_executor.so",
-      "**/libreactnativejni.so",
-      "**/libturbomodulejsijni.so",
-      "**/libreact_nativemodule_core.so",
-      "**/libjscexecutor.so",
-      "**/libcrypto.so",
-      "**/libssl.so",
-    ]
-  }
-
-  buildFeatures {
-    prefabPublishing true
-  }
-
-  prefab {
-    rnbls {
-      headers "${project.buildDir}/headers/rnbls/"
-    }
-  }
 }
 
 repositories {
@@ -207,23 +170,23 @@ repositories {
   google()
 }
 
-
 dependencies {
-  // For < 0.71, this will be from the local maven repo
-  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
-  implementation "com.facebook.react:react-native:+"
+  implementation "com.facebook.react:react-android:+"
   implementation fileTree(dir:'libs/',include:['*.aar'])
-  if (JS_RUNTIME == "hermes") {
-    implementation "com.facebook.react:hermes-android"
-  }
 }
 
-preBuild.dependsOn(prepareHeaders)
-
-tasks.configureEach { task ->
-  // C++ clean
-  if (task.name.contains("clean")) {
-    task.dependsOn(deleteCmakeCache)
+// Resolves "LOCAL_SRC_FILES points to a missing file, Check that libfb.so exists or that its path is correct".
+tasks.whenTaskAdded { task ->
+  if (task.name.contains("configureCMakeDebug")) {
+    rootProject.getTasksByName("packageReactNdkDebugLibs", true).forEach {
+      task.dependsOn(it)
+    }
+  }
+  // We want to add a dependency for both configureCMakeRelease and configureCMakeRelWithDebInfo
+  if (task.name.contains("configureCMakeRel")) {
+    rootProject.getTasksByName("packageReactNdkReleaseLibs", true).forEach {
+      task.dependsOn(it)
+    }
   }
 }

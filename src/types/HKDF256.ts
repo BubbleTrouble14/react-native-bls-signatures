@@ -1,3 +1,4 @@
+import { bls } from '../NativeBls';
 export interface JsiHKDF256 {
   extract(salt: Uint8Array, ikm: Uint8Array): Uint8Array;
   expand(prk: Uint8Array, info: Uint8Array, length: number): Uint8Array;
@@ -11,11 +12,11 @@ export interface JsiHKDF256 {
 
 export class HKDF256 {
   static extract(salt: Uint8Array, ikm: Uint8Array): Uint8Array {
-    return global.BlsApi.HKDF256.extract(salt, ikm);
+    return bls.HKDF256.extract(salt, ikm);
   }
 
   static expand(prk: Uint8Array, info: Uint8Array, length: number): Uint8Array {
-    return global.BlsApi.HKDF256.expand(prk, info, length);
+    return bls.HKDF256.expand(prk, info, length);
   }
 
   static extractExpand(
@@ -24,6 +25,6 @@ export class HKDF256 {
     info: Uint8Array,
     length: number
   ): Uint8Array {
-    return global.BlsApi.HKDF256.extractExpand(salt, ikm, info, length);
+    return bls.HKDF256.extractExpand(salt, ikm, info, length);
   }
 }

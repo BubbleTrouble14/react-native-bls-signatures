@@ -1,5 +1,6 @@
 import type { G1Element } from './G1Element';
 import type { G2Element } from './G2Element';
+import { bls } from '../NativeBls';
 
 export interface IBasePrivateKey {
   toBytes(): Uint8Array;
@@ -46,22 +47,22 @@ export class PrivateKey implements IBasePrivateKey {
   }
 
   static fromBytes(bytes: Uint8Array, modOrder?: boolean): PrivateKey {
-    return global.BlsApi.PrivateKey.fromBytes(bytes, modOrder ?? false);
+    return bls.PrivateKey.fromBytes(bytes, modOrder ?? false);
   }
 
   static fromHex(hex: string): PrivateKey {
-    return global.BlsApi.PrivateKey.fromHex(hex);
+    return bls.PrivateKey.fromHex(hex);
   }
 
   static aggregate(privateKeys: PrivateKey[]): PrivateKey {
-    return global.BlsApi.PrivateKey.aggregate(privateKeys);
+    return bls.PrivateKey.aggregate(privateKeys);
   }
 
   private getFunctionFromCache<T extends keyof JsiPrivateKey>(
     functionName: T
   ): JsiPrivateKey[T] {
     if (this.functionCache[functionName] == null) {
-      this.functionCache[functionName] = global.BlsApi.PrivateKey[functionName];
+      this.functionCache[functionName] = bls.PrivateKey[functionName];
     }
     return this.functionCache[functionName] as JsiPrivateKey[T];
   }
@@ -164,15 +165,15 @@ export class PrivateKey implements IBasePrivateKey {
 //   static SIZE: number = 32;
 
 // static fromBytes(bytes: Uint8Array, modOrder?: boolean): PrivateKey {
-//   return global.BlsApi.PrivateKey.fromBytes(bytes, modOrder ?? false);
+//   return bls.PrivateKey.fromBytes(bytes, modOrder ?? false);
 // }
 
 // static fromHex(hex: string): PrivateKey {
-//   return global.BlsApi.PrivateKey.fromHex(hex);
+//   return bls.PrivateKey.fromHex(hex);
 // }
 
 // static aggregate(privateKeys: PrivateKey[]): PrivateKey {
-//   return global.BlsApi.PrivateKey.aggregate(privateKeys);
+//   return bls.PrivateKey.aggregate(privateKeys);
 // }
 // }
 

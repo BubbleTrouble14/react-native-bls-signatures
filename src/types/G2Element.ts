@@ -1,3 +1,4 @@
+import { bls } from '../NativeBls';
 export interface IBaseG2Element {
   toBytes(): Uint8Array;
   toHex(): string;
@@ -39,21 +40,21 @@ export class G2Element implements IBaseG2Element {
     functionName: T
   ): JsiG2Element[T] {
     if (this.functionCache[functionName] == null) {
-      this.functionCache[functionName] = global.BlsApi.G2Element[functionName];
+      this.functionCache[functionName] = bls.G2Element[functionName];
     }
     return this.functionCache[functionName] as JsiG2Element[T];
   }
 
   static fromBytes(bytes: Uint8Array): G2Element {
-    return global.BlsApi.G2Element.fromBytes(bytes);
+    return bls.G2Element.fromBytes(bytes);
   }
 
   static fromHex(hex: string): G2Element {
-    return global.BlsApi.G2Element.fromHex(hex);
+    return bls.G2Element.fromHex(hex);
   }
 
   static generator(): G2Element {
-    return global.BlsApi.G2Element.generator();
+    return bls.G2Element.generator();
   }
 
   toBytes(): Uint8Array {
@@ -111,15 +112,15 @@ export class G2Element implements IBaseG2Element {
 // static SIZE: number = 48;
 
 // static fromBytes(bytes: Uint8Array): G2Element {
-//   return global.BlsApi.G2Element.fromBytes(bytes);
+//   return bls.G2Element.fromBytes(bytes);
 // }
 
 // static fromHex(hex: string): G2Element {
-//   return global.BlsApi.G2Element.fromHex(hex);
+//   return bls.G2Element.fromHex(hex);
 // }
 
 // static generator(): G2Element {
-//   return global.BlsApi.G2Element.generator();
+//   return bls.G2Element.generator();
 // }
 // }
 
@@ -138,7 +139,7 @@ export class G2Element implements IBaseG2Element {
 //   bug: string;
 // }
 
-// const jsiG2Element = global.BlsApi.G2Element;
+// const jsiG2Element = bls.G2Element;
 // export class G2Element {
 //   static SIZE: number = 96;
 

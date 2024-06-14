@@ -1,6 +1,6 @@
 {
   "name": "react-native-bls-signatures",
-  "version": "0.0.28",
+  "version": "1.0.0",
   "description": "bls",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -174,9 +174,6 @@
   "codegenConfig": {
     "name": "RNBlsSpec",
     "type": "modules",
-    "jsSrcsDir": "src",
-    "android": {
-      "javaPackageName": "com.bls"
-    }
+    "jsSrcsDir": "src"
   }
 }

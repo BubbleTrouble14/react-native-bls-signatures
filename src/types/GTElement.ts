@@ -1,3 +1,4 @@
+import { bls } from '../NativeBls';
 export interface IBaseGTElement {
   toBytes(): Uint8Array;
   toHex(): string;
@@ -20,7 +21,7 @@ export interface IGTElement extends IBaseGTElement {
 
 export class GTElement implements IBaseGTElement {
   private functionCache: Partial<JsiGTElement>;
-  static SIZE = global.BlsApi.GTElement.SIZE;
+  static SIZE = bls.GTElement.SIZE;
 
   constructor() {
     this.functionCache = {};
@@ -30,21 +31,21 @@ export class GTElement implements IBaseGTElement {
     functionName: T
   ): JsiGTElement[T] {
     if (this.functionCache[functionName] == null) {
-      this.functionCache[functionName] = global.BlsApi.GTElement[functionName];
+      this.functionCache[functionName] = bls.GTElement[functionName];
     }
     return this.functionCache[functionName] as JsiGTElement[T];
   }
 
   static fromBytes(bytes: Uint8Array): GTElement {
-    return global.BlsApi.GTElement.fromBytes(bytes);
+    return bls.GTElement.fromBytes(bytes);
   }
 
   static fromHex(hex: string): GTElement {
-    return global.BlsApi.GTElement.fromHex(hex);
+    return bls.GTElement.fromHex(hex);
   }
 
   static unity(): GTElement {
-    return global.BlsApi.GTElement.unity();
+    return bls.GTElement.unity();
   }
 
   toBytes(): Uint8Array {
@@ -87,15 +88,15 @@ export class GTElement implements IBaseGTElement {
 // static SIZE: number = 48;
 
 // static fromBytes(bytes: Uint8Array): GTElement {
-//   return global.BlsApi.GTElement.fromBytes(bytes);
+//   return bls.GTElement.fromBytes(bytes);
 // }
 
 // static fromHex(hex: string): GTElement {
-//   return global.BlsApi.GTElement.fromHex(hex);
+//   return bls.GTElement.fromHex(hex);
 // }
 
 // static generator(): GTElement {
-//   return global.BlsApi.GTElement.generator();
+//   return bls.GTElement.generator();
 // }
 // }
 
@@ -121,17 +122,17 @@ export class GTElement implements IBaseGTElement {
 //   abstract deepCopy(): GTElement;
 //   abstract equals(gT: GTElement): boolean;
 
-//   static SIZE = global.BlsApi.GTElement.SIZE;
+//   static SIZE = bls.GTElement.SIZE;
 
 //   static fromBytes(bytes: Uint8Array): GTElement {
-//     return global.BlsApi.GTElement.fromBytes(bytes);
+//     return bls.GTElement.fromBytes(bytes);
 //   }
 
 //   static fromHex(hex: string): GTElement {
-//     return global.BlsApi.GTElement.fromHex(hex);
+//     return bls.GTElement.fromHex(hex);
 //   }
 
 //   static unity(): GTElement {
-//     return global.BlsApi.GTElement.unity();
+//     return bls.GTElement.unity();
 //   }
 // }

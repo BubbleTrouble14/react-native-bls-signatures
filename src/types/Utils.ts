@@ -1,15 +1,17 @@
+import { bls } from '../NativeBls';
+
 export const hash256 = (msg: Uint8Array): Uint8Array => {
-  return global.BlsApi.hash256(msg);
+  return bls.hash256(msg);
 };
 
 export const toHex = (bytes: Uint8Array): string => {
-  return global.BlsApi.toHex(bytes);
+  return bls.toHex(bytes);
 };
 
 export const fromHex = (hex: string): Uint8Array => {
-  return global.BlsApi.fromHex(hex);
+  return bls.fromHex(hex);
 };
 
 export const getRandomSeed = (): Uint8Array => {
-  return global.BlsApi.getRandomSeed();
+  return bls.getRandomSeed();
 };

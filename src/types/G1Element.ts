@@ -1,3 +1,5 @@
+import { bls } from '../NativeBls';
+
 export interface IBaseG1Element {
   toBytes(): Uint8Array;
   toHex(): string;
@@ -41,21 +43,21 @@ export class G1Element implements IBaseG1Element {
     functionName: T
   ): JsiG1Element[T] {
     if (this.functionCache[functionName] == null) {
-      this.functionCache[functionName] = global.BlsApi.G1Element[functionName];
+      this.functionCache[functionName] = bls.G1Element[functionName];
     }
     return this.functionCache[functionName] as JsiG1Element[T];
   }
 
   static fromBytes(bytes: Uint8Array): G1Element {
-    return global.BlsApi.G1Element.fromBytes(bytes);
+    return bls.G1Element.fromBytes(bytes);
   }
 
   static fromHex(hex: string): G1Element {
-    return global.BlsApi.G1Element.fromHex(hex);
+    return bls.G1Element.fromHex(hex);
   }
 
   static generator(): G1Element {
-    return global.BlsApi.G1Element.generator();
+    return bls.G1Element.generator();
   }
 
   toBytes(): Uint8Array {
@@ -118,14 +120,14 @@ export class G1Element implements IBaseG1Element {
 // static SIZE: number = 48;
 
 // static fromBytes(bytes: Uint8Array): G1Element {
-//   return global.BlsApi.G1Element.fromBytes(bytes);
+//   return bls.G1Element.fromBytes(bytes);
 // }
 
 // static fromHex(hex: string): G1Element {
-//   return global.BlsApi.G1Element.fromHex(hex);
+//   return bls.G1Element.fromHex(hex);
 // }
 
 // static generator(): G1Element {
-//   return global.BlsApi.G1Element.generator();
+//   return bls.G1Element.generator();
 // }
 // }
