@@ -1,17 +1,17 @@
 import { bls } from '../NativeBls';
 
-export const hash256 = (msg: Uint8Array): Uint8Array => {
+export const hash256 = (msg: ArrayBuffer): ArrayBuffer => {
   return bls.hash256(msg);
 };
 
-export const toHex = (bytes: Uint8Array): string => {
+export const toHex = (bytes: ArrayBuffer): string => {
   return bls.toHex(bytes);
 };
 
-export const fromHex = (hex: string): Uint8Array => {
+export const fromHex = (hex: string): ArrayBuffer => {
   return bls.fromHex(hex);
 };
 
-export const getRandomSeed = (): Uint8Array => {
+export const getRandomSeed = (): ArrayBuffer => {
   return bls.getRandomSeed();
 };

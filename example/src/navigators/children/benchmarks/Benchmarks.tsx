@@ -34,16 +34,16 @@ function benchVerification() {
   const start = performance.now();
 
   for (let i = 0; i < numIters; i++) {
-    const message = new Uint8Array(4);
+    const message = new ArrayBuffer(4);
     // Convert integer to four bytes
-    new DataView(message.buffer).setUint32(0, i, true);
+    new DataView(message).setUint32(0, i, true);
     const sig = AugSchemeMPL.sign(sk, message);
     sigs.push(sig);
   }
 
   for (let i = 0; i < numIters; i++) {
-    const message = new Uint8Array(4);
-    new DataView(message.buffer).setUint32(0, i, true);
+    const message = new ArrayBuffer(4);
+    new DataView(message).setUint32(0, i, true);
     const ok = AugSchemeMPL.verify(pk, message, sigs[i]!);
     assert(ok);
   }
@@ -55,11 +55,11 @@ function benchBatchVerification() {
 
   const sigs: G2Element[] = [];
   const pks: G1Element[] = [];
-  const messages: Uint8Array[] = [];
+  const messages: ArrayBuffer[] = [];
 
   for (let i = 0; i < numIters; i++) {
-    const message = new Uint8Array(4);
-    new DataView(message.buffer).setUint32(0, i, true);
+    const message = new ArrayBuffer(4);
+    new DataView(message).setUint32(0, i, true);
     const sk = AugSchemeMPL.keyGen(getRandomSeed());
     const pk = sk.getG1();
     const sig = AugSchemeMPL.sign(sk, message);
@@ -80,7 +80,7 @@ function benchFastAggregateVerification() {
 
   const sigs: G2Element[] = [];
   const pks: G1Element[] = [];
-  const message = Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8]);
+  const message = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]).buffer;
   const pops: G2Element[] = [];
 
   for (let i = 0; i < numIters; i++) {

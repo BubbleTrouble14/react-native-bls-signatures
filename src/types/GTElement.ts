@@ -1,6 +1,6 @@
 import { bls } from '../NativeBls';
 export interface IBaseGTElement {
-  toBytes(): Uint8Array;
+  toBytes(): ArrayBuffer;
   toHex(): string;
   toString(): string;
   deepCopy(): GTElement;
@@ -14,7 +14,7 @@ export type JsiGTElement = Pick<
 
 export interface IGTElement extends IBaseGTElement {
   SIZE: number;
-  fromBytes(bytes: Uint8Array): GTElement;
+  fromBytes(bytes: ArrayBuffer): GTElement;
   fromHex(hex: string): GTElement;
   unity(): GTElement;
 }
@@ -36,7 +36,7 @@ export class GTElement implements IBaseGTElement {
     return this.functionCache[functionName] as JsiGTElement[T];
   }
 
-  static fromBytes(bytes: Uint8Array): GTElement {
+  static fromBytes(bytes: ArrayBuffer): GTElement {
     return bls.GTElement.fromBytes(bytes);
   }
 
@@ -48,7 +48,7 @@ export class GTElement implements IBaseGTElement {
     return bls.GTElement.unity();
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ArrayBuffer {
     const func = this.getFunctionFromCache('toBytes');
     return func();
   }
@@ -75,7 +75,7 @@ export class GTElement implements IBaseGTElement {
 }
 
 // export abstract class GTElement implements JsiGTElement {
-// abstract toBytes(): Uint8Array;
+// abstract toBytes(): ArrayBuffer;
 // abstract toHex(): string;
 // abstract toString(): string;
 // abstract isValid(): boolean;
@@ -87,7 +87,7 @@ export class GTElement implements IBaseGTElement {
 
 // static SIZE: number = 48;
 
-// static fromBytes(bytes: Uint8Array): GTElement {
+// static fromBytes(bytes: ArrayBuffer): GTElement {
 //   return bls.GTElement.fromBytes(bytes);
 // }
 
@@ -101,7 +101,7 @@ export class GTElement implements IBaseGTElement {
 // }
 
 // export interface JsiGTElement {
-// toBytes(): Uint8Array;
+// toBytes(): ArrayBuffer;
 // toHex(): string;
 // toString(): string;
 // deepCopy(): GTElement;
@@ -110,13 +110,13 @@ export class GTElement implements IBaseGTElement {
 
 // export interface JsiGTElementWithStatic {
 //   SIZE: number;
-//   fromBytes(bytes: Uint8Array): GTElement;
+//   fromBytes(bytes: ArrayBuffer): GTElement;
 //   fromHex(hex: string): GTElement;
 //   unity(): GTElement;
 // }
 
 // export abstract class GTElement implements JsiGTElement {
-//   abstract toBytes(): Uint8Array;
+//   abstract toBytes(): ArrayBuffer;
 //   abstract toHex(): string;
 //   abstract toString(): string;
 //   abstract deepCopy(): GTElement;
@@ -124,7 +124,7 @@ export class GTElement implements IBaseGTElement {
 
 //   static SIZE = bls.GTElement.SIZE;
 
-//   static fromBytes(bytes: Uint8Array): GTElement {
+//   static fromBytes(bytes: ArrayBuffer): GTElement {
 //     return bls.GTElement.fromBytes(bytes);
 //   }
 

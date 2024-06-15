@@ -6,7 +6,9 @@
 
 #include "JsiBlsHostObject.h"
 #include "JsiBlsHostObjects.h"
-#include "TypedArray.h"
+#include "JsiBlsMutableBuffer.h"
+#include "RNBlsUtils.h"
+
 #include "bls.hpp"
 #include <jsi/jsi.h>
 
@@ -25,12 +27,10 @@ public:
 
   //----------toBytes----------//
   JSI_HOST_FUNCTION(toBytes) {
-    auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G1Element::SIZE);
-    auto newBuffer = newTypedArray.getBuffer(runtime);
+    auto buffer = std::make_shared<JsiBlsMutableBuffer>(G1Element::SIZE);
+    std::memcpy(buffer->data(), getObject()->Serialize().data(), G1Element::SIZE);
 
-    std::memcpy(newBuffer.data(runtime), getObject()->Serialize().data(), G1Element::SIZE);
-
-    return newTypedArray;
+    return jsi::ArrayBuffer(runtime, buffer);
   };
 
   //----------toHex----------//
@@ -90,17 +90,17 @@ public:
   // ----------fromBytes----------//
   JSI_HOST_FUNCTION(fromBytes) {
     auto object = arguments[0].asObject(runtime);
-    if (!isTypedArray(runtime, object)) {
-      throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type Uint8Array.");
+    if (!object.isArrayBuffer(runtime)) {
+      throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type ArrayBuffer.");
     }
 
-    auto typedArray = getTypedArray(runtime, object);
+    auto arrayBuffer = object.getArrayBuffer(runtime);
 
-    if (typedArray.size(runtime) != G1Element::SIZE) {
+    if (arrayBuffer.size(runtime) != G1Element::SIZE) {
       throw jsi::JSError(runtime, "Invalid size for 'fromBytes' argument. Expected " + std::to_string(G1Element::SIZE) + " bytes.");
     }
 
-    G1Element sk = G1Element::FromByteVector(typedArray.toVector(runtime));
+    G1Element sk = G1Element::FromByteVector(Utils::ArrayBufferToVector(arrayBuffer, runtime));
 
     return JsiG1Element::toValue(runtime, sk);
   };

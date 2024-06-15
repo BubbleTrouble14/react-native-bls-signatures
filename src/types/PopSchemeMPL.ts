@@ -5,13 +5,13 @@ import { bls } from '../NativeBls';
 
 export interface JsiPopSchemeMPL {
   skToG1(sk: PrivateKey): G1Element;
-  keyGen(seed: Uint8Array): PrivateKey;
-  sign(sk: PrivateKey, msg: Uint8Array): G2Element;
-  verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean;
+  keyGen(seed: ArrayBuffer): PrivateKey;
+  sign(sk: PrivateKey, msg: ArrayBuffer): G2Element;
+  verify(pk: G1Element, msg: ArrayBuffer, sig: G2Element): boolean;
   aggregate(g2s: G2Element[]): G2Element;
   aggregateVerify(
     pks: G1Element[],
-    msgs: Uint8Array[],
+    msgs: ArrayBuffer[],
     sig: G2Element
   ): boolean;
   deriveChildSk(sk: PrivateKey, index: number): PrivateKey;
@@ -21,7 +21,7 @@ export interface JsiPopSchemeMPL {
   popProve(sk: PrivateKey): G2Element;
   fastAggregateVerify(
     pks: G1Element[],
-    msg: Uint8Array,
+    msg: ArrayBuffer,
     sig: G2Element
   ): boolean;
 }
@@ -30,15 +30,15 @@ export class PopSchemeMPL {
     return bls.PopSchemeMPL.skToG1(sk);
   }
 
-  static keyGen(seed: Uint8Array): PrivateKey {
+  static keyGen(seed: ArrayBuffer): PrivateKey {
     return bls.PopSchemeMPL.keyGen(seed);
   }
 
-  static sign(sk: PrivateKey, msg: Uint8Array): G2Element {
+  static sign(sk: PrivateKey, msg: ArrayBuffer): G2Element {
     return bls.PopSchemeMPL.sign(sk, msg);
   }
 
-  static verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean {
+  static verify(pk: G1Element, msg: ArrayBuffer, sig: G2Element): boolean {
     return bls.PopSchemeMPL.verify(pk, msg, sig);
   }
 
@@ -48,7 +48,7 @@ export class PopSchemeMPL {
 
   static aggregateVerify(
     pks: G1Element[],
-    msgs: Uint8Array[],
+    msgs: ArrayBuffer[],
     sig: G2Element
   ): boolean {
     return bls.PopSchemeMPL.aggregateVerify(pks, msgs, sig);
@@ -76,7 +76,7 @@ export class PopSchemeMPL {
 
   static fastAggregateVerify(
     pks: G1Element[],
-    msg: Uint8Array,
+    msg: ArrayBuffer,
     sig: G2Element
   ): boolean {
     return bls.PopSchemeMPL.fastAggregateVerify(pks, msg, sig);

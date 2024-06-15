@@ -3,7 +3,7 @@ import type { G2Element } from './G2Element';
 import { bls } from '../NativeBls';
 
 export interface IBasePrivateKey {
-  toBytes(): Uint8Array;
+  toBytes(): ArrayBuffer;
   toHex(): string;
   toString(): string;
   deepCopy(): PrivateKey;
@@ -33,7 +33,7 @@ export type JsiPrivateKey = Pick<
 
 export interface IPrivateKey extends IBasePrivateKey {
   SIZE: number;
-  fromBytes(bytes: Uint8Array, modOrder: boolean): PrivateKey;
+  fromBytes(bytes: ArrayBuffer, modOrder: boolean): PrivateKey;
   fromHex(hex: string): PrivateKey;
   aggregate(pks: PrivateKey[]): PrivateKey;
 }
@@ -46,7 +46,7 @@ export class PrivateKey implements IBasePrivateKey {
     this.functionCache = {};
   }
 
-  static fromBytes(bytes: Uint8Array, modOrder?: boolean): PrivateKey {
+  static fromBytes(bytes: ArrayBuffer, modOrder?: boolean): PrivateKey {
     return bls.PrivateKey.fromBytes(bytes, modOrder ?? false);
   }
 
@@ -67,7 +67,7 @@ export class PrivateKey implements IBasePrivateKey {
     return this.functionCache[functionName] as JsiPrivateKey[T];
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ArrayBuffer {
     const func = this.getFunctionFromCache('toBytes');
     return func.bind(this)();
   }
@@ -125,12 +125,12 @@ export class PrivateKey implements IBasePrivateKey {
 
 // // export interface JsiPrivateKeyStatic extends JsiPrivateKey{
 // //   SIZE: number;
-// //   fromBytes(bytes: Uint8Array, modOrder: boolean): PrivateKey;
+// //   fromBytes(bytes: ArrayBuffer, modOrder: boolean): PrivateKey;
 // //   fromHex(hex: string): PrivateKey;
 // //   aggregate(pks: PrivateKey[]): PrivateKey;
 // // }
 // export interface JsiPrivateKey {
-//   toBytes(): Uint8Array;
+//   toBytes(): ArrayBuffer;
 //   toHex(): string;
 //   toString(): string;
 //   deepCopy(): PrivateKey;
@@ -144,13 +144,13 @@ export class PrivateKey implements IBasePrivateKey {
 // }
 
 // export interface JsiPrivateKeyWithStatic extends JsiPrivateKey {
-//   fromBytes(bytes: Uint8Array, modOrder: boolean): PrivateKey;
+//   fromBytes(bytes: ArrayBuffer, modOrder: boolean): PrivateKey;
 //   fromHex(hex: string): PrivateKey;
 //   aggregate(pks: PrivateKey[]): PrivateKey;
 // }
 
 // export abstract class PrivateKey implements JsiPrivateKey {
-//   abstract toBytes(): Uint8Array;
+//   abstract toBytes(): ArrayBuffer;
 //   abstract toHex(): string;
 //   abstract toString(): string;
 //   abstract deepCopy(): PrivateKey;
@@ -164,7 +164,7 @@ export class PrivateKey implements IBasePrivateKey {
 
 //   static SIZE: number = 32;
 
-// static fromBytes(bytes: Uint8Array, modOrder?: boolean): PrivateKey {
+// static fromBytes(bytes: ArrayBuffer, modOrder?: boolean): PrivateKey {
 //   return bls.PrivateKey.fromBytes(bytes, modOrder ?? false);
 // }
 

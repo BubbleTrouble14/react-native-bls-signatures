@@ -1,30 +1,34 @@
 import { bls } from '../NativeBls';
 export interface JsiHKDF256 {
-  extract(salt: Uint8Array, ikm: Uint8Array): Uint8Array;
-  expand(prk: Uint8Array, info: Uint8Array, length: number): Uint8Array;
+  extract(salt: ArrayBuffer, ikm: ArrayBuffer): ArrayBuffer;
+  expand(prk: ArrayBuffer, info: ArrayBuffer, length: number): ArrayBuffer;
   extractExpand(
-    salt: Uint8Array,
-    ikm: Uint8Array,
-    info: Uint8Array,
+    salt: ArrayBuffer,
+    ikm: ArrayBuffer,
+    info: ArrayBuffer,
     length: number
-  ): Uint8Array;
+  ): ArrayBuffer;
 }
 
 export class HKDF256 {
-  static extract(salt: Uint8Array, ikm: Uint8Array): Uint8Array {
+  static extract(salt: ArrayBuffer, ikm: ArrayBuffer): ArrayBuffer {
     return bls.HKDF256.extract(salt, ikm);
   }
 
-  static expand(prk: Uint8Array, info: Uint8Array, length: number): Uint8Array {
+  static expand(
+    prk: ArrayBuffer,
+    info: ArrayBuffer,
+    length: number
+  ): ArrayBuffer {
     return bls.HKDF256.expand(prk, info, length);
   }
 
   static extractExpand(
-    salt: Uint8Array,
-    ikm: Uint8Array,
-    info: Uint8Array,
+    salt: ArrayBuffer,
+    ikm: ArrayBuffer,
+    info: ArrayBuffer,
     length: number
-  ): Uint8Array {
+  ): ArrayBuffer {
     return bls.HKDF256.extractExpand(salt, ikm, info, length);
   }
 }

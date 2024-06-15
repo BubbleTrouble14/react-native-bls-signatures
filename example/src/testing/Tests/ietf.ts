@@ -16,7 +16,7 @@ describe('IETF', () => {
     const msg = new Uint8Array([3, 1, 4, 1, 5, 9]);
 
     const skobj = PrivateKey.fromHex(skHex);
-    const sig = BasicSchemeMPL.sign(skobj, msg);
+    const sig = BasicSchemeMPL.sign(skobj, msg.buffer);
 
     const sig1 = fromHex(sig1BasicHex);
     const sig1Element = G2Element.fromBytes(sig1);

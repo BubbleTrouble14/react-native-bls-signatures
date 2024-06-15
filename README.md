@@ -22,12 +22,12 @@ npm install react-native-bls-signatures
 const seed = Uint8Array.from([
   0, 50, 6, 244, 24, 199, 1, 25, 52, 88, 192, 19, 18, 12, 89, 6, 220, 18, 102,
   58, 209, 82, 12, 62, 89, 110, 182, 9, 44, 20, 254, 22,
-]);
+]).buffer;
 
 const sk = AugSchemeMPL.keyGen(seed);
 const pk = sk.getG1();
 
-const message = Uint8Array.from([1, 2, 3, 4, 5]);
+const message = Uint8Array.from([1, 2, 3, 4, 5]).buffer;
 const signature = AugSchemeMPL.sign(sk, message);
 
 const ok = AugSchemeMPL.verify(pk, message, signature);
@@ -49,12 +49,12 @@ console.log(ok); // true
 ### Static Methods:
 
 - **skToG1**(_sk:_ `PrivateKey`) -> `G1Element`
-- **keyGen**(_seed:_ `Uint8Array`) -> `PrivateKey`
-- **sign**(_sk:_ `PrivateKey`, _msg:_ `Uint8Array`) -> `G2Element`
-- **signPrepend**(_sk:_ `PrivateKey`, _msg:_ `Uint8Array`, _prependPk:_ `G1Element`) -> `G2Element`
-- **verify**(_pk:_ `G1Element`, _msg:_ `Uint8Array`, _sig:_ `G2Element`) -> `boolean`
+- **keyGen**(_seed:_ `ArrayBuffer`) -> `PrivateKey`
+- **sign**(_sk:_ `PrivateKey`, _msg:_ `ArrayBuffer`) -> `G2Element`
+- **signPrepend**(_sk:_ `PrivateKey`, _msg:_ `ArrayBuffer`, _prependPk:_ `G1Element`) -> `G2Element`
+- **verify**(_pk:_ `G1Element`, _msg:_ `ArrayBuffer`, _sig:_ `G2Element`) -> `boolean`
 - **aggregate**(_g2Elements:_ `G2Element[]`) -> `G2Element`
-- **aggregateVerify**(_pks:_ `G1Element[]`, _msgs:_ `Uint8Array[]`, _sig:_ `G2Element`) -> `boolean`
+- **aggregateVerify**(_pks:_ `G1Element[]`, _msgs:_ `ArrayBuffer[]`, _sig:_ `G2Element`) -> `boolean`
 - **deriveChildSk**(_sk:_ `PrivateKey`, _index:_ `number`) -> `PrivateKey`
 - **deriveChildSkUnhardened**(_sk:_ `PrivateKey`, _index:_ `number`) -> `PrivateKey`
 - **deriveChildPkUnhardened**(_pk:_ `G1Element`, _index:_ `number`) -> `G1Element`
@@ -64,11 +64,11 @@ console.log(ok); // true
 ### Static Methods:
 
 - **skToG1**(_sk:_ `PrivateKey`) -> `G1Element`
-- **keyGen**(_seed:_ `Uint8Array`) -> `PrivateKey`
-- **sign**(_sk:_ `PrivateKey`, _msg:_ `Uint8Array`) -> `G2Element`
-- **verify**(_pk:_ `G1Element`, _msg:_ `Uint8Array`, _sig:_ `G2Element`) -> `boolean`
+- **keyGen**(_seed:_ `ArrayBuffer`) -> `PrivateKey`
+- **sign**(_sk:_ `PrivateKey`, _msg:_ `ArrayBuffer`) -> `G2Element`
+- **verify**(_pk:_ `G1Element`, _msg:_ `ArrayBuffer`, _sig:_ `G2Element`) -> `boolean`
 - **aggregate**(_g2Elements:_ `G2Element[]`) -> `G2Element`
-- **aggregateVerify**(_pks:_ `G1Element[]`, _msgs:_ `Uint8Array[]`, _sig:_ `G2Element`) -> `boolean`
+- **aggregateVerify**(_pks:_ `G1Element[]`, _msgs:_ `ArrayBuffer[]`, _sig:_ `G2Element`) -> `boolean`
 - **deriveChildSk**(_sk:_ `PrivateKey`, _index:_ `number`) -> `PrivateKey`
 - **deriveChildSkUnhardened**(_sk:_ `PrivateKey`, _index:_ `number`) -> `PrivateKey`
 - **deriveChildPkUnhardened**(_pk:_ `G1Element`, _index:_ `number`) -> `G1Element`
@@ -78,29 +78,29 @@ console.log(ok); // true
 ### Static Methods:
 
 - **skToG1**(_sk:_ `PrivateKey`) -> `G1Element`
-- **keyGen**(_seed:_ `Uint8Array`) -> `PrivateKey`
-- **sign**(_sk:_ `PrivateKey`, _msg:_ `Uint8Array`) -> `G2Element`
-- **verify**(_pk:_ `G1Element`, _msg:_ `Uint8Array`, _sig:_ `G2Element`) -> `boolean`
+- **keyGen**(_seed:_ `ArrayBuffer`) -> `PrivateKey`
+- **sign**(_sk:_ `PrivateKey`, _msg:_ `ArrayBuffer`) -> `G2Element`
+- **verify**(_pk:_ `G1Element`, _msg:_ `ArrayBuffer`, _sig:_ `G2Element`) -> `boolean`
 - **aggregate**(_g2Elements:_ `G2Element[]`) -> `G2Element`
-- **aggregateVerify**(_pks:_ `G1Element[]`, _msgs:_ `Uint8Array[]`, _sig:_ `G2Element`) -> `boolean`
+- **aggregateVerify**(_pks:_ `G1Element[]`, _msgs:_ `ArrayBuffer[]`, _sig:_ `G2Element`) -> `boolean`
 - **deriveChildSk**(_sk:_ `PrivateKey`, _index:_ `number`) -> `PrivateKey`
 - **deriveChildSkUnhardened**(_sk:_ `PrivateKey`, _index:_ `number`) -> `PrivateKey`
 - **deriveChildPkUnhardened**(_pk:_ `G1Element`, _index:_ `number`) -> `G1Element`
 - **popVerify**(_pk:_ `G1Element`, _sigProof:_ `G2Element`) -> `boolean`
 - **popProve**(_sk:_ `PrivateKey`) -> `G2Element`
-- **fastAggregateVerify**(_pks:_ `G1Element[]`, _msg:_ `Uint8Array`, _sig:_ `G2Element`) -> `boolean`
+- **fastAggregateVerify**(_pks:_ `G1Element[]`, _msg:_ `ArrayBuffer`, _sig:_ `G2Element`) -> `boolean`
 
 ## PrivateKey
 
 ### Static Methods:
 
-- **fromBytes**(_bytes:_ `Uint8Array`, _modOrder_?: `boolean`) -> `PrivateKey`
+- **fromBytes**(_bytes:_ `ArrayBuffer`, _modOrder_?: `boolean`) -> `PrivateKey`
 - **fromHex**(_hex:_ `string`) -> `PrivateKey`
 - **aggregate**(_pks:_ `PrivateKey[]`) -> `PrivateKey`
 
 ### Methods:
 
-- **toBytes()** -> `Uint8Array`
+- **toBytes()** -> `ArrayBuffer`
 - **toHex()** -> `string`
 - **toString()** -> `string`
 - **equals**(_sk:_ `PrivateKey`) -> `boolean`
@@ -111,12 +111,12 @@ console.log(ok); // true
 
 ### Static Methods:
 
-- **fromBytes**(_bytes:_ `Uint8Array`) -> `G1Element`
+- **fromBytes**(_bytes:_ `ArrayBuffer`) -> `G1Element`
 - **fromHex**(_hex:_ `string`) -> `G1Element`
 
 ### Methods:
 
-- **toBytes()** -> `Uint8Array`
+- **toBytes()** -> `ArrayBuffer`
 - **toHex()** -> `string`
 - **getFingerPrint()** -> `number`
 - **add**(_g1e:_ `G1Element`) -> `G1Element`
@@ -127,12 +127,12 @@ console.log(ok); // true
 
 ### Static Methods:
 
-- **fromBytes**(_bytes:_ `Uint8Array`) -> `G2Element`
+- **fromBytes**(_bytes:_ `ArrayBuffer`) -> `G2Element`
 - **fromHex**(_hex:_ `string`) -> `G2Element`
 
 ### Methods:
 
-- **toBytes()** -> `Uint8Array`
+- **toBytes()** -> `ArrayBuffer`
 - **toHex()** -> `string`
 - **add**(_g2e:_ `G2Element`) -> `G2Element`
 - **negate()** -> `G2Element`
@@ -140,10 +140,10 @@ console.log(ok); // true
 
 ## Utils
 
-- **hash256**(_msg:_ `Uint8Array`) -> `Uint8Array`
-- **toHex**(_bytes:_ `Uint8Array`) -> `string`
-- **fromHex**(_hex:_ `string`) -> `Uint8Array`
-- **getRandomSeed()** -> `Uint8Array` (Used for testing)
+- **hash256**(_msg:_ `ArrayBuffer`) -> `ArrayBuffer`
+- **toHex**(_bytes:_ `ArrayBuffer`) -> `string`
+- **fromHex**(_hex:_ `string`) -> `ArrayBuffer`
+- **getRandomSeed()** -> `ArrayBuffer` Only use if sodium is enabled!
 
 ## Libsodium license
 

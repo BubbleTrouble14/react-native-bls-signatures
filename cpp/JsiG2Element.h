@@ -6,7 +6,9 @@
 
 #include "JsiBlsHostObject.h"
 #include "JsiBlsHostObjects.h"
-#include "TypedArray.h"
+#include "JsiBlsMutableBuffer.h"
+#include "RNBlsUtils.h"
+
 #include "bls.hpp"
 #include <jsi/jsi.h>
 
@@ -25,12 +27,10 @@ public:
 
   //----------toBytes----------//
   JSI_HOST_FUNCTION(toBytes) {
-    auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, G2Element::SIZE);
-    auto newBuffer = newTypedArray.getBuffer(runtime);
+    auto buffer = std::make_shared<JsiBlsMutableBuffer>(G2Element::SIZE);
+    std::memcpy(buffer->data(), getObject()->Serialize().data(), G2Element::SIZE);
 
-    std::memcpy(newBuffer.data(runtime), getObject()->Serialize().data(), G2Element::SIZE);
-
-    return newTypedArray;
+    return jsi::ArrayBuffer(runtime, buffer);
   };
 
   //----------toHex----------//
@@ -41,7 +41,7 @@ public:
   //----------toString----------//
   JSI_HOST_FUNCTION(toString) {
     std::string hexRepresentation = Util::HexStr(getObject()->Serialize());
-    std::string finalString = "g2Element(0x" + hexRepresentation + ")";
+    std::string finalString = "G2Element(0x" + hexRepresentation + ")";
     return jsi::String::createFromUtf8(runtime, finalString);
   };
 
@@ -85,17 +85,17 @@ public:
   // ----------fromBytes----------//
   JSI_HOST_FUNCTION(fromBytes) {
     auto object = arguments[0].asObject(runtime);
-    if (!isTypedArray(runtime, object)) {
-      throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type Uint8Array.");
+    if (!object.isArrayBuffer(runtime)) {
+      throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type ArrayBuffer.");
     }
 
-    auto typedArray = getTypedArray(runtime, object);
+    auto arrayBuffer = object.getArrayBuffer(runtime);
 
-    if (typedArray.size(runtime) != G2Element::SIZE) {
+    if (arrayBuffer.size(runtime) != G2Element::SIZE) {
       throw jsi::JSError(runtime, "Invalid size for 'fromBytes' argument. Expected " + std::to_string(G2Element::SIZE) + " bytes.");
     }
 
-    G2Element sk = G2Element::FromByteVector(typedArray.toVector(runtime));
+    G2Element sk = G2Element::FromByteVector(Utils::ArrayBufferToVector(arrayBuffer, runtime));
 
     return JsiG2Element::toValue(runtime, sk);
   };

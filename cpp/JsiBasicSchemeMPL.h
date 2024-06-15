@@ -8,7 +8,7 @@
 #include "JsiG2Element.h"
 #include "JsiPrivateKey.h"
 #include "RNBlsUtils.h"
-#include "TypedArray.h"
+
 #include <jsi/jsi.h>
 
 #include "bls.hpp"
@@ -31,12 +31,12 @@ public:
   //----------------------------keyGen----------------------------//
   JSI_HOST_FUNCTION(keyGen) {
     auto object = arguments[0].asObject(runtime);
-    if (!isTypedArray(runtime, object)) {
-      throw jsi::JSError(runtime, "keyGen argument is an object, but not of type Uint8Array!");
+    if (!object.isArrayBuffer(runtime)) {
+      throw jsi::JSError(runtime, "keyGen argument is an object, but not of type ArrayBuffer!");
     }
 
-    auto typedArray = getTypedArray(runtime, object);
-    PrivateKey sk = BasicSchemeMPL().KeyGen(typedArray.toVector(runtime));
+    auto arrayBuffer = object.getArrayBuffer(runtime);
+    PrivateKey sk = BasicSchemeMPL().KeyGen(Utils::ArrayBufferToVector(arrayBuffer, runtime));
     return JsiPrivateKey::toValue(runtime, sk);
   };
 

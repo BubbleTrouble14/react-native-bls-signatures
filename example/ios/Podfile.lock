@@ -979,6 +979,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-mmkv (3.0.0-beta.6):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-quick-base64 (2.1.2):
     - DoubleConversion
     - glog
@@ -1401,6 +1422,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - "react-native-bip39 (from `../node_modules/@ronickg/react-native-bip39`)"
   - react-native-bls-signatures (from `../..`)
+  - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-quick-base64 (from `../node_modules/react-native-quick-base64`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
@@ -1502,6 +1524,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@ronickg/react-native-bip39"
   react-native-bls-signatures:
     :path: "../.."
+  react-native-mmkv:
+    :path: "../node_modules/react-native-mmkv"
   react-native-quick-base64:
     :path: "../node_modules/react-native-quick-base64"
   react-native-safe-area-context:
@@ -1594,7 +1618,8 @@ SPEC CHECKSUMS:
   React-logger: 29fa3e048f5f67fe396bc08af7606426d9bd7b5d
   React-Mapbuffer: bf56147c9775491e53122a94c423ac201417e326
   react-native-bip39: f49464ef9e1070eb913b927cb90e14773f066919
-  react-native-bls-signatures: 0f50ca00d547115ba32f8b1a1412c30aed3a4f72
+  react-native-bls-signatures: de5ec1462655d5a5a3c8d9e65d98170ae632dd34
+  react-native-mmkv: a24141d1f74aea25d4bdddd2be992809020a3f98
   react-native-quick-base64: 792444648d6f046fdd8c207140cb654c51f6cbce
   react-native-safe-area-context: 2908c69c3ef0a68d536b985a76738d541d6b022e
   React-nativeconfig: 9f223cd321823afdecf59ed00861ab2d69ee0fc1

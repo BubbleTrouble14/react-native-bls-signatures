@@ -51,9 +51,9 @@ describe('EIP 2333', function () {
       const master = BasicSchemeMPL.keyGen(seed);
       const child = BasicSchemeMPL.deriveChildSk(master, test.childIndex);
       it('Has the correct master length', () =>
-        assert.equal(master.toBytes().length, 32));
+        assert.equal(master.toBytes().byteLength, 32));
       it('Has the correct child length', () =>
-        assert.equal(child.toBytes().length, 32));
+        assert.equal(child.toBytes().byteLength, 32));
       it('Has the correct master bytes', () =>
         assert.deepEqual(master.toBytes(), fromHex(test.masterSk)));
       it('Has the correct child bytes', () =>

@@ -2,6 +2,7 @@ require "json"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
+extra_flags = ''
 
 Pod::Spec.new do |s|
   s.name         = "react-native-bls-signatures"
@@ -14,9 +15,22 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => min_ios_version_supported }
   s.source       = { :git => "https://github.com/bubbletrouble14/react-native-bls-signatures.git", :tag => "#{s.version}" }
 
+  sodium_enabled = ENV['SODIUM_ENABLED'] != '0' ? "enabled" : "disabled"
+  Pod::UI.puts("[BlsSignatures] react-native-bls-signatures has libsodium #{sodium_enabled}!")
+
+  # Default to enabled unless explicitly set to '0'
+  if ENV['SODIUM_ENABLED'] != '0' then
+    s.vendored_frameworks = 'ios/Clibblst.xcframework', 'ios/Clibsodium.xcframework'
+    extra_flags = ' -DBLSALLOC_SODIUM=1'
+  else
+    s.vendored_frameworks = "ios/Clibblst.xcframework"
+  end
+
   s.pod_target_xcconfig = {
     "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
     "CLANG_CXX_LIBRARY" => "libc++",
+    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) FORCE_POSIX",
+    "OTHER_CPLUSPLUSFLAGS" => "#{extra_flags}",
   }
 
   # "ios/Clibblst.xcframework/**/*.{h,hpp}" (Added as hack, as for some reason when adding to vendored_frameworks, it loses the headers from the first one ??)
@@ -40,17 +54,6 @@ Pod::Spec.new do |s|
   #   "ios/**/*.h",
   #   'ios/*.xcframework'
   # ]
-
-  sodium_enabled = ENV['SODIUM_ENABLED'] != '0' ? "enabled" : "disabled"
-  Pod::UI.puts("[BlsSignatures] react-native-bls-signatures has libsodium #{sodium_enabled}!")
-
-  # Default to enabled unless explicitly set to '0'
-  if ENV['SODIUM_ENABLED'] != '0' then
-    s.vendored_frameworks = 'ios/Clibblst.xcframework', 'ios/Clibsodium.xcframework'
-    extra_flags = ' -DBLSALLOC_SODIUM=1'
-  else
-    s.vendored_frameworks = "ios/Clibblst.xcframework"
-  end
 
   install_modules_dependencies(s)
 end

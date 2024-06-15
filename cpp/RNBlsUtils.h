@@ -16,7 +16,5 @@ namespace Utils {
 
   std::vector<uint8_t> ArrayBufferToVector(const jsi::ArrayBuffer& buffer, jsi::Runtime& runtime);
 
-  void install(facebook::jsi::Runtime& jsiRuntime);
-
 } // namespace Utils
 } // namespace RNBls

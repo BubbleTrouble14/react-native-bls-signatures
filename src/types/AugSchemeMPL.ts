@@ -5,14 +5,18 @@ import { bls } from '../NativeBls';
 
 export interface JsiAugSchemeMPL {
   skToG1(sk: PrivateKey): G1Element;
-  keyGen(seed: Uint8Array): PrivateKey;
-  sign(sk: PrivateKey, msg: Uint8Array): G2Element;
-  signPrepend(sk: PrivateKey, msg: Uint8Array, prependPk: G1Element): G2Element;
-  verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean;
+  keyGen(seed: ArrayBuffer): PrivateKey;
+  sign(sk: PrivateKey, msg: ArrayBuffer): G2Element;
+  signPrepend(
+    sk: PrivateKey,
+    msg: ArrayBuffer,
+    prependPk: G1Element
+  ): G2Element;
+  verify(pk: G1Element, msg: ArrayBuffer, sig: G2Element): boolean;
   aggregate(g2s: G2Element[]): G2Element;
   aggregateVerify(
     pks: G1Element[],
-    msgs: Uint8Array[],
+    msgs: ArrayBuffer[],
     sig: G2Element
   ): boolean;
   deriveChildSk(sk: PrivateKey, index: number): PrivateKey;
@@ -25,23 +29,23 @@ export class AugSchemeMPL {
     return bls.AugSchemeMPL.skToG1(sk);
   }
 
-  static keyGen(seed: Uint8Array): PrivateKey {
+  static keyGen(seed: ArrayBuffer): PrivateKey {
     return bls.AugSchemeMPL.keyGen(seed);
   }
 
-  static sign(sk: PrivateKey, msg: Uint8Array): G2Element {
+  static sign(sk: PrivateKey, msg: ArrayBuffer): G2Element {
     return bls.AugSchemeMPL.sign(sk, msg);
   }
 
   static signPrepend(
     sk: PrivateKey,
-    msg: Uint8Array,
+    msg: ArrayBuffer,
     prependPk: G1Element
   ): G2Element {
     return bls.AugSchemeMPL.signPrepend(sk, msg, prependPk);
   }
 
-  static verify(pk: G1Element, msg: Uint8Array, sig: G2Element): boolean {
+  static verify(pk: G1Element, msg: ArrayBuffer, sig: G2Element): boolean {
     return bls.AugSchemeMPL.verify(pk, msg, sig);
   }
 
@@ -51,7 +55,7 @@ export class AugSchemeMPL {
 
   static aggregateVerify(
     pks: G1Element[],
-    msgs: Uint8Array[],
+    msgs: ArrayBuffer[],
     sig: G2Element
   ): boolean {
     return bls.AugSchemeMPL.aggregateVerify(pks, msgs, sig);

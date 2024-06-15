@@ -6,14 +6,15 @@
 
 #include "JsiBlsHostObject.h"
 #include "JsiBlsHostObjects.h"
+#include "JsiBlsMutableBuffer.h"
 #include "JsiG1Element.h"
 #include "JsiG2Element.h"
-#include "TypedArray.h"
+#include "RNBlsUtils.h"
+
 #include "bls.hpp"
 #include <jsi/jsi.h>
 
 #include "RNBlsLog.h"
-
 using namespace bls;
 
 namespace RNBls {
@@ -30,12 +31,10 @@ public:
 
   //----------toBytes----------//
   JSI_HOST_FUNCTION(toBytes) {
-    auto newTypedArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, PrivateKey::PRIVATE_KEY_SIZE);
-    auto newBuffer = newTypedArray.getBuffer(runtime);
+    auto buffer = std::make_shared<JsiBlsMutableBuffer>(PrivateKey::PRIVATE_KEY_SIZE);
+    std::memcpy(buffer->data(), getObject()->Serialize().data(), PrivateKey::PRIVATE_KEY_SIZE);
 
-    std::memcpy(newBuffer.data(runtime), getObject()->Serialize().data(), PrivateKey::PRIVATE_KEY_SIZE);
-
-    return newTypedArray;
+    return jsi::ArrayBuffer(runtime, buffer);
   };
 
   //----------toHex----------//
@@ -100,13 +99,13 @@ public:
   // ----------fromBytes----------//
   JSI_HOST_FUNCTION(fromBytes) {
     auto object = arguments[0].asObject(runtime);
-    if (!isTypedArray(runtime, object)) {
-      throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type Uint8Array.");
+    if (!object.isArrayBuffer(runtime)) {
+      throw jsi::JSError(runtime, "The 'fromBytes' argument must be an object, but it is not of type ArrayBuffer.");
     }
 
-    auto typedArray = getTypedArray(runtime, object);
+    auto arrayBuffer = object.getArrayBuffer(runtime);
 
-    if (typedArray.size(runtime) != PrivateKey::PRIVATE_KEY_SIZE) {
+    if (arrayBuffer.size(runtime) != PrivateKey::PRIVATE_KEY_SIZE) {
       throw jsi::JSError(runtime,
                          "Invalid size for 'fromBytes' argument. Expected " + std::to_string(PrivateKey::PRIVATE_KEY_SIZE) + " bytes.");
     }
@@ -116,7 +115,7 @@ public:
     }
     auto modOrder = arguments[1].asBool();
 
-    PrivateKey sk = PrivateKey::FromByteVector(typedArray.toVector(runtime), modOrder);
+    PrivateKey sk = PrivateKey::FromByteVector(Utils::ArrayBufferToVector(arrayBuffer, runtime), modOrder);
 
     return JsiPrivateKey::toValue(runtime, sk);
   };

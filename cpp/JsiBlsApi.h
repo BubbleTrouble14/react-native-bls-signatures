@@ -9,16 +9,17 @@
 #include <jsi/jsi.h>
 
 #include "JsiBlsHostObject.h"
-#include "TypedArray.h"
 
 #include "JsiAugSchemeMPL.h"
 #include "JsiBasicSchemeMPL.h"
+#include "JsiBlsMutableBuffer.h"
 #include "JsiG1Element.h"
 #include "JsiG2Element.h"
 #include "JsiGTElement.h"
 #include "JsiHKDF256.h"
 #include "JsiPopSchemeMPL.h"
 #include "JsiPrivateKey.h"
+#include "RNBlsUtils.h"
 
 #include "RNBlsLog.h"
 
@@ -45,20 +46,18 @@ public:
     }
 
     auto object = arguments[0].asObject(runtime);
-    if (!isTypedArray(runtime, object)) {
-      throw jsi::JSError(runtime, "hash256 argument is an object, but not of type Uint8Array!");
+    if (!object.isArrayBuffer(runtime)) {
+      throw jsi::JSError(runtime, "hash256 argument is an object, but not of type ArrayBuffer!");
     }
-    auto typedArray = getTypedArray(runtime, object);
+    auto arrayBuffer = object.getArrayBuffer(runtime);
 
     uint8_t hash[32];
-    bls::Util::Hash256(hash, typedArray.getBuffer(runtime).data(runtime), typedArray.size(runtime));
+    bls::Util::Hash256(hash, arrayBuffer.data(runtime), arrayBuffer.size(runtime));
 
-    auto hashArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, 32);
-    auto arrayBuffer = hashArray.getBuffer(runtime);
+    auto buffer = std::make_shared<JsiBlsMutableBuffer>(32);
+    std::memcpy(buffer->data(), hash, 32);
 
-    memcpy(arrayBuffer.data(runtime), hash, 32);
-
-    return hashArray;
+    return jsi::ArrayBuffer(runtime, buffer);
   };
 
   JSI_HOST_FUNCTION(toHex) {
@@ -67,12 +66,12 @@ public:
     }
 
     auto object = arguments[0].asObject(runtime);
-    if (!isTypedArray(runtime, object)) {
-      throw jsi::JSError(runtime, "toHex argument is an object, but not of type Uint8Array!");
+    if (!object.isArrayBuffer(runtime)) {
+      throw jsi::JSError(runtime, "toHex argument is an object, but not of type ArrayBuffer!");
     }
-    auto typedArray = getTypedArray(runtime, object);
+    auto arrayBuffer = object.getArrayBuffer(runtime);
 
-    auto hex = jsi::String::createFromUtf8(runtime, Util::HexStr(typedArray.toVector(runtime)));
+    auto hex = jsi::String::createFromUtf8(runtime, Util::HexStr(Utils::ArrayBufferToVector(arrayBuffer, runtime)));
 
     return hex;
   };
@@ -90,12 +89,10 @@ public:
 
     auto bytes = Util::HexToBytes(hex.utf8(runtime));
 
-    auto byteArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, bytes.size());
-    auto arrayBuffer = byteArray.getBuffer(runtime);
+    auto buffer = std::make_shared<JsiBlsMutableBuffer>(bytes.size());
+    std::memcpy(buffer->data(), bytes.data(), bytes.size());
 
-    memcpy(arrayBuffer.data(runtime), bytes.data(), bytes.size());
-
-    return byteArray;
+    return jsi::ArrayBuffer(runtime, buffer);
   };
 
   JSI_HOST_FUNCTION(getRandomSeed) {
@@ -108,25 +105,21 @@ public:
 #if BLSALLOC_SODIUM
     // Use libsodium's cryptographically secure RNG
     randombytes_buf(buf, 32);
-    // RNBlsLogger::logToJavascriptConsole(runtime, "Secure random used from libsodium");
 #else
+    RNBlsLogger::logToJavascriptConsole(runtime, "Not secure Random!");
     // Fallback to a less secure RNG
-    // RNBlsLogger::logToJavascriptConsole(runtime, "Not a secure random");
     for (int i = 0; i < 32; i++)
       buf[i] = rand();
 #endif
-    // for (int i = 0; i < 32; i++)
-    //   buf[i] = rand();
 
-    auto byteArray = TypedArray<TypedArrayKind::Uint8Array>(runtime, 32);
-    auto arrayBuffer = byteArray.getBuffer(runtime);
+    auto buffer = std::make_shared<JsiBlsMutableBuffer>(32);
+    std::memcpy(buffer->data(), buf, 32);
 
-    memcpy(arrayBuffer.data(runtime), buf, 32);
-
-    return byteArray;
+    return jsi::ArrayBuffer(runtime, buffer);
   };
 
   JSI_EXPORT_FUNCTIONS(JSI_EXPORT_FUNC(JsiBlsApi, hash256), JSI_EXPORT_FUNC(JsiBlsApi, toHex), JSI_EXPORT_FUNC(JsiBlsApi, fromHex),
                        JSI_EXPORT_FUNC(JsiBlsApi, getRandomSeed))
 };
+
 } // namespace RNBls

@@ -10,7 +10,7 @@ describe('Unhardened HD keys', function () {
         13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
       ]);
 
-      const sk = BasicSchemeMPL.keyGen(seed);
+      const sk = BasicSchemeMPL.keyGen(seed.buffer);
       const pk = sk.getG1();
 
       const childSk = BasicSchemeMPL.deriveChildSkUnhardened(sk, 42);
@@ -38,7 +38,7 @@ describe('Unhardened HD keys', function () {
         13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
       ]);
 
-      const sk = BasicSchemeMPL.keyGen(seed);
+      const sk = BasicSchemeMPL.keyGen(seed.buffer);
       const pk = sk.getG1();
 
       const childSk = BasicSchemeMPL.deriveChildSkUnhardened(sk, 42);

@@ -1,7 +1,7 @@
 import { bls } from '../NativeBls';
 
 export interface IBaseG1Element {
-  toBytes(): Uint8Array;
+  toBytes(): ArrayBuffer;
   toHex(): string;
   toString(): string;
   isValid(): boolean;
@@ -26,7 +26,7 @@ export type JsiG1Element = Pick<
 >;
 
 export interface IG1Element extends IBaseG1Element {
-  fromBytes(bytes: Uint8Array): G1Element;
+  fromBytes(bytes: ArrayBuffer): G1Element;
   fromHex(hex: string): G1Element;
   generator(): G1Element;
 }
@@ -48,7 +48,7 @@ export class G1Element implements IBaseG1Element {
     return this.functionCache[functionName] as JsiG1Element[T];
   }
 
-  static fromBytes(bytes: Uint8Array): G1Element {
+  static fromBytes(bytes: ArrayBuffer): G1Element {
     return bls.G1Element.fromBytes(bytes);
   }
 
@@ -60,7 +60,7 @@ export class G1Element implements IBaseG1Element {
     return bls.G1Element.generator();
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ArrayBuffer {
     const func = this.getFunctionFromCache('toBytes');
     return func();
   }
@@ -107,7 +107,7 @@ export class G1Element implements IBaseG1Element {
 }
 
 // export abstract class G1Element implements JsiG1Element {
-// abstract toBytes(): Uint8Array;
+// abstract toBytes(): ArrayBuffer;
 // abstract toHex(): string;
 // abstract toString(): string;
 // abstract isValid(): boolean;
@@ -119,7 +119,7 @@ export class G1Element implements IBaseG1Element {
 
 // static SIZE: number = 48;
 
-// static fromBytes(bytes: Uint8Array): G1Element {
+// static fromBytes(bytes: ArrayBuffer): G1Element {
 //   return bls.G1Element.fromBytes(bytes);
 // }
 

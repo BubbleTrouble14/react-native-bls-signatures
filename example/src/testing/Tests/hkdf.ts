@@ -65,9 +65,9 @@ describe('HKDF', function () {
       const prk = HKDF256.extract(salt, ikm);
       const okm = HKDF256.expand(prk, info, test.length);
       it('Has the correct prkExpected length', () =>
-        assert.equal(prkExpected.length, 32));
+        assert.equal(prkExpected.byteLength, 32));
       it('Has the correct okmExpected length', () =>
-        assert.equal(test.length, okmExpected.length));
+        assert.equal(test.length, okmExpected.byteLength));
       it('Has the correct prk bytes', () => assert.deepEqual(prk, prkExpected));
       it('Has the correct okm bytes', () => assert.deepEqual(okm, okmExpected));
     });

@@ -13,6 +13,8 @@ import '../testing/Tests/ietf';
 import '../testing/Tests/unhardendHDKeys';
 import '../testing/Tests/keygen';
 import '../testing/Tests/errorhandling';
+import '../testing/Tests/chia';
+import '../testing/Tests/utils';
 
 export const useTestList = (): [
   Suites,

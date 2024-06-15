@@ -1,6 +1,6 @@
 import { bls } from '../NativeBls';
 export interface IBaseG2Element {
-  toBytes(): Uint8Array;
+  toBytes(): ArrayBuffer;
   toHex(): string;
   toString(): string;
   isValid(): boolean;
@@ -23,7 +23,7 @@ export type JsiG2Element = Pick<
 >;
 
 export interface IG2Element extends IBaseG2Element {
-  fromBytes(bytes: Uint8Array): G2Element;
+  fromBytes(bytes: ArrayBuffer): G2Element;
   fromHex(hex: string): G2Element;
   generator(): G2Element;
 }
@@ -45,7 +45,7 @@ export class G2Element implements IBaseG2Element {
     return this.functionCache[functionName] as JsiG2Element[T];
   }
 
-  static fromBytes(bytes: Uint8Array): G2Element {
+  static fromBytes(bytes: ArrayBuffer): G2Element {
     return bls.G2Element.fromBytes(bytes);
   }
 
@@ -57,7 +57,7 @@ export class G2Element implements IBaseG2Element {
     return bls.G2Element.generator();
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ArrayBuffer {
     const func = this.getFunctionFromCache('toBytes');
     return func();
   }
@@ -99,7 +99,7 @@ export class G2Element implements IBaseG2Element {
 }
 
 // export abstract class G2Element implements JsiG2Element {
-// abstract toBytes(): Uint8Array;
+// abstract toBytes(): ArrayBuffer;
 // abstract toHex(): string;
 // abstract toString(): string;
 // abstract isValid(): boolean;
@@ -111,7 +111,7 @@ export class G2Element implements IBaseG2Element {
 
 // static SIZE: number = 48;
 
-// static fromBytes(bytes: Uint8Array): G2Element {
+// static fromBytes(bytes: ArrayBuffer): G2Element {
 //   return bls.G2Element.fromBytes(bytes);
 // }
 
@@ -125,7 +125,7 @@ export class G2Element implements IBaseG2Element {
 // }
 
 // export interface IG2Element {
-//   toBytes(): Uint8Array;
+//   toBytes(): ArrayBuffer;
 //   toHex(): string;
 //   toString(): string;
 //   isValid(): boolean;
@@ -133,7 +133,7 @@ export class G2Element implements IBaseG2Element {
 //   add(g2: G2Element): G2Element;
 //   negate(): G2Element;
 //   equals(g2: G2Element): boolean;
-//   fromBytes(bytes: Uint8Array): G2Element;
+//   fromBytes(bytes: ArrayBuffer): G2Element;
 //   fromHex(hex: string): G2Element;
 //   generator(): G2Element;
 //   bug: string;
@@ -147,7 +147,7 @@ export class G2Element implements IBaseG2Element {
 //     return jsiG2Element.bug;
 //   }
 
-//   static fromBytes(bytes: Uint8Array): G2Element {
+//   static fromBytes(bytes: ArrayBuffer): G2Element {
 //     return jsiG2Element.fromBytes(bytes);
 //   }
 
@@ -159,7 +159,7 @@ export class G2Element implements IBaseG2Element {
 //     return jsiG2Element.generator();
 //   }
 
-//   toBytes(): Uint8Array {
+//   toBytes(): ArrayBuffer {
 //     return jsiG2Element.toBytes();
 //   }
 

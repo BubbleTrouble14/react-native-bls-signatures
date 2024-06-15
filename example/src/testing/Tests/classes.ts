@@ -1,5 +1,5 @@
 import { describe, it } from '../MochaRNAdapter';
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import {
   BasicSchemeMPL,
   AugSchemeMPL,
@@ -13,11 +13,11 @@ import {
 
 describe('Classes', () => {
   describe('PrivateKey', () => {
-    const seed = getRandomSeed();
-    const privateKey = PrivateKey.fromBytes(seed, true);
+    const seed = new Uint8Array(getRandomSeed());
+    const privateKey = PrivateKey.fromBytes(seed.buffer, true);
 
     it('static fromBytes', () => {
-      expect(PrivateKey.fromBytes(seed, true)).to.not.be.null;
+      expect(PrivateKey.fromBytes(seed.buffer, true)).to.not.be.null;
     });
 
     it('static fromHex', () => {
@@ -29,7 +29,7 @@ describe('Classes', () => {
     });
 
     it('toBytes', () => {
-      expect(privateKey.toBytes()).to.be.an.instanceof(Uint8Array);
+      expect(privateKey.toBytes()).to.be.an.instanceof(ArrayBuffer);
     });
 
     it('toHex', () => {
@@ -76,8 +76,8 @@ describe('Classes', () => {
   });
 
   describe('G1Element', () => {
-    const seed = getRandomSeed();
-    const privateKey = PrivateKey.fromBytes(seed, true);
+    const seed = new Uint8Array(getRandomSeed());
+    const privateKey = PrivateKey.fromBytes(seed.buffer, true);
     const g1Element = privateKey.getG1();
 
     it('static fromBytes', () => {
@@ -93,7 +93,7 @@ describe('Classes', () => {
     });
 
     it('toBytes', () => {
-      expect(g1Element.toBytes()).to.be.an.instanceof(Uint8Array);
+      expect(g1Element.toBytes()).to.be.an.instanceof(ArrayBuffer);
     });
 
     it('toHex', () => {
@@ -132,8 +132,8 @@ describe('Classes', () => {
   });
 
   describe('G2Element', () => {
-    const seed = getRandomSeed();
-    const privateKey = PrivateKey.fromBytes(seed, true);
+    const seed = new Uint8Array(getRandomSeed());
+    const privateKey = PrivateKey.fromBytes(seed.buffer, true);
     const g2Element = privateKey.getG2();
 
     it('static fromBytes', () => {
@@ -149,7 +149,7 @@ describe('Classes', () => {
     });
 
     it('toBytes', () => {
-      expect(g2Element.toBytes()).to.be.an.instanceof(Uint8Array);
+      expect(g2Element.toBytes()).to.be.an.instanceof(ArrayBuffer);
     });
 
     it('toHex', () => {
@@ -184,32 +184,43 @@ describe('Classes', () => {
   });
 
   describe('GTElement', () => {
-    // const seed = getRandomSeed();
-    // const privateKey = PrivateKey.fromBytes(seed, true);
-    // const gTElement = privateKey.getG2();
-    //TODO
+    // const seed = new Uint8Array(getRandomSeed());
+    // const privateKey = PrivateKey.fromBytes(seed.buffer, true);
+    // const g1Element = privateKey.getG1();
+    // const g2Element = privateKey.getG2();
+    // const gTElement = GTElement.pair(g1Element, g2Element);
+
     // it('static fromBytes', () => {
-    //   expect(GTElement.fromBytes(gTElement.toBytes())).to.not.be.null;
+    //   expect(GTElement.fromBytes(gTElement.toBytes().buffer)).to.not.be.null;
     // });
+
     // it('static fromHex', () => {
     //   expect(GTElement.fromHex(gTElement.toHex())).to.not.be.null;
     // });
+
     // it('static unity', () => {
     //   expect(GTElement.unity()).to.not.be.null;
     // });
+
     // it('toBytes', () => {
-    //   expect(gTElement.toBytes()).to.be.an.instanceof(Uint8Array);
+    //   expect(new Uint8Array(gTElement.toBytes())).to.be.an.instanceof(
+    //     ArrayBuffer
+    //   );
     // });
+
     // it('toHex', () => {
     //   expect(gTElement.toHex()).to.be.a('string');
     // });
+
     // it('toString', () => {
     //   expect(gTElement.toString()).to.be.a('string');
     // });
+
     // it('deepCopy', () => {
     //   const copy = gTElement.deepCopy();
     //   expect(copy.toHex()).to.equal(gTElement.toHex());
     // });
+
     // it('equals', () => {
     //   const copy = gTElement.deepCopy();
     //   expect(copy.equals(gTElement)).to.be.true;
@@ -217,27 +228,27 @@ describe('Classes', () => {
   });
 
   describe('BasicSchemeMPL', () => {
-    const seed = getRandomSeed();
+    const seed = new Uint8Array(getRandomSeed());
 
-    const sk = BasicSchemeMPL.keyGen(seed);
+    const sk = BasicSchemeMPL.keyGen(seed.buffer);
     const pk = sk.getG1();
-    const msg = Uint8Array.from([1, 2, 3, 4, 5]);
-    const signature = BasicSchemeMPL.sign(sk, msg);
+    const msg = new Uint8Array([1, 2, 3, 4, 5]);
+    const signature = BasicSchemeMPL.sign(sk, msg.buffer);
 
     it('skToG1', () => {
       expect(BasicSchemeMPL.skToG1(sk)).to.not.be.null;
     });
 
     it('keyGen', () => {
-      expect(BasicSchemeMPL.keyGen(seed)).to.not.be.null;
+      expect(BasicSchemeMPL.keyGen(seed.buffer)).to.not.be.null;
     });
 
     it('sign', () => {
-      expect(BasicSchemeMPL.sign(sk, msg)).to.not.be.null;
+      expect(BasicSchemeMPL.sign(sk, msg.buffer)).to.not.be.null;
     });
 
     it('verify', () => {
-      expect(BasicSchemeMPL.verify(pk, msg, signature)).to.be.true;
+      expect(BasicSchemeMPL.verify(pk, msg.buffer, signature)).to.be.true;
     });
 
     it('aggregate', () => {
@@ -245,7 +256,8 @@ describe('Classes', () => {
     });
 
     it('aggregateVerify', () => {
-      expect(BasicSchemeMPL.aggregateVerify([pk], [msg], signature)).to.be.true;
+      expect(BasicSchemeMPL.aggregateVerify([pk], [msg.buffer], signature)).to
+        .be.true;
     });
 
     it('deriveChildSk', () => {
@@ -262,31 +274,31 @@ describe('Classes', () => {
   });
 
   describe('AugSchemeMPL', () => {
-    const seed = getRandomSeed();
+    const seed = new Uint8Array(getRandomSeed());
 
-    const sk = AugSchemeMPL.keyGen(seed);
+    const sk = AugSchemeMPL.keyGen(seed.buffer);
     const pk = sk.getG1();
-    const msg = Uint8Array.from([1, 2, 3, 4, 5]);
-    const signature = AugSchemeMPL.sign(sk, msg);
+    const msg = new Uint8Array([1, 2, 3, 4, 5]);
+    const signature = AugSchemeMPL.sign(sk, msg.buffer);
 
     it('skToG1', () => {
       expect(AugSchemeMPL.skToG1(sk)).to.not.be.null;
     });
 
     it('keyGen', () => {
-      expect(AugSchemeMPL.keyGen(seed)).to.not.be.null;
+      expect(AugSchemeMPL.keyGen(seed.buffer)).to.not.be.null;
     });
 
     it('sign', () => {
-      expect(AugSchemeMPL.sign(sk, msg)).to.not.be.null;
+      expect(AugSchemeMPL.sign(sk, msg.buffer)).to.not.be.null;
     });
 
     it('signPrepend', () => {
-      expect(AugSchemeMPL.signPrepend(sk, msg, pk)).to.not.be.null;
+      expect(AugSchemeMPL.signPrepend(sk, msg.buffer, pk)).to.not.be.null;
     });
 
     it('verify', () => {
-      expect(AugSchemeMPL.verify(pk, msg, signature)).to.be.true;
+      expect(AugSchemeMPL.verify(pk, msg.buffer, signature)).to.be.true;
     });
 
     it('aggregate', () => {
@@ -294,7 +306,8 @@ describe('Classes', () => {
     });
 
     it('aggregateVerify', () => {
-      expect(AugSchemeMPL.aggregateVerify([pk], [msg], signature)).to.be.true;
+      expect(AugSchemeMPL.aggregateVerify([pk], [msg.buffer], signature)).to.be
+        .true;
     });
 
     it('deriveChildSk', () => {
@@ -311,30 +324,28 @@ describe('Classes', () => {
   });
 
   describe('PopSchemeMPL', () => {
-    const seed = getRandomSeed();
-
-    const sk1 = AugSchemeMPL.keyGen(getRandomSeed());
-    const sk2 = AugSchemeMPL.keyGen(getRandomSeed());
-    const sk3 = AugSchemeMPL.keyGen(getRandomSeed());
+    const sk1 = PopSchemeMPL.keyGen(new Uint8Array(getRandomSeed()).buffer);
+    const sk2 = PopSchemeMPL.keyGen(new Uint8Array(getRandomSeed()).buffer);
+    const sk3 = PopSchemeMPL.keyGen(new Uint8Array(getRandomSeed()).buffer);
     const pk1 = sk1.getG1();
     const pk2 = sk2.getG1();
     const pk3 = sk3.getG1();
 
-    const message1 = Uint8Array.from([1, 2, 3, 4, 5]);
-    const message2 = Uint8Array.from([1, 2, 3, 4, 5, 6, 7]);
-    const message3 = Uint8Array.from([100, 2, 254, 88, 90, 45, 23]);
+    const message1 = new Uint8Array([1, 2, 3, 4, 5]);
+    const message2 = new Uint8Array([1, 2, 3, 4, 5, 6, 7]);
+    const message3 = new Uint8Array([100, 2, 254, 88, 90, 45, 23]);
 
-    const popSig1 = PopSchemeMPL.sign(sk1, message1);
-    const popSig2 = PopSchemeMPL.sign(sk2, message1);
-    const popSig3 = PopSchemeMPL.sign(sk3, message1);
+    const popSig1 = PopSchemeMPL.sign(sk1, message1.buffer);
+    const popSig2 = PopSchemeMPL.sign(sk2, message1.buffer);
+    const popSig3 = PopSchemeMPL.sign(sk3, message1.buffer);
     const pop1 = PopSchemeMPL.popProve(sk1);
 
     const popSigAgg = PopSchemeMPL.aggregate([popSig1, popSig2, popSig3]);
-    const sig1 = PopSchemeMPL.sign(sk1, message1);
-    const sig2 = PopSchemeMPL.sign(sk2, message2);
+    const sig1 = PopSchemeMPL.sign(sk1, message1.buffer);
+    const sig2 = PopSchemeMPL.sign(sk2, message2.buffer);
 
     const aggSig = PopSchemeMPL.aggregate([sig1, sig2]);
-    const sig3 = PopSchemeMPL.sign(sk3, message3);
+    const sig3 = PopSchemeMPL.sign(sk3, message3.buffer);
 
     const aggSigFinal = PopSchemeMPL.aggregate([aggSig, sig3]);
 
@@ -345,15 +356,17 @@ describe('Classes', () => {
     });
 
     it('keyGen', () => {
-      expect(PopSchemeMPL.keyGen(seed)).to.not.be.null;
+      expect(PopSchemeMPL.keyGen(new Uint8Array(getRandomSeed()).buffer)).to.not
+        .be.null;
     });
 
     it('sign', () => {
-      expect(PopSchemeMPL.sign(sk1, message1)).to.not.be.null;
+      expect(PopSchemeMPL.sign(sk1, message1.buffer)).to.not.be.null;
     });
 
     it('verify', () => {
-      expect(PopSchemeMPL.verify(popAggPk, message1, popSigAgg)).to.be.true;
+      expect(PopSchemeMPL.verify(popAggPk, message1.buffer, popSigAgg)).to.be
+        .true;
     });
 
     it('aggregate', () => {
@@ -365,7 +378,7 @@ describe('Classes', () => {
       expect(
         PopSchemeMPL.aggregateVerify(
           [pk1, pk2, pk3],
-          [message1, message2, message3],
+          [message1.buffer, message2.buffer, message3.buffer],
           aggSigFinal
         )
       ).to.be.true;
@@ -393,7 +406,11 @@ describe('Classes', () => {
 
     it('fastAggregateVerify', () => {
       expect(
-        PopSchemeMPL.fastAggregateVerify([pk1, pk2, pk3], message1, popSigAgg)
+        PopSchemeMPL.fastAggregateVerify(
+          [pk1, pk2, pk3],
+          message1.buffer,
+          popSigAgg
+        )
       ).to.be.true;
     });
   });

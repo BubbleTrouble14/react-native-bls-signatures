@@ -40,7 +40,7 @@ describe('PrivateKey', function () {
       expect(() => pk1.toBytes()).to.not.throw();
 
       const serializedPk1 = pk1.toBytes();
-      expect(serializedPk1).to.have.lengthOf(PrivateKey.SIZE);
+      expect(serializedPk1.byteLength).to.equal(PrivateKey.SIZE);
 
       const pk2 = PrivateKey.fromBytes(serializedPk1, true);
       expect(pk1.equals(pk2)).to.be.true;
@@ -49,12 +49,12 @@ describe('PrivateKey', function () {
         PrivateKey.fromBytes(serializedPk1.slice(0, -1), true)
       ).to.throw();
       expect(() =>
-        PrivateKey.fromBytes(new Uint8Array([...serializedPk1, 0]), true)
+        PrivateKey.fromBytes(
+          new Uint8Array([...new Uint8Array(serializedPk1), 0]).buffer,
+          true
+        )
       ).to.throw();
       expect(() => PrivateKey.fromBytes(serializedPk1, true)).to.not.throw();
-
-      // The commented part of the C++ code seems to be testing specific internal behaviours
-      // that might not have direct equivalents in TypeScript or might require internal library details.
     });
   });
 });

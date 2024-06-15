@@ -8,10 +8,10 @@ import type { JsiPopSchemeMPL } from './PopSchemeMPL';
 import type { JsiHKDF256 } from './HKDF256';
 
 export interface Bls {
-  hash256(msg: Uint8Array): Uint8Array;
-  toHex(bytes: Uint8Array): string;
-  fromHex(hex: string): Uint8Array;
-  getRandomSeed(): Uint8Array;
+  hash256(msg: ArrayBuffer): ArrayBuffer;
+  toHex(bytes: ArrayBuffer): string;
+  fromHex(hex: string): ArrayBuffer;
+  getRandomSeed(): ArrayBuffer;
   PrivateKey: IPrivateKey;
   G1Element: IG1Element;
   G2Element: IG2Element;
