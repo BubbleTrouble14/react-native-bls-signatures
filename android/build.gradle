@@ -104,6 +104,13 @@ android {
 
   buildFeatures {
     prefab true
+    prefabPublishing true
+  }
+
+  prefab {
+    rnbls {
+      headers "${project.buildDir}/headers/rnbls/"
+    }
   }
 
   defaultConfig {
