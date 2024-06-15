@@ -1,6 +1,6 @@
 {
   "name": "react-native-bls-signatures",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "bls",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
