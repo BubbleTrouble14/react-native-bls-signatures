@@ -39,6 +39,21 @@ if (isNewArchitectureEnabled()) {
 }
 apply plugin: 'com.android.library'
 
+task prepareHeaders(type: Copy) {
+  from fileTree('../cpp').filter { it.isFile() }
+  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
+  includeEmptyDirs = false
+  from fileTree('../bls-signatures/src').filter { it.isFile() }
+  into "${project.buildDir}/headers/rnbls/react-native-bls-signatures/"
+  includeEmptyDirs = false
+}
+
+task deleteCmakeCache() {
+  doFirst {
+    delete "${projectDir}/.cxx"
+  }
+}
+
 def safeExtGet(prop, fallback) {
   rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
@@ -195,5 +210,14 @@ tasks.whenTaskAdded { task ->
     rootProject.getTasksByName("packageReactNdkReleaseLibs", true).forEach {
       task.dependsOn(it)
     }
+  }
+}
+
+preBuild.dependsOn(prepareHeaders)
+
+tasks.configureEach { task ->
+  // C++ clean
+  if (task.name.contains("clean")) {
+    task.dependsOn(deleteCmakeCache)
   }
 }
