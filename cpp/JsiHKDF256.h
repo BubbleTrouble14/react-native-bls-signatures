@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-#include "JsiHostObject.h"
+#include "JsiBlsHostObject.h"
 #include "TypedArray.h"
 #include <jsi/jsi.h>
 
@@ -14,7 +14,7 @@ namespace RNBls {
 
 namespace jsi = facebook::jsi;
 
-class JsiHKDF256 : public RNJsi::JsiHostObject {
+class JsiHKDF256 : public RNBls::JsiBlsHostObject {
 public:
   //----------------------------extract----------------------------//
   JSI_HOST_FUNCTION(extract) {
@@ -135,7 +135,7 @@ public:
                        JSI_EXPORT_FUNC(JsiHKDF256, extractExpand))
 
   // Corrected Constructor
-  explicit JsiHKDF256() : RNJsi::JsiHostObject() {}
+  explicit JsiHKDF256() : RNBls::JsiBlsHostObject() {}
 };
 
 } // namespace RNBls

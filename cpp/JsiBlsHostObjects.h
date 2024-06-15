@@ -1,13 +1,13 @@
+#pragma once
+
 // Copied & modified
 // https://github.com/Shopify/react-native-skia/blob/main/package/cpp/api/JsiSkHostObjects.h
 // Credits to William and Christian
 
-#pragma once
-
 #include <memory>
 #include <utility>
 
-#include "JsiHostObject.h"
+#include "JsiBlsHostObject.h"
 
 namespace RNBls {
 
@@ -22,9 +22,9 @@ namespace jsi = facebook::jsi;
   JSI_API_TYPENAME(TYPENAME)                                                                                                               \
   JSI_EXPORT_PROPERTY_GETTERS(JSI_EXPORT_PROP_GET(CLASS, __typename__))
 
-template <typename T> class JsiBlsWrappingHostObject : public RNJsi::JsiHostObject {
+template <typename T> class JsiBlsWrappingHostObject : public RNBls::JsiBlsHostObject {
 public:
-  JsiBlsWrappingHostObject(T object) : RNJsi::JsiHostObject(), _object(std::move(object)) {}
+  JsiBlsWrappingHostObject(T object) : RNBls::JsiBlsHostObject(), _object(std::move(object)) {}
 
   T getObject() {
     return _object;

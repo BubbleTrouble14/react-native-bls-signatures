@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "RuntimeAwareCache.h"
+#include "RNBlsRuntimeAwareCache.h"
 
 #define STR_CAT_NX(A, B) A##B
 #define STR_CAT(A, B) STR_CAT_NX(A, B)
@@ -44,16 +44,17 @@
  */
 #define JSI_EXPORT_FUNC(CLASS, FUNCTION)                                                                                                   \
   {                                                                                                                                        \
-    #FUNCTION, (jsi::Value(JsiHostObject::*)(jsi::Runtime & runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t)) &  \
-                   CLASS::FUNCTION                                                                                                         \
+    #FUNCTION,                                                                                                                             \
+        (jsi::Value(JsiBlsHostObject::*)(jsi::Runtime & runtime, const jsi::Value& thisValue, const jsi::Value* arguments, size_t)) &      \
+            CLASS::FUNCTION                                                                                                                \
   }
 
 /**
  * Creates a JSI export functions statement
  */
 #define JSI_EXPORT_FUNCTIONS(...)                                                                                                          \
-  const RNJsi::JsiFunctionMap& getExportedFunctionMap() override {                                                                         \
-    static RNJsi::JsiFunctionMap map = {__VA_ARGS__};                                                                                      \
+  const RNBls::JsiFunctionMap& getExportedFunctionMap() override {                                                                         \
+    static RNBls::JsiFunctionMap map = {__VA_ARGS__};                                                                                      \
     return map;                                                                                                                            \
   }
 
@@ -61,14 +62,14 @@
  * Creates a JSI export getter declaration
  */
 #define JSI_EXPORT_PROP_GET(CLASS, FUNCTION)                                                                                               \
-  { #FUNCTION, (jsi::Value(JsiHostObject::*)(jsi::Runtime & runtime)) & CLASS::STR_CAT(STR_GET, FUNCTION) }
+  { #FUNCTION, (jsi::Value(JsiBlsHostObject::*)(jsi::Runtime & runtime)) & CLASS::STR_CAT(STR_GET, FUNCTION) }
 
 /**
  * Creates a JSI export getters statement
  */
 #define JSI_EXPORT_PROPERTY_GETTERS(...)                                                                                                   \
-  const RNJsi::JsiPropertyGettersMap& getExportedPropertyGettersMap() override {                                                           \
-    static RNJsi::JsiPropertyGettersMap map = {__VA_ARGS__};                                                                               \
+  const RNBls::JsiPropertyGettersMap& getExportedPropertyGettersMap() override {                                                           \
+    static RNBls::JsiPropertyGettersMap map = {__VA_ARGS__};                                                                               \
     return map;                                                                                                                            \
   }
 
@@ -76,18 +77,18 @@
  * Creates a JSI export setter declaration
  */
 #define JSI_EXPORT_PROP_SET(CLASS, FUNCTION)                                                                                               \
-  { #FUNCTION, (void(JsiHostObject::*)(jsi::Runtime & runtime, const jsi::Value&)) & CLASS::STR_CAT(STR_SET, FUNCTION) }
+  { #FUNCTION, (void(JsiBlsHostObject::*)(jsi::Runtime & runtime, const jsi::Value&)) & CLASS::STR_CAT(STR_SET, FUNCTION) }
 
 /**
  * Creates a JSI export setters statement
  */
 #define JSI_EXPORT_PROPERTY_SETTERS(...)                                                                                                   \
-  const RNJsi::JsiPropertySettersMap& getExportedPropertySettersMap() override {                                                           \
-    static RNJsi::JsiPropertySettersMap map = {__VA_ARGS__};                                                                               \
+  const RNBls::JsiPropertySettersMap& getExportedPropertySettersMap() override {                                                           \
+    static RNBls::JsiPropertySettersMap map = {__VA_ARGS__};                                                                               \
     return map;                                                                                                                            \
   }
 
-namespace RNJsi {
+namespace RNBls {
 
 namespace jsi = facebook::jsi;
 
@@ -96,22 +97,22 @@ using JsPropertyType = struct {
   std::function<void(jsi::Runtime&, const jsi::Value&)> set;
 };
 
-class JsiHostObject;
+class JsiBlsHostObject;
 
 using JsiFunctionMap =
-    std::unordered_map<std::string, jsi::Value (JsiHostObject::*)(jsi::Runtime&, const jsi::Value&, const jsi::Value*, size_t)>;
+    std::unordered_map<std::string, jsi::Value (JsiBlsHostObject::*)(jsi::Runtime&, const jsi::Value&, const jsi::Value*, size_t)>;
 
-using JsiPropertyGettersMap = std::unordered_map<std::string, jsi::Value (JsiHostObject::*)(jsi::Runtime&)>;
+using JsiPropertyGettersMap = std::unordered_map<std::string, jsi::Value (JsiBlsHostObject::*)(jsi::Runtime&)>;
 
-using JsiPropertySettersMap = std::unordered_map<std::string, void (JsiHostObject::*)(jsi::Runtime&, const jsi::Value&)>;
+using JsiPropertySettersMap = std::unordered_map<std::string, void (JsiBlsHostObject::*)(jsi::Runtime&, const jsi::Value&)>;
 
 /**
  * Base class for jsi host objects
  */
-class JsiHostObject : public jsi::HostObject {
+class JsiBlsHostObject : public jsi::HostObject {
 public:
-  JsiHostObject();
-  ~JsiHostObject();
+  JsiBlsHostObject();
+  ~JsiBlsHostObject();
 
   /**
    * Overridden jsi::HostObject set property method
@@ -142,8 +143,8 @@ protected:
   /**
    Override to return map of name/functions
    */
-  virtual const RNJsi::JsiFunctionMap& getExportedFunctionMap() {
-    static const RNJsi::JsiFunctionMap empty;
+  virtual const RNBls::JsiFunctionMap& getExportedFunctionMap() {
+    static const RNBls::JsiFunctionMap empty;
     return empty;
   }
 
@@ -323,7 +324,7 @@ private:
   std::unordered_map<std::string, jsi::HostFunctionType> _funcMap;
   std::unordered_map<std::string, JsPropertyType> _propMap;
 
-  RuntimeAwareCache<std::map<std::string, jsi::Function>> _hostFunctionCache;
+  RNBlsRuntimeAwareCache<std::map<std::string, jsi::Function>> _hostFunctionCache;
   // std::map<void*, std::map<std::string, jsi::Function>> _hostFunctionCache;
 };
-} // namespace RNJsi
+} // namespace RNBls

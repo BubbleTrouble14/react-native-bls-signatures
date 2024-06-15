@@ -3,9 +3,9 @@
 #include <memory>
 #include <utility>
 
+#include "JsiBlsHostObject.h"
 #include "JsiG1Element.h"
 #include "JsiG2Element.h"
-#include "JsiHostObject.h"
 #include "JsiPrivateKey.h"
 #include "RNBlsUtils.h"
 #include "TypedArray.h"
@@ -18,7 +18,7 @@ namespace RNBls {
 
 namespace jsi = facebook::jsi;
 
-class JsiAugSchemeMPL : public RNJsi::JsiHostObject {
+class JsiAugSchemeMPL : public RNBls::JsiBlsHostObject {
 public:
   //----------------------------skToG1----------------------------//
   JSI_HOST_FUNCTION(skToG1) {
@@ -138,7 +138,7 @@ public:
                        JSI_EXPORT_FUNC(JsiAugSchemeMPL, deriveChildSkUnhardened), JSI_EXPORT_FUNC(JsiAugSchemeMPL, deriveChildPkUnhardened))
 
   // Corrected Constructor
-  explicit JsiAugSchemeMPL() : RNJsi::JsiHostObject() {}
+  explicit JsiAugSchemeMPL() : RNBls::JsiBlsHostObject() {}
 };
 
 } // namespace RNBls

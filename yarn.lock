@@ -3556,6 +3556,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ronickg/react-native-bip39@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@ronickg/react-native-bip39@npm:1.0.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: a0e76d0e007be87dc7fc86b60aebe14eecbc5ef5dd1690beb02bac613bf31ff01cea4f90a6bb2aaa515cac9137387431ed1c8272c33cda2176d8c7b12059b4a6
+  languageName: node
+  linkType: hard
+
 "@shopify/flash-list@npm:^1.6.4":
   version: 1.6.4
   resolution: "@shopify/flash-list@npm:1.6.4"
@@ -11508,6 +11518,7 @@ __metadata:
     "@react-native/typescript-config": 0.74.84
     "@react-navigation/native": ^6.1.17
     "@react-navigation/native-stack": ^6.9.26
+    "@ronickg/react-native-bip39": ^1.0.2
     "@shopify/flash-list": ^1.6.4
     "@types/chai": ^4.3.11
     "@types/mocha": ^10.0.6

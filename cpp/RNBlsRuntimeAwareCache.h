@@ -3,33 +3,34 @@
 #include <jsi/jsi.h>
 
 // Copied
-// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/RuntimeAwareCache.h
+// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/RNBlsRuntimeAwareCache.h
 // Credits to William and Christian
 #include <memory>
 #include <unordered_map>
 #include <utility>
 
-#include "RuntimeLifecycleMonitor.h"
+#include "BlsRuntimeLifecycleMonitor.h"
 
-namespace RNJsi {
+namespace RNBls {
 
 namespace jsi = facebook::jsi;
 
-class BaseRuntimeAwareCache {
+class BaseRNBlsRuntimeAwareCache {
 public:
-  static void setMainJsRuntime(jsi::Runtime *rt) { _mainRuntime = rt; }
+  static void setMainJsRuntime(jsi::Runtime* rt) {
+    _mainRuntime = rt;
+  }
 
 protected:
-  static jsi::Runtime *getMainJsRuntime() {
-    assert(_mainRuntime != nullptr &&
-           "Expected main Javascript runtime to be set in the "
-           "BaseRuntimeAwareCache class.");
+  static jsi::Runtime* getMainJsRuntime() {
+    assert(_mainRuntime != nullptr && "Expected main Javascript runtime to be set in the "
+                                      "BaseRNBlsRuntimeAwareCache class.");
 
     return _mainRuntime;
   }
 
 private:
-  static jsi::Runtime *_mainRuntime;
+  static jsi::Runtime* _mainRuntime;
 };
 
 /**
@@ -53,26 +54,23 @@ private:
  * runtime is in use. Specifically, we don't perform any additional operations
  * related to tracking runtime lifecycle when only a single runtime is used.
  */
-template <typename T>
-class RuntimeAwareCache : public BaseRuntimeAwareCache,
-                          public RuntimeLifecycleListener {
+template <typename T> class RNBlsRuntimeAwareCache : public BaseRNBlsRuntimeAwareCache, public RuntimeLifecycleListener {
 
 public:
-  void onRuntimeDestroyed(jsi::Runtime *rt) override {
+  void onRuntimeDestroyed(jsi::Runtime* rt) override {
     if (getMainJsRuntime() != rt) {
       // We are removing a secondary runtime
       _secondaryRuntimeCaches.erase(rt);
     }
   }
 
-  ~RuntimeAwareCache() {
-    for (auto &cache : _secondaryRuntimeCaches) {
-      RuntimeLifecycleMonitor::removeListener(
-          *static_cast<jsi::Runtime *>(cache.first), this);
+  ~RNBlsRuntimeAwareCache() {
+    for (auto& cache : _secondaryRuntimeCaches) {
+      BlsRuntimeLifecycleMonitor::removeListener(*static_cast<jsi::Runtime*>(cache.first), this);
     }
   }
 
-  T &get(jsi::Runtime &rt) {
+  T& get(jsi::Runtime& rt) {
     // We check if we're accessing the main runtime - this is the happy path
     // to avoid us having to lookup by runtime for caches that only has a single
     // runtime
@@ -87,7 +85,7 @@ public:
         // with the RuntimeMonitor as opposed to only registering ones that are
         // used in secondary runtime. Note that we can't register listener here
         // with the primary runtime as it may run on a separate thread.
-        RuntimeLifecycleMonitor::addListener(rt, this);
+        BlsRuntimeLifecycleMonitor::addListener(rt, this);
 
         T cache;
         _secondaryRuntimeCaches.emplace(&rt, std::move(cache));
@@ -97,8 +95,8 @@ public:
   }
 
 private:
-  std::unordered_map<void *, T> _secondaryRuntimeCaches;
+  std::unordered_map<void*, T> _secondaryRuntimeCaches;
   T _primaryCache;
 };
 
-} // namespace RNJsi
+} // namespace RNBls

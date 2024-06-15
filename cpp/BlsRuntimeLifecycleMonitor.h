@@ -1,5 +1,5 @@
 // Copied
-// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/RuntimeLifecycleMonitor.h
+// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/BlsRuntimeLifecycleMonitor.h
 // Credits to William and Christian
 #pragma once
 
@@ -7,7 +7,7 @@
 
 #include <memory>
 
-namespace RNJsi {
+namespace RNBls {
 
 namespace jsi = facebook::jsi;
 
@@ -17,7 +17,7 @@ namespace jsi = facebook::jsi;
  */
 struct RuntimeLifecycleListener {
   virtual ~RuntimeLifecycleListener() {}
-  virtual void onRuntimeDestroyed(jsi::Runtime *) = 0;
+  virtual void onRuntimeDestroyed(jsi::Runtime*) = 0;
 };
 
 /**
@@ -26,10 +26,9 @@ struct RuntimeLifecycleListener {
  * cleanup any data that references a given jsi::Runtime instance before it gets
  * destroyed.
  */
-struct RuntimeLifecycleMonitor {
-  static void addListener(jsi::Runtime &rt, RuntimeLifecycleListener *listener);
-  static void removeListener(jsi::Runtime &rt,
-                             RuntimeLifecycleListener *listener);
+struct BlsRuntimeLifecycleMonitor {
+  static void addListener(jsi::Runtime& rt, RuntimeLifecycleListener* listener);
+  static void removeListener(jsi::Runtime& rt, RuntimeLifecycleListener* listener);
 };
 
-} // namespace RNJsi
+} // namespace RNBls

@@ -8,7 +8,7 @@
 
 #include <jsi/jsi.h>
 
-#include "JsiHostObject.h"
+#include "JsiBlsHostObject.h"
 #include "TypedArray.h"
 
 #include "JsiAugSchemeMPL.h"
@@ -26,9 +26,9 @@ namespace RNBls {
 
 namespace jsi = facebook::jsi;
 
-class JsiBlsApi : public RNJsi::JsiHostObject {
+class JsiBlsApi : public RNBls::JsiBlsHostObject {
 public:
-  JsiBlsApi(jsi::Runtime& runtime) : JsiHostObject() {
+  JsiBlsApi(jsi::Runtime& runtime) : JsiBlsHostObject() {
     installReadonlyProperty("PrivateKey", std::make_shared<RNBls::JsiPrivateKey>());
     installReadonlyProperty("G1Element", std::make_shared<RNBls::JsiG1Element>());
     installReadonlyProperty("G2Element", std::make_shared<RNBls::JsiG2Element>());

@@ -49,6 +49,13 @@ namespace Utils {
     return messages;
   }
 
+  std::vector<uint8_t> ArrayBufferToVector(const jsi::ArrayBuffer& buffer, jsi::Runtime& runtime) {
+    size_t size = buffer.size(runtime);
+    uint8_t* dataPtr = buffer.data(runtime);
+    std::vector<uint8_t> vec(dataPtr, dataPtr + size);
+    return vec;
+  }
+
   void install(Runtime& jsiRuntime) {
     auto hash256 = jsi::Function::createFromHostFunction(
         jsiRuntime, jsi::PropNameID::forAscii(jsiRuntime, "hash256"), 1,

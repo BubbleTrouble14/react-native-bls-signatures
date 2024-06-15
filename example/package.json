@@ -7,6 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "pods": "cd ios && RCT_NEW_ARCH_ENABLED=1 pod install",
+    "pods-no-sodium": "cd ios && SODIUM_ENABLED=0 RCT_NEW_ARCH_ENABLED=1 pod install",
     "build:android": "cd android && ./gradlew assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a",
     "build:ios": "cd ios && xcodebuild -workspace BlsSignaturesExample.xcworkspace -scheme BlsSignaturesExample -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO"
   },
@@ -14,6 +15,7 @@
     "@craftzdog/react-native-buffer": "^6.0.5",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
+    "@ronickg/react-native-bip39": "^1.0.2",
     "@shopify/flash-list": "^1.6.4",
     "buffer": "^6.0.3",
     "chai": "^5.0.0",

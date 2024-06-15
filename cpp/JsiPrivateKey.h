@@ -4,10 +4,10 @@
 #include <string>
 #include <utility>
 
+#include "JsiBlsHostObject.h"
 #include "JsiBlsHostObjects.h"
 #include "JsiG1Element.h"
 #include "JsiG2Element.h"
-#include "JsiHostObject.h"
 #include "TypedArray.h"
 #include "bls.hpp"
 #include <jsi/jsi.h>

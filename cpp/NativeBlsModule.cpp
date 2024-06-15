@@ -7,7 +7,7 @@
 
 #include "NativeBlsModule.h"
 #include "JsiBlsApi.h"
-#include <RuntimeAwareCache.h>
+// #include <RNBlsRuntimeAwareCache.h>
 #include <memory>
 #include <utility>
 
@@ -18,12 +18,13 @@ NativeBlsModule::NativeBlsModule(std::shared_ptr<CallInvoker> jsInvoker) : Nativ
 NativeBlsModule::~NativeBlsModule() {}
 
 jsi::Object NativeBlsModule::createBlsApi(jsi::Runtime& runtime) {
-  RNJsi::BaseRuntimeAwareCache::setMainJsRuntime(&runtime);
+  RNBls::BaseRNBlsRuntimeAwareCache::setMainJsRuntime(&runtime);
 
   // Create new instance of the Worklets API (JSI module)
   auto bls = std::make_shared<RNBls::JsiBlsApi>(runtime);
 
   return jsi::Object::createFromHostObject(runtime, bls);
+  // return jsi::String::createFromUtf8(runtime, finalString);
 }
 
 } // namespace facebook::react

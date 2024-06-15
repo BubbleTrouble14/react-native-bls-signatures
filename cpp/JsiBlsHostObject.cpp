@@ -1,8 +1,8 @@
 // Copied
-// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/JsiHostObject.cpp
+// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/JsiBlsHostObject.cpp
 // Credits to William and Christian
 
-#include <JsiHostObject.h>
+#include "JsiBlsHostObject.h"
 #include <functional>
 #include <vector>
 
@@ -10,20 +10,20 @@
 // we can set this value to 1 and debug the constructor/destructor
 #define JSI_DEBUG_ALLOCATIONS 0
 
-namespace RNJsi {
+namespace RNBls {
 
 #if JSI_DEBUG_ALLOCATIONS
 int objCounter = 0;
-std::vector<JsiHostObject*> objects;
+std::vector<JsiBlsHostObject*> objects;
 #endif
 
-JsiHostObject::JsiHostObject() {
+JsiBlsHostObject::JsiBlsHostObject() {
 #if JSI_DEBUG_ALLOCATIONS
   objects.push_back(this);
   objCounter++;
 #endif
 }
-JsiHostObject::~JsiHostObject() {
+JsiBlsHostObject::~JsiBlsHostObject() {
 #if JSI_DEBUG_ALLOCATIONS
   for (size_t i = 0; i < objects.size(); ++i) {
     if (objects.at(i) == this) {
@@ -35,7 +35,7 @@ JsiHostObject::~JsiHostObject() {
 #endif
 }
 
-void JsiHostObject::set(jsi::Runtime& rt, const jsi::PropNameID& name, const jsi::Value& value) {
+void JsiBlsHostObject::set(jsi::Runtime& rt, const jsi::PropNameID& name, const jsi::Value& value) {
 
   auto nameStr = name.utf8(rt);
 
@@ -53,7 +53,7 @@ void JsiHostObject::set(jsi::Runtime& rt, const jsi::PropNameID& name, const jsi
   }
 }
 
-jsi::Value JsiHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& name) {
+jsi::Value JsiBlsHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& name) {
   auto nameStr = name.utf8(runtime);
 
   // Happy path - cached host functions are cheapest to look up
@@ -81,7 +81,7 @@ jsi::Value JsiHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& name
   if (func != funcs.end()) {
 
     // Create dispatcher
-    auto dispatcher = std::bind(func->second, reinterpret_cast<JsiHostObject*>(this), std::placeholders::_1, std::placeholders::_2,
+    auto dispatcher = std::bind(func->second, reinterpret_cast<JsiBlsHostObject*>(this), std::placeholders::_1, std::placeholders::_2,
                                 std::placeholders::_3, std::placeholders::_4);
 
     // Add to cache - it is important to cache the results from the
@@ -103,7 +103,7 @@ jsi::Value JsiHostObject::get(jsi::Runtime& runtime, const jsi::PropNameID& name
   return jsi::Value::undefined();
 }
 
-std::vector<jsi::PropNameID> JsiHostObject::getPropertyNames(jsi::Runtime& runtime) {
+std::vector<jsi::PropNameID> JsiBlsHostObject::getPropertyNames(jsi::Runtime& runtime) {
   // statically exported functions
   const auto& funcs = getExportedFunctionMap();
 
@@ -141,4 +141,4 @@ std::vector<jsi::PropNameID> JsiHostObject::getPropertyNames(jsi::Runtime& runti
   return propNames;
 }
 
-} // namespace RNJsi
+} // namespace RNBls

@@ -1,20 +1,20 @@
 // Copied
-// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/RuntimeLifecycleMonitor.cpp
+// https://github.com/Shopify/react-native-skia/blob/main/package/cpp/jsi/BlsRuntimeLifecycleMonitor.cpp
 // Credits to William and Christian
-#include "RuntimeLifecycleMonitor.h"
+#include "BlsRuntimeLifecycleMonitor.h"
 
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 
-namespace RNJsi {
+namespace RNBls {
 
 static std::unordered_map<jsi::Runtime*, std::unordered_set<RuntimeLifecycleListener*>> listeners;
 
-struct RuntimeLifecycleMonitorObject : public jsi::HostObject {
+struct BlsRuntimeLifecycleMonitorObject : public jsi::HostObject {
   jsi::Runtime* _rt;
-  explicit RuntimeLifecycleMonitorObject(jsi::Runtime* rt) : _rt(rt) {}
-  ~RuntimeLifecycleMonitorObject() {
+  explicit BlsRuntimeLifecycleMonitorObject(jsi::Runtime* rt) : _rt(rt) {}
+  ~BlsRuntimeLifecycleMonitorObject() {
     auto listenersSet = listeners.find(_rt);
     if (listenersSet != listeners.end()) {
       for (auto listener : listenersSet->second) {
@@ -25,7 +25,7 @@ struct RuntimeLifecycleMonitorObject : public jsi::HostObject {
   }
 };
 
-void RuntimeLifecycleMonitor::addListener(jsi::Runtime& rt, RuntimeLifecycleListener* listener) {
+void BlsRuntimeLifecycleMonitor::addListener(jsi::Runtime& rt, RuntimeLifecycleListener* listener) {
   auto listenersSet = listeners.find(&rt);
   if (listenersSet == listeners.end()) {
     // We install a global host object in the provided runtime, this way we can
@@ -33,7 +33,7 @@ void RuntimeLifecycleMonitor::addListener(jsi::Runtime& rt, RuntimeLifecycleList
     // terminated. We use a unique name for the object as it gets saved with the
     // runtime's global object.
     rt.global().setProperty(rt, "__rnbls_rt_lifecycle_monitor",
-                            jsi::Object::createFromHostObject(rt, std::make_shared<RuntimeLifecycleMonitorObject>(&rt)));
+                            jsi::Object::createFromHostObject(rt, std::make_shared<BlsRuntimeLifecycleMonitorObject>(&rt)));
     std::unordered_set<RuntimeLifecycleListener*> newSet;
     newSet.insert(listener);
     listeners.emplace(&rt, std::move(newSet));
@@ -42,7 +42,7 @@ void RuntimeLifecycleMonitor::addListener(jsi::Runtime& rt, RuntimeLifecycleList
   }
 }
 
-void RuntimeLifecycleMonitor::removeListener(jsi::Runtime& rt, RuntimeLifecycleListener* listener) {
+void BlsRuntimeLifecycleMonitor::removeListener(jsi::Runtime& rt, RuntimeLifecycleListener* listener) {
   auto listenersSet = listeners.find(&rt);
   if (listenersSet == listeners.end()) {
     // nothing to do here
@@ -51,4 +51,4 @@ void RuntimeLifecycleMonitor::removeListener(jsi::Runtime& rt, RuntimeLifecycleL
   }
 }
 
-} // namespace RNJsi
+} // namespace RNBls

@@ -4,8 +4,8 @@
 #include <string>
 #include <utility>
 
+#include "JsiBlsHostObject.h"
 #include "JsiBlsHostObjects.h"
-#include "JsiHostObject.h"
 #include "TypedArray.h"
 #include "bls.hpp"
 #include <jsi/jsi.h>
