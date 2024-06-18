@@ -80,11 +80,6 @@ static def findNodeModules(baseDir) {
 
 def nodeModules = findNodeModules(projectDir)
 
-repositories {
-  google()
-  mavenCentral()
-}
-
 def sodiumEnabled = hasProperty('sodiumEnabled') ? project.property('sodiumEnabled').toBoolean() : true // Default to true
 logger.warn("[BlsSignatures] react-native-bls-signatures has libsodium ${sodiumEnabled ? "enabled" : "disabled"}!")
 
@@ -190,12 +185,15 @@ android {
 repositories {
   mavenCentral()
   google()
+  flatDir {
+      dirs 'libs'
+  }
 }
 
 dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-android:+"
-  implementation fileTree(dir:'libs/',include:['*.aar'])
+  compileOnly fileTree(dir:'libs/',include:['*.aar'])
 }
 
 // Resolves "LOCAL_SRC_FILES points to a missing file, Check that libfb.so exists or that its path is correct".
