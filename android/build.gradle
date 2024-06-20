@@ -185,15 +185,13 @@ android {
 repositories {
   mavenCentral()
   google()
-  flatDir {
-      dirs 'libs'
-  }
 }
 
 dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-android:+"
-  compileOnly fileTree(dir:'libs/',include:['*.aar'])
+  implementation "io.github.cryptorg:blst:0.3.11-beta-3"
+  implementation "io.github.cryptorg:sodium:1.0.19.0-beta-1"
 }
 
 // Resolves "LOCAL_SRC_FILES points to a missing file, Check that libfb.so exists or that its path is correct".
